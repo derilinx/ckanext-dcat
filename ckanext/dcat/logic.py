@@ -105,13 +105,8 @@ def _search_ckan_datasets(context, data_dict):
         'sort': 'metadata_modified desc',
     }
 
-    search_data_dict['q'] = data_dict.get('q', '*:*')
     search_data_dict['fq'] = data_dict.get('fq')
     search_data_dict['fq_list'] = []
-
-    # Exclude certain dataset types
-    search_data_dict['fq_list'].append('-dataset_type:harvest')
-    search_data_dict['fq_list'].append('-dataset_type:showcase')
 
     if modified_since:
         search_data_dict['fq_list'].append(

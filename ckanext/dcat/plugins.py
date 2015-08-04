@@ -34,7 +34,7 @@ class DCATPlugin(p.SingletonPlugin):
                      controller=controller, action='read_catalog',
                      requirements={'_format': 'xml|rdf|n3|ttl|jsonld'})
 
-        _map.connect('dcat_dataset', '/dataset/{_id}.{_format}',
+        _map.connect('dcat_dataset', '/catalog/{_id}.{_format}',
                      controller=controller, action='read_dataset',
                      requirements={'_format': 'xml|rdf|n3|ttl|jsonld'})
         return _map
