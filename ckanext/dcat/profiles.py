@@ -554,8 +554,6 @@ class EuropeanDCATAPProfile(RDFProfile):
         for keyword in keywords:
             dataset_dict['tags'].append({'name': keyword})
 
-        # Extras
-
         #  Simple values
         for key, predicate in (
                 ('issued', DCT.issued),
@@ -564,6 +562,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                 ('alternate_identifier', ADMS.identifier),
                 ('version_notes', ADMS.versionNotes),
                 ('frequency', DCT.accrualPeriodicity),
+                ('accrualPeriodicity', DCT.accrualPeriodicity),
                 ('spatial_uri', DCT.spatial),
                 ):
             value = self._object_value(dataset_ref, predicate)
@@ -573,8 +572,10 @@ class EuropeanDCATAPProfile(RDFProfile):
         #  Lists
         for key, predicate in (
                 ('language', DCT.language),
-                ('theme', DCAT.theme),
-                ('conforms_to', DCAT.conformsTo),
+                ('theme-primary', DCAT.theme),
+                ('theme-secondary', DCAT.theme),
+                ('lineage', DCT.provenance),
+                ('conforms-to', DCAT.conformsTo),
                 ):
             values = self._object_value_list(dataset_ref, predicate)
             if values:
@@ -702,7 +703,7 @@ class EuropeanDCATAPProfile(RDFProfile):
             ('alternate_identifier', ADMS.identifier, None),
             ('version_notes', ADMS.versionNotes, None),
             ('frequency', DCT.accrualPeriodicity, None),
-
+            ('accrualPeriodicity', DCT.accrualPeriodicity, None)
         ]
         self._add_triples_from_dict(dataset_dict, dataset_ref, items)
 
@@ -720,8 +721,10 @@ class EuropeanDCATAPProfile(RDFProfile):
         #  Lists
         items = [
             ('language', DCT.language, None),
-            ('theme', DCAT.theme, None),
-            ('conforms_to', DCAT.conformsTo, None),
+            ('theme-primary', DCAT.theme, None),
+            ('theme-secondary', DCAT.theme, None),
+            ('conforms-to', DCAT.conformsTo, None),
+            ('lineage', DCT.provenance, None)
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
