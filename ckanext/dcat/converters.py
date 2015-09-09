@@ -1,7 +1,30 @@
+# -*- coding: utf-8 -*-
+
 import logging
+import re
+import arrow
 
 log = logging.getLogger(__name__)
 
+def normalize_name (string):
+    string = string.strip().lower()
+    string = re.sub('\s*&\s*', ' and ', string)
+    string = re.sub('\s+', ' ', string) #squeeze whitespace
+    string = string.replace(' ', '_')   #space to underscore
+    string = string.replace('-', '_')   #dash to underscore
+    string = string.encode('utf-8')
+    # Remove fadas from Irish names ('Met Éireann' => 'met-eireann')
+    string = string.replace('Á', 'a').replace('á', 'a')
+    string = string.replace('É', 'e').replace('é', 'e')
+    string = string.replace('Í', 'i').replace('í', 'i')
+    string = string.replace('Ó', 'o').replace('ó', 'o')
+    string = string.replace('Ú', 'u').replace('ú', 'u')
+    string = string.replace('D\xc4\x82\xc5\x9fn', 'Dun').replace('d\xc4\x82\xc5\x9fn', 'dun')
+    string = re.sub('\W', '', string)   #remove non-alphanumeric
+    string = re.sub('\_+', '_', string) #squeeze underscore
+    string = string.replace('_', '-')   #underscore to dash
+    # we use the last 100 chars as its marginally less likely to cause collision
+    return string[-100:] #url names have max length of 100 chars
 
 def dcat_to_ckan(dcat_dict):
 
@@ -16,23 +39,34 @@ def dcat_to_ckan(dcat_dict):
     for keyword in dcat_dict.get('keyword', []):
         package_dict['tags'].append({'name': keyword})
 
-    package_dict['extras'] = []
-    for key in ['issued', 'modified']:
-        package_dict['extras'].append({'key': 'dcat_{0}'.format(key), 'value': dcat_dict.get(key)})
+    package_dict['date_released'] = arrow.get(dcat_dict.get('issued')).format('DD/MM/YYYY')
+    package_dict['date_updated'] = arrow.get(dcat_dict.get('modified')).format("DD/MM/YYYY")
 
-    package_dict['extras'].append({'key': 'guid', 'value': dcat_dict.get('identifier')})
+    package_dict['guid'] = dcat_dict.get('identifier')
 
     dcat_publisher = dcat_dict.get('publisher')
     if isinstance(dcat_publisher, basestring):
-        package_dict['extras'].append({'key': 'dcat_publisher_name', 'value': dcat_publisher})
+        package_dict['dcat_publisher_name'] = dcat_publisher
     elif isinstance(dcat_publisher, dict) and dcat_publisher.get('name'):
-        package_dict['extras'].append({'key': 'dcat_publisher_name', 'value': dcat_publisher.get('name')})
-        package_dict['extras'].append({'key': 'dcat_publisher_email', 'value': dcat_publisher.get('mbox')})
+        package_dict['dcat_publisher_title'] = dcat_publisher.get('name')
+        package_dict['dcat_publisher_name'] = dcat_publisher.get('name')
+        package_dict['dcat_publisher_email'] = dcat_publisher.get('mbox', '-')
+        package_dict['dcat_publisher_phone'] = dcat_publisher.get('phone', '-')
+    package_dict['owner_org'] = normalize_name(package_dict['dcat_publisher_name'])
 
-    package_dict['extras'].append({
-        'key': 'language',
-        'value': ','.join(dcat_dict.get('language', []))
-    })
+    contactPoint = dcat_dict.get('contactPoint')
+    package_dict['contact-name'] = contactPoint.get('fn', '-')
+    package_dict['contact-email'] = contactPoint.get('hasEmail', '-')
+    package_dict['contact-phone'] = contactPoint.get('phone', '-')
+
+    package_dict['license_id'] = 'CC-BY'
+    # package_dict['license'] = dcat_dict.get('license', '-')
+
+    package_dict['geographic_coverage-other'] = dcat_dict.get('spatial', '')
+
+    package_dict['language'] = ','.join(dcat_dict.get('language', []))
+
+    package_dict['theme-primary'] = 'Environment' #DEBUG PULL FROM FILE
 
     package_dict['resources'] = []
     for distribution in dcat_dict.get('distribution', []):

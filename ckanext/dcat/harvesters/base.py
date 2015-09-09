@@ -8,7 +8,6 @@ from ckan import plugins as p
 from ckan import logic
 from ckan import model
 
-
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
@@ -309,10 +308,10 @@ class DCATHarvester(HarvesterBase):
                                                 harvest_object)
         # Unless already set by an extension, get the owner organization (if any)
         # from the harvest source dataset
-        if not package_dict.get('owner_org'):
-            source_dataset = model.Package.get(harvest_object.source.id)
-            if source_dataset.owner_org:
-                package_dict['owner_org'] = source_dataset.owner_org
+        # if not package_dict.get('owner_org'):
+        #     source_dataset = model.Package.get(harvest_object.source.id)
+        #     if source_dataset.owner_org:
+        #         package_dict['owner_org'] = source_dataset.owner_org
 
         # Flag this object as the current one
         harvest_object.current = True
@@ -320,12 +319,28 @@ class DCATHarvester(HarvesterBase):
 
         context = {
             'user': self._get_user_name(),
-            'return_id_only': True,
             'ignore_auth': True,
         }
 
-        if status == 'new':
+        #if the organization doesn't exist, let's create it
+        try:
+            log.debug('trying to find org %s' % package_dict['owner_org'])
+            org_dict = {
+                'id': package_dict['owner_org']
+            }
+            p.toolkit.get_action('organization_show')(context, org_dict)
+        except (logic.NotFound):
+            org_dict = {
+                'name': package_dict['owner_org'],
+                'title': package_dict['dcat_publisher_title'],
+                'contact-phone': package_dict.get('dcat_publisher_phone', '-'),
+                'contact-email': package_dict.get('dcat_publisher_email', '-'),
+                'contact-name': package_dict.get('dcat_publisher_contact_name', '-')
+            }
+            p.toolkit.get_action('organization_create')(context, org_dict)
+            log.info('Created organization %s' % package_dict['owner_org'])
 
+        if status == 'new':
 
             package_schema = logic.schema.default_create_package_schema()
             context['schema'] = package_schema
