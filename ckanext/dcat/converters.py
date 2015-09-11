@@ -59,12 +59,15 @@ def dcat_to_ckan(dcat_dict):
     package_dict['contact-email'] = contactPoint.get('hasEmail', '-')
     package_dict['contact-phone'] = contactPoint.get('phone', '-')
 
-    package_dict['license_id'] = 'CC-BY'
+    package_dict['license_id'] = 'cc-by' #DEBUG PULL FROM FILE
     # package_dict['license'] = dcat_dict.get('license', '-')
 
     package_dict['geographic_coverage-other'] = dcat_dict.get('spatial', '')
 
-    package_dict['language'] = ','.join(dcat_dict.get('language', []))
+    if dcat_dict.get('language'):
+        package_dict['language'] = ','.join(dcat_dict.get('language', []))
+    else:
+        package_dict['language'] = 'eng'
 
     package_dict['theme-primary'] = 'Environment' #DEBUG PULL FROM FILE
 
