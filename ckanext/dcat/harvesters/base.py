@@ -8,9 +8,30 @@ from ckan import plugins as p
 from ckan import logic
 from ckan import model
 
+from ckan.lib.navl.validators import (ignore_missing,
+                                      not_empty,
+                                      empty,
+                                      ignore,
+                                      missing,
+                                      not_missing,
+                                      keep_extras,
+                                      )
+from ckan.logic.converters import date_to_db, date_to_form, convert_to_extras, convert_from_extras
+
+from ckanext.dgu.forms.validators import merge_resources, unmerge_resources, \
+     validate_resources, \
+     validate_additional_resource_types, \
+     validate_data_resource_types, \
+     validate_license, \
+     drop_if_same_as_publisher, \
+     populate_from_publisher_if_missing, \
+     remove_blank_resources, \
+     allow_empty_if_inventory, \
+     validate_theme, \
+     validate_language
+
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
-
 
 log = logging.getLogger(__name__)
 
@@ -342,12 +363,10 @@ class DCATHarvester(HarvesterBase):
 
         if status == 'new':
 
-            package_schema = logic.schema.default_create_package_schema()
-            context['schema'] = package_schema
+            context['schema'] = self.dcat_package_schema()
 
             # We need to explicitly provide a package ID
             package_dict['id'] = unicode(uuid.uuid4())
-            package_schema['id'] = [unicode]
 
             # Save reference to the package on the object
             harvest_object.package_id = package_dict['id']
@@ -370,3 +389,31 @@ class DCATHarvester(HarvesterBase):
         model.Session.commit()
 
         return True
+
+    def dcat_package_schema (self):
+        package_schema = logic.schema.default_create_package_schema()
+
+        tag_schema = logic.schema.default_tags_schema()
+        tag_schema['name'] = [not_empty, unicode]
+
+        package_schema['id'] = [unicode]
+        package_schema['tags'] = tag_schema
+        package_schema['language'] = [ignore_missing, unicode, validate_language],
+        package_schema['license_id'] = [not_empty, unicode],
+        package_schema['theme-primary'] = [not_empty, unicode, validate_theme],
+        package_schema['theme-secondary'] = [ignore_missing, unicode],
+        package_schema['date_released'] = [not_empty, date_to_db],
+        package_schema['date_updated'] = [ignore_missing, date_to_db],
+        package_schema['date_update_future'] = [ignore_missing, date_to_db],
+        package_schema['last_major_modification'] = [ignore_missing, date_to_db],
+        package_schema['bbox-east'] = [ignore_missing],
+        package_schema['bbox-west'] = [ignore_missing],
+        package_schema['bbox-north'] = [ignore_missing],
+        package_schema['bbox-south'] = [ignore_missing],
+        package_schema['vertical_extent'] = [ignore_missing, unicode],
+        package_schema['extent_geometry'] = [ignore_missing, unicode],
+        package_schema['temporal_coverage-from'] = [ignore_missing, date_to_db],
+        package_schema['temporal_coverage-to'] = [ignore_missing, date_to_db],
+        package_schema['temporal_coverage-other'] = [ignore_missing, unicode],
+
+        return package_schema

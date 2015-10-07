@@ -40,7 +40,7 @@ def dcat_to_ckan(dcat_dict):
         package_dict['tags'].append({'name': keyword})
 
     package_dict['date_released'] = arrow.get(dcat_dict.get('issued')).format('DD/MM/YYYY')
-    package_dict['date_updated'] = arrow.get(dcat_dict.get('modified')).format("DD/MM/YYYY")
+    package_dict['date_updated'] = arrow.get(dcat_dict.get('modified')).format('DD/MM/YYYY')
 
     package_dict['guid'] = dcat_dict.get('identifier')
 
@@ -52,6 +52,11 @@ def dcat_to_ckan(dcat_dict):
         package_dict['dcat_publisher_name'] = dcat_publisher.get('name')
         package_dict['dcat_publisher_email'] = dcat_publisher.get('mbox', '-')
         package_dict['dcat_publisher_phone'] = dcat_publisher.get('phone', '-')
+
+    if not package_dict.get('dcat_publisher_name'):
+        package_dict['dcat_publisher_name'] = 'Ordance Survey Ireland'
+        package_dict['dcat_publisher_title'] = 'Ordance Survey Ireland'
+
     package_dict['owner_org'] = normalize_name(package_dict['dcat_publisher_name'])
 
     contactPoint = dcat_dict.get('contactPoint')
