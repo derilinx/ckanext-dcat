@@ -6,6 +6,48 @@ import arrow
 
 log = logging.getLogger(__name__)
 
+LICENSES = [{
+        "name": "Creative Commons Zero 1.0 Universal",
+        "id": "cc-zero",
+        "url":"http://creativecommons.org/publicdomain/zero/1.0/"
+    },
+    {
+        "name": "Creative Commons Attribution 4.0 International License",
+        "id": "cc-by",
+        "url":"http://creativecommons.org/licenses/by/4.0/"
+    },
+    {
+        "name": "Irish PSI General Licence No.: 2005/08/01",
+        "id": "psi",
+        "url":"http://psi.gov.ie/"
+    },
+    {
+        "name": "Open Data Commons Public Domain Dedication and License",
+        "id": "pddl",
+        "url":"http://opendatacommons.org/licenses/pddl/"
+    },
+    {
+        "name": "Open Data Commons Attribution License",
+        "id": "odc-by",
+        "url":"http://opendatacommons.org/licenses/by/"
+    },
+    {
+        "name": "Open Data Commons Open Database License",
+        "id": "odc-odbl",
+        "url":"http://opendatacommons.org/licenses/odbl/"
+    },
+    {
+        "name": "Other License (Attribution)",
+        "id": "other-at",
+        "url":""
+    },
+    {
+        "name": "Copyright",
+        "id": "copyright",
+        "url":""
+    },
+]
+
 def normalize_name (string):
     string = string.strip().lower()
     string = re.sub('\s*&\s*', ' and ', string)
@@ -66,8 +108,13 @@ def dcat_to_ckan(dcat_dict):
     package_dict['contact-email'] = contactPoint.get('hasEmail', '-')
     package_dict['contact-phone'] = contactPoint.get('phone', '-')
 
-    package_dict['license_id'] = 'cc-by' #DEBUG PULL FROM FILE
-    # package_dict['license'] = dcat_dict.get('license', '-')
+    #we have to go pull the license.json and check if the license URL is in the 'link' or 'description' field
+
+    try:
+        license_dict = requests.get(dcat_dict['license']).json()
+        package_dict['license_id'] = (filter(lambda l: l['url'] and l['url'] in license_dict['description']))[0]['id']
+    except:
+        package_dict['license_id'] = 'other'
 
     package_dict['geographic_coverage-other'] = dcat_dict.get('spatial', '')
 
