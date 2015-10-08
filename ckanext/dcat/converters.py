@@ -59,6 +59,8 @@ def dcat_to_ckan(dcat_dict):
 
     package_dict['owner_org'] = normalize_name(package_dict['dcat_publisher_name'])
 
+    package_dict['collection-name'] = 'arcgis'
+
     contactPoint = dcat_dict.get('contactPoint')
     package_dict['contact-name'] = contactPoint.get('fn', '-')
     package_dict['contact-email'] = contactPoint.get('hasEmail', '-')
@@ -81,9 +83,17 @@ def dcat_to_ckan(dcat_dict):
         resource = {
             'name': distribution.get('title'),
             'description': distribution.get('description'),
-            'url': distribution.get('downloadURL') or distribution.get('accessURL'),
             'format': distribution.get('format'),
         }
+
+        if distribution.get('downloadUrl'):
+            resource['url'] = distribution.get('downloadUrl')
+        elif distribution.get('downloadURL'):
+            resource['url'] = distribution.get('downloadURL')
+        elif distribution.get('accessUrl'):
+            resource['url'] = distribution.get('accessUrl')
+        elif distribution.get('accessURL'):
+            resource['url'] = distribution.get('accessURL')
 
         if distribution.get('byteSize'):
             try:

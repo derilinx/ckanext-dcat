@@ -397,6 +397,7 @@ class DCATHarvester(HarvesterBase):
         tag_schema['name'] = [not_empty, unicode]
 
         package_schema['id'] = [unicode]
+        package_schema['collection-name'] = [unicode]
         package_schema['tags'] = tag_schema
         package_schema['language'] = [ignore_missing, unicode, validate_language],
         package_schema['license_id'] = [not_empty, unicode],
