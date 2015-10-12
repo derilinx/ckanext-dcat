@@ -6,6 +6,7 @@ import arrow
 
 log = logging.getLogger(__name__)
 
+#TODO these should be moved into general file
 LICENSES = [{
         "name": "Creative Commons Zero 1.0 Universal",
         "id": "cc-zero",
@@ -47,6 +48,8 @@ LICENSES = [{
         "url":""
     },
 ]
+
+themes = ["Agriculture", "Arts", "Crime", "Economy", "Education", "Energy", "Environment", "Government", "Health", "Housing", "Society", "Science", "Towns", "Transport"]
 
 def normalize_name (string):
     string = string.strip().lower()
@@ -123,7 +126,12 @@ def dcat_to_ckan(dcat_dict):
     else:
         package_dict['language'] = 'eng'
 
-    package_dict['theme-primary'] = 'Environment' #DEBUG PULL FROM FILE
+    #lowercase themes, lowercase keywords
+    kw = [k.lower() for k in dcat_dict.get('keyword', []))
+    th = [t.lower() for t in themes]
+ 
+    #intersect the set
+    package_dict['theme-primary'] = set(th).intersection(kw).pop().capitalize() 
 
     package_dict['resources'] = []
     for distribution in dcat_dict.get('distribution', []):
