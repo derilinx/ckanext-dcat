@@ -99,8 +99,8 @@ def dcat_to_ckan(dcat_dict):
         package_dict['dcat_publisher_phone'] = dcat_publisher.get('phone', '-')
 
     if not package_dict.get('dcat_publisher_name'):
-        package_dict['dcat_publisher_name'] = 'Ordance Survey Ireland'
-        package_dict['dcat_publisher_title'] = 'Ordance Survey Ireland'
+        package_dict['dcat_publisher_name'] = 'Ordnance Survey Ireland'
+        package_dict['dcat_publisher_title'] = 'Ordnance Survey Ireland'
 
     package_dict['owner_org'] = normalize_name(package_dict['dcat_publisher_name'])
 
@@ -127,11 +127,12 @@ def dcat_to_ckan(dcat_dict):
         package_dict['language'] = 'eng'
 
     #lowercase themes, lowercase keywords
-    kw = [k.lower() for k in dcat_dict.get('keyword', []))
+    kw = [k.lower() for k in dcat_dict.get('keyword', [])]
     th = [t.lower() for t in themes]
- 
+
     #intersect the set
-    package_dict['theme-primary'] = set(th).intersection(kw).pop().capitalize() 
+    #package_dict['theme-primary'] = set(th).intersection(kw).pop().capitalize()
+    package_dict['theme-primary'] = "Environment"
 
     package_dict['resources'] = []
     for distribution in dcat_dict.get('distribution', []):
