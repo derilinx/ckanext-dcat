@@ -3,6 +3,7 @@
 import logging
 import re
 import arrow
+import requests
 
 log = logging.getLogger(__name__)
 
@@ -10,32 +11,32 @@ log = logging.getLogger(__name__)
 LICENSES = [{
         "name": "Creative Commons Zero 1.0 Universal",
         "id": "cc-zero",
-        "url":"http://creativecommons.org/publicdomain/zero/1.0/"
+        "url":"creativecommons.org/publicdomain/zero/1.0"
     },
     {
         "name": "Creative Commons Attribution 4.0 International License",
         "id": "cc-by",
-        "url":"http://creativecommons.org/licenses/by/4.0/"
+        "url":"creativecommons.org/licenses/by/4.0"
     },
     {
         "name": "Irish PSI General Licence No.: 2005/08/01",
         "id": "psi",
-        "url":"http://psi.gov.ie/"
+        "url":"psi.gov.ie"
     },
     {
         "name": "Open Data Commons Public Domain Dedication and License",
         "id": "pddl",
-        "url":"http://opendatacommons.org/licenses/pddl/"
+        "url":"opendatacommons.org/licenses/pddl"
     },
     {
         "name": "Open Data Commons Attribution License",
         "id": "odc-by",
-        "url":"http://opendatacommons.org/licenses/by/"
+        "url":"opendatacommons.org/licenses/by"
     },
     {
         "name": "Open Data Commons Open Database License",
         "id": "odc-odbl",
-        "url":"http://opendatacommons.org/licenses/odbl/"
+        "url":"opendatacommons.org/licenses/odbl"
     },
     {
         "name": "Other License (Attribution)",
@@ -50,6 +51,7 @@ LICENSES = [{
 ]
 
 themes = ["Agriculture", "Arts", "Crime", "Economy", "Education", "Energy", "Environment", "Government", "Health", "Housing", "Society", "Science", "Towns", "Transport"]
+themesKw = ['dgi' + th.lower() for th in themes]
 
 def normalize_name (string):
     string = string.strip().lower()
@@ -115,7 +117,7 @@ def dcat_to_ckan(dcat_dict):
 
     try:
         license_dict = requests.get(dcat_dict['license']).json()
-        package_dict['license_id'] = (filter(lambda l: l['url'] and l['url'] in license_dict['description']))[0]['id']
+        package_dict['license_id'] = (filter(lambda l: l['url'] and l['url'] in license_dict['description'], LICENSES))[0]['id']
     except:
         package_dict['license_id'] = 'other'
 
@@ -126,12 +128,22 @@ def dcat_to_ckan(dcat_dict):
     else:
         package_dict['language'] = 'eng'
 
-    #lowercase themes, lowercase keywords
-    kw = [k.lower() for k in dcat_dict.get('keyword', []))
-    th = [t.lower() for t in themes]
- 
-    #intersect the set
-    package_dict['theme-primary'] = set(th).intersection(kw).pop().capitalize() 
+    #initially I wanted to create a set from the keywords and the themes
+    # and intersect them, and take the first. We're going to try that first,
+    # and if that doesn't work we'll try and match against full theme names
+    # finally if that doesn't work, we'll set it to environment.
+
+    kw = [k.lower() for k in dcat_dict.get('keyword', [])]
+    
+    try:
+        #intersect the set
+        package_dict['theme-primary'] = set(themesKw).intersection(kw).pop().replace('dgi','').capitalize()
+    except KeyError: #"pop from an empty set"
+        try:
+            package_dict['theme-primary'] = set(dcat_dict.get('keyword', [])).intersection(themes).pop()
+        except:
+            log.error("Couldn't come up with a decent theme. Setting to Environment'")
+            package_dict['theme-primary'] = 'Environment'
 
     package_dict['resources'] = []
     for distribution in dcat_dict.get('distribution', []):
@@ -139,7 +151,12 @@ def dcat_to_ckan(dcat_dict):
             'name': distribution.get('title'),
             'description': distribution.get('description'),
             'format': distribution.get('format'),
+            'mimetype': distribution.get('mimeType')
         }
+
+        log.error(resource['format'])
+        if (resource['format'].lower() == 'web page'):
+            resource['format'] = "HTML"
 
         if distribution.get('downloadUrl'):
             resource['url'] = distribution.get('downloadUrl')
