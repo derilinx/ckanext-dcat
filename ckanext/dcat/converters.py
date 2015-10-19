@@ -101,8 +101,8 @@ def dcat_to_ckan(dcat_dict):
         package_dict['dcat_publisher_phone'] = dcat_publisher.get('phone', '-')
 
     if not package_dict.get('dcat_publisher_name'):
-        package_dict['dcat_publisher_name'] = 'Ordance Survey Ireland'
-        package_dict['dcat_publisher_title'] = 'Ordance Survey Ireland'
+        package_dict['dcat_publisher_name'] = 'Ordnance Survey Ireland'
+        package_dict['dcat_publisher_title'] = 'Ordnance Survey Ireland'
 
     package_dict['owner_org'] = normalize_name(package_dict['dcat_publisher_name'])
 
