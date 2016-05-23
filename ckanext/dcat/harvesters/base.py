@@ -328,6 +328,7 @@ class DCATHarvester(HarvesterBase):
                                                 dcat_dict,
                                                 harvest_object)
         # Unless already set by an extension, get the owner organization (if any)
+
         # from the harvest source dataset
         # if not package_dict.get('owner_org'):
         #     source_dataset = model.Package.get(harvest_object.source.id)
@@ -379,6 +380,9 @@ class DCATHarvester(HarvesterBase):
             model.Session.flush()
 
             package_id = p.toolkit.get_action('package_create')(context, package_dict)
+            package_dict['id'] = package_id
+            del context['schema']
+            p.toolkit.get_action('package_update')(context, package_dict)
             log.info('Created dataset with id %s', package_id)
         elif status == 'change':
 
