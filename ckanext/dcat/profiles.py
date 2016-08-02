@@ -756,6 +756,12 @@ class EuropeanDCATAPProfile(RDFProfile):
 
             self._add_triples_from_dict(dataset_dict, contact_details, items)
 
+        license_id = self._get_dataset_value(dataset_dict, 'license_id')
+        if (license_id == 'cc-by'):
+            g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
+        else:
+            g.add((dataset_ref, DCT.license, Literal(license_id)))
+
         # Publisher
         if any([
             self._get_dataset_value(dataset_dict, 'publisher_uri'),
@@ -870,9 +876,9 @@ class EuropeanDCATAPProfile(RDFProfile):
 
             license_id = self._get_dataset_value(dataset_dict, 'license_id')
             if (license_id == 'cc-by'):
-                g.add((distribution, DCAT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
+                g.add((distribution, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
             else:
-                g.add((distribution, DCAT.license, Literal(license_id)))
+                g.add((distribution, DCT.license, Literal(license_id)))
 
             # URL
             url = resource_dict.get('url')
