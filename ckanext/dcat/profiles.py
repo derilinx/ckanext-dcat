@@ -796,6 +796,12 @@ class EuropeanDCATAPProfile(RDFProfile):
 
             self._add_triples_from_dict(dataset_dict, publisher_details, items)
 
+        # Update Frequency
+        # accrualPeriodicity
+        updateFreq = dataset_dict.get('update_frequency')
+        if (updateFreq):
+            g.add((dataset_ref, DCT.accrualPeriodicity, Literal(updateFreq)))
+
         # Temporal
         start = self._get_dataset_value(dataset_dict, 'temporal_start')
         end = self._get_dataset_value(dataset_dict, 'temporal_end')
