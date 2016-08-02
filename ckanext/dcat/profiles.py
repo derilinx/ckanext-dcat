@@ -868,6 +868,12 @@ class EuropeanDCATAPProfile(RDFProfile):
                     g.add((distribution, DCAT.mediaType,
                            Literal(resource_dict['mimetype'])))
 
+            license_id = self._get_dataset_value(dataset_dict, 'license_id')
+            if (license_id == 'cc-by'):
+                g.add((distribution, DCAT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
+            else:
+                g.add((distribution, DCAT.license, Literal(license_id)))
+
             # URL
             url = resource_dict.get('url')
             download_url = resource_dict.get('download_url')
