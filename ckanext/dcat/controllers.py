@@ -28,11 +28,27 @@ class DCATController(BaseController):
             toolkit.abort(409, str(e))
 
     def read_dataset(self, _id, _format='rdf'):
+        if not _format:
+            _format = check_access_header()
+
+        if not _format:
+            return PackageController().read(_id)
 
         toolkit.response.headers.update(
             {'Content-type': CONTENT_TYPES[_format]})
-        return toolkit.get_action('dcat_dataset_show')({}, {'id': _id,
-                                                            'format': _format})
+
+        try:
+            result = toolkit.get_action('dcat_dataset_show')({}, {'id': _id,
+                'format': _format})
+        except:
+            toolkit.abort(404)
+
+        return result
+
+#        toolkit.response.headers.update(
+#            {'Content-type': CONTENT_TYPES[_format]})
+#        return toolkit.get_action('dcat_dataset_show')({}, {'id': _id,
+#                                                            'format': _format})
 
     def dcat_json(self):
 
