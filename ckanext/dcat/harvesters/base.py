@@ -381,7 +381,10 @@ class DCATHarvester(HarvesterBase):
 
             package_id = p.toolkit.get_action('package_create')(context, package_dict)
             package_dict['id'] = package_id
-            del context['schema']
+            
+            if (context['schema']):
+                del context['schema']
+            
             p.toolkit.get_action('package_update')(context, package_dict)
             log.info('Created dataset with id %s', package_id)
         elif status == 'change':
