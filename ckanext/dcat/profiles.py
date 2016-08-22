@@ -878,7 +878,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                     dctFormat = _format.strip().replace("/", ".").replace(" ", "").lower()
                     g.add((distribution, DCT['format'], Literal(dctFormat)))
                 else:
-                    g.add((distribution, DCT['format'], Literal(_format)))
+                    g.add((distribution, DCT['format'], Literal(_format.lower())))
                 # add dcat:mediaType
                 fmt = formats.Formats.match(_format.strip().lower())
                 mime_types = fmt['mime_types'] if fmt else None
