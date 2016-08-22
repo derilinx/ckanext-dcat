@@ -653,10 +653,8 @@ class EuropeanDCATAPProfile(RDFProfile):
                 'ckanext.dcat.normalize_ckan_format', True)
             imt, label = self._distribution_format(distribution,
                                                    normalize_ckan_format)
-
             if imt:
                 resource_dict['mimetype'] = imt
-
             if label:
                 resource_dict['format'] = label
             elif imt:
@@ -874,26 +872,19 @@ class EuropeanDCATAPProfile(RDFProfile):
 
             # Format
             _format = resource_dict['format']
-            fmt = formats.Formats.match(_format.strip().lower())
-            mime_types = fmt['mime_types']
-            
-	    if not mime_types:
-                # do what you were used to do if no mimetype found                
-                if '/' in resource_dict.get('format', ''):
-                    g.add((distribution, DCAT.mediaType,
-                           Literal(resource_dict['format'])))
+            if _format:
+                if '/' in _format:
+                    # add dct:format
+                    dctFormat = _format.strip().replace("/", ".").replace(" ", "").lower()
+                    g.add((distribution, DCT['format'], Literal(dctFormat)))
                 else:
-                    if resource_dict.get('format'):
-                        g.add((distribution, DCT['format'],
-                               Literal(resource_dict['format'])))
-    
-                    if resource_dict.get('mimetype'):
-                        g.add((distribution, DCAT.mediaType,
-                               Literal(resource_dict['mimetype'])))
-            else:
-                # add the first mimetype
-                g.add((distribution, DCAT.mediaType, Literal(mime_types[0])))
-            
+                    g.add((distribution, DCT['format'], Literal(_format)))
+                # add dcat:mediaType
+                fmt = formats.Formats.match(_format.strip().lower())
+                mime_types = fmt['mime_types'] if fmt else None
+                if mime_types:
+                    g.add((distribution, DCAT.mediaType, Literal(mime_types)))
+                
             license_id = self._get_dataset_value(dataset_dict, 'license_id')
             if (license_id == 'cc-by'):
                 g.add((distribution, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
