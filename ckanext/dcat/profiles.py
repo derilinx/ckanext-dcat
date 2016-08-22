@@ -15,6 +15,11 @@ from ckan.plugins import toolkit
 
 from ckanext.dcat.utils import resource_uri, publisher_uri_from_dataset_dict
 
+from ckanext.dgu.lib import formats
+import logging
+
+log = logging.getLogger(__name__)
+
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
 ADMS = Namespace("http://www.w3.org/ns/adms#")
@@ -648,10 +653,8 @@ class EuropeanDCATAPProfile(RDFProfile):
                 'ckanext.dcat.normalize_ckan_format', True)
             imt, label = self._distribution_format(distribution,
                                                    normalize_ckan_format)
-
             if imt:
                 resource_dict['mimetype'] = imt
-
             if label:
                 resource_dict['format'] = label
             elif imt:
@@ -868,18 +871,20 @@ class EuropeanDCATAPProfile(RDFProfile):
             self._add_triples_from_dict(resource_dict, distribution, items)
 
             # Format
-            if '/' in resource_dict.get('format', ''):
-                g.add((distribution, DCAT.mediaType,
-                       Literal(resource_dict['format'])))
-            else:
-                if resource_dict.get('format'):
-                    g.add((distribution, DCT['format'],
-                           Literal(resource_dict['format'])))
-
-                if resource_dict.get('mimetype'):
-                    g.add((distribution, DCAT.mediaType,
-                           Literal(resource_dict['mimetype'])))
-
+            _format = resource_dict['format']
+            if _format:
+                if '/' in _format:
+                    # add dct:format
+                    dctFormat = _format.strip().replace("/", ".").replace(" ", "").lower()
+                    g.add((distribution, DCT['format'], Literal(dctFormat)))
+                else:
+                    g.add((distribution, DCT['format'], Literal(_format.lower())))
+                # add dcat:mediaType
+                fmt = formats.Formats.match(_format.strip().lower())
+                mime_types = fmt['mime_types'] if fmt else None
+                if mime_types:
+                    g.add((distribution, DCAT.mediaType, Literal(mime_types)))
+                
             license_id = self._get_dataset_value(dataset_dict, 'license_id')
             if (license_id == 'cc-by'):
                 g.add((distribution, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
@@ -941,3 +946,4 @@ class EuropeanDCATAPProfile(RDFProfile):
         modified = self._last_catalog_modification()
         if modified:
             self._add_date_triple(catalog_ref, DCT.modified, modified)
+

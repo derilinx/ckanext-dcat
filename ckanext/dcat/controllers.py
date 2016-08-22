@@ -9,6 +9,8 @@ else:
 
 from ckanext.dcat.utils import CONTENT_TYPES
 
+import logging
+log = logging.getLogger(__name__)
 
 class DCATController(BaseController):
 
@@ -40,7 +42,8 @@ class DCATController(BaseController):
         try:
             result = toolkit.get_action('dcat_dataset_show')({}, {'id': _id,
                 'format': _format})
-        except:
+        except Exception as exc:
+            log.error(exc)
             toolkit.abort(404)
 
         return result
