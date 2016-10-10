@@ -172,10 +172,20 @@ class DCATHarvester(HarvesterBase):
 
         ids = []
 
+        source_to_publisher = {
+            'c45948e6-b6cc-4c88-a60f-ff9f98a8029b': 'c2f170ca-63d0-4498-9e81-759827708e97', #: 'ordnance-survey-ireland',
+            '0b7e45bf-5035-4d3c-8344-e08e68c15c93': '0ec4257a-c410-4840-a702-08e351f6781c', #: 'galway-city-council',
+            '63ebec7b-4529-45f4-bbf8-7f10634899c9': 'galway-county-council',#: 'galway-county-council',
+            'ce26b41c-6859-4118-acc0-e98d8edbe36e': 'roscommon-county-council'#: 'roscommon-county-council'
+        }
+
+        query = model.Session.execute("select value as guid, package_id from package_extra where key='guid' and package_id in (select package_id from package_extra where value='arcgis') and package_id in (select id as package_id from package where state='active' and owner_org='%s');" % source_to_publisher[harvest_job.source.id])
+
+
         # Get the previous guids for this source
-        query = model.Session.query(HarvestObject.guid, HarvestObject.package_id).\
-                                    filter(HarvestObject.current==True).\
-                                    filter(HarvestObject.harvest_source_id==harvest_job.source.id)
+        #query = model.Session.query(HarvestObject.guid, HarvestObject.package_id).\
+        #                            filter(HarvestObject.current==True).\
+        #                            filter(HarvestObject.harvest_source_id==harvest_job.source.id)
         guid_to_package_id = {}
 
         for guid, package_id in query:
@@ -184,6 +194,7 @@ class DCATHarvester(HarvesterBase):
         guids_in_db = guid_to_package_id.keys()
         guids_in_source = []
 
+        log.debug(guids_in_db);
 
         # Get file contents
         url = harvest_job.source.url
@@ -262,15 +273,20 @@ class DCATHarvester(HarvesterBase):
 
         # Check datasets that need to be deleted
         guids_to_delete = set(guids_in_db) - set(guids_in_source)
+        log.debug(len(guids_in_db))
+        log.debug(len(guids_in_source))
+        log.debug('delete these:')
+        log.debug(guids_to_delete)
         for guid in guids_to_delete:
+            log.debug('Deleting %s' % guid)
             obj = HarvestObject(guid=guid, job=harvest_job,
                                 package_id=guid_to_package_id[guid],
                                 extras=[HarvestObjectExtra(key='status', value='delete')])
-            ids.append(obj.id)
             model.Session.query(HarvestObject).\
                   filter_by(guid=guid).\
                   update({'current': False}, False)
             obj.save()
+            ids.append(obj.id)
 
 
         return ids
@@ -284,10 +300,7 @@ class DCATHarvester(HarvesterBase):
             log.error('No harvest object received')
             return False
 
-        if self.force_import:
-            status = 'change'
-        else:
-            status = self._get_object_extra(harvest_object, 'status')
+	status = self._get_object_extra(harvest_object, 'status')
 
         if status == 'delete':
             # Delete package
@@ -298,6 +311,8 @@ class DCATHarvester(HarvesterBase):
 
             return True
 
+        if self.force_import:
+            status = 'change'
 
         if harvest_object.content is None:
             self._save_object_error('Empty content for object %s' % harvest_object.id,harvest_object,'Import')
@@ -382,10 +397,13 @@ class DCATHarvester(HarvesterBase):
             package_id = p.toolkit.get_action('package_create')(context, package_dict)
             package_dict['id'] = package_id
             
-            if (context['schema']):
+            if ('schema' in context):
                 del context['schema']
             
             p.toolkit.get_action('package_update')(context, package_dict)
+            if ('schema' in context):
+                del context['schema']
+            package_id = p.toolkit.get_action('package_update')(context, package_dict)
             log.info('Created dataset with id %s', package_id)
         elif status == 'change':
 
