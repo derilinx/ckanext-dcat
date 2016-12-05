@@ -33,6 +33,10 @@ from ckanext.dgu.forms.validators import merge_resources, unmerge_resources, \
 from ckanext.harvest.harvesters import HarvesterBase
 from ckanext.harvest.model import HarvestObject, HarvestObjectExtra
 
+import sys
+sys.path.append('/src/dgi-harvesters/lib')
+import utils
+
 log = logging.getLogger(__name__)
 
 
@@ -288,8 +292,7 @@ class DCATHarvester(HarvesterBase):
             obj.save()
             ids.append(obj.id)
 
-
-        return ids
+        return ids.reverse()
 
     def fetch_stage(self,harvest_object):
         return True
@@ -394,17 +397,16 @@ class DCATHarvester(HarvesterBase):
             model.Session.execute('SET CONSTRAINTS harvest_object_package_id_fkey DEFERRED')
             model.Session.flush()
 
-            package_id = p.toolkit.get_action('package_create')(context, package_dict)
-            package_dict['id'] = package_id
+            try:
+                package_id = p.toolkit.get_action('package_create')(context, package_dict)
+                utils.dataset_update(package_dict, apihost='127.0.0.1', apikey='1eb626b1-25a2-445c-a49b-86081ef12c81', change_resources=False)
+                log.info('Created dataset with id %s', package_dict['name'])
+            except p.toolkit.ValidationError, e:
+                #url already in use
+                log.error("Got ValidationError for package:")
+                log.error(package_dict)
+                pass
             
-            if ('schema' in context):
-                del context['schema']
-            
-            p.toolkit.get_action('package_update')(context, package_dict)
-            if ('schema' in context):
-                del context['schema']
-            package_id = p.toolkit.get_action('package_update')(context, package_dict)
-            log.info('Created dataset with id %s', package_id)
         elif status == 'change':
 
             package_dict['id'] = harvest_object.package_id
