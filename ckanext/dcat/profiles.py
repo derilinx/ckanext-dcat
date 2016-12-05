@@ -801,9 +801,16 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         # Update Frequency
         # accrualPeriodicity
-        updateFreq = dataset_dict.get('update_frequency')
+        updateFreq = self._get_dataset_value(dataset_dict, 'update_frequency')
         if (updateFreq):
-            g.add((dataset_ref, DCT.accrualPeriodicity, Literal(updateFreq)))
+            # check if there exists a URI for the update_frequency value
+            from ckanext.dgu.forms.dataset_form import update_frequency_uri
+            for freq_name, freq_uri in update_frequency_uri:
+                if freq_name == updateFreq:
+                    updateFreq = freq_uri
+                    break
+
+            g.add((dataset_ref, DCT.accrualPeriodicity, URIRef(updateFreq)))
 
         # Temporal
         start = self._get_dataset_value(dataset_dict, 'temporal_start')
