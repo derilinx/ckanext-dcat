@@ -292,7 +292,10 @@ class DCATHarvester(HarvesterBase):
             obj.save()
             ids.append(obj.id)
 
-        return ids.reverse()
+        # why do we reverse these?
+        # also, omfg, list.reverse() doesn't return the list. major wat
+        ids.reverse()
+        return ids
 
     def fetch_stage(self,harvest_object):
         return True
