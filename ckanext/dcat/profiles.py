@@ -567,6 +567,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                 ('alternate_identifier', ADMS.identifier),
                 ('version_notes', ADMS.versionNotes),
                 ('frequency', DCT.accrualPeriodicity),
+                ('access_constraints', DCT.rights),
                 ('accrualPeriodicity', DCT.accrualPeriodicity),
                 ('spatial_uri', DCT.spatial),
                 ):
@@ -706,6 +707,7 @@ class EuropeanDCATAPProfile(RDFProfile):
             ('alternate_identifier', ADMS.identifier, None),
             ('version_notes', ADMS.versionNotes, None),
             ('frequency', DCT.accrualPeriodicity, None),
+            ('access_constraints', DCT.rights, None),
             ('accrualPeriodicity', DCT.accrualPeriodicity, None)
         ]
         self._add_triples_from_dict(dataset_dict, dataset_ref, items)
@@ -762,6 +764,14 @@ class EuropeanDCATAPProfile(RDFProfile):
         license_id = self._get_dataset_value(dataset_dict, 'license_id')
         if (license_id == 'cc-by'):
             g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
+        elif (license_id == 'cc-by-sa'):
+            g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-sa/4.0')))
+        elif (license_id == 'cc-by-nd'):
+            g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nd/4.0')))
+        elif (license_id == 'cc-by-nc'):
+            g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nc/4.0')))
+        elif (license_id == 'cc-by-nc-nd'):
+            g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nc-nd/4.0')))
         else:
             g.add((dataset_ref, DCT.license, Literal(license_id)))
 
@@ -896,6 +906,14 @@ class EuropeanDCATAPProfile(RDFProfile):
             license_id = self._get_dataset_value(dataset_dict, 'license_id')
             if (license_id == 'cc-by'):
                 g.add((distribution, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
+            elif (license_id == 'cc-by-sa'):
+                g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-sa/4.0')))
+            elif (license_id == 'cc-by-nd'):
+                g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nd/4.0')))
+            elif (license_id == 'cc-by-nc'):
+                g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nc/4.0')))
+            elif (license_id == 'cc-by-nc-nd'):
+                g.add((dataset_ref, DCT.license, Literal('https://creativecommons.org/licenses/by-nc-nd/4.0')))
             else:
                 g.add((distribution, DCT.license, Literal(license_id)))
 

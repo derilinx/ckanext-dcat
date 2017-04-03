@@ -412,9 +412,14 @@ class DCATHarvester(HarvesterBase):
             
         elif status == 'change':
 
-            package_dict['id'] = harvest_object.package_id
-            package_id = p.toolkit.get_action('package_update')(context, package_dict)
-            log.info('Updated dataset with id %s', package_id)
+            try:
+                package_dict['id'] = harvest_object.package_id
+                package_id = p.toolkit.get_action('package_update')(context, package_dict)
+                log.info('Updated dataset with id %s', package_id)
+            except p.toolkit.ValidationError, e:
+                log.error("Got ValidationError for package:")
+                log.error(package_dict)
+                pass
 
         model.Session.commit()
 
