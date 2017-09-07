@@ -180,7 +180,7 @@ class DCATHarvester(HarvesterBase):
             'c45948e6-b6cc-4c88-a60f-ff9f98a8029b': 'c2f170ca-63d0-4498-9e81-759827708e97', #: 'ordnance-survey-ireland',
             '0b7e45bf-5035-4d3c-8344-e08e68c15c93': '0ec4257a-c410-4840-a702-08e351f6781c', #: 'galway-city-council',
             '63ebec7b-4529-45f4-bbf8-7f10634899c9': 'galway-county-council',#: 'galway-county-council',
-            'ce26b41c-6859-4118-acc0-e98d8edbe36e': 'roscommon-county-council'#: 'roscommon-county-council'
+            'cfa4b5e5-e329-4409-8b6f-6d25941d92ac': 'roscommon-county-council'#: 'roscommon-county-council'
         }
 
         query = model.Session.execute("select value as guid, package_id from package_extra where key='guid' and package_id in (select package_id from package_extra where value='arcgis') and package_id in (select id as package_id from package where state='active' and owner_org='%s');" % source_to_publisher[harvest_job.source.id])

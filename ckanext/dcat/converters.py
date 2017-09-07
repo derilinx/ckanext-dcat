@@ -113,13 +113,16 @@ def dcat_to_ckan(dcat_dict):
     package_dict['contact-email'] = contactPoint.get('hasEmail', '-')
     package_dict['contact-phone'] = contactPoint.get('phone', '-')
 
-    #we have to go pull the license.json and check if the license URL is in the 'link' or 'description' field
-
-    try:
-        license_dict = requests.get(dcat_dict['license']).json()
-        package_dict['license_id'] = (filter(lambda l: l['url'] and l['url'] in license_dict['description'], LICENSES))[0]['id']
-    except:
-        package_dict['license_id'] = 'other'
+    #for most, we have to go pull the license.json and check if the license URL is in the 'link' or 'description' field
+    if 'data-roscoco' in package_dict['url']:
+        #JSON file not there and all datasets cc-by: http://data-roscoco.opendata.arcgis.com/
+        package_dict['license_id'] = 'cc-by'
+    else:
+        try:
+            license_dict = requests.get(dcat_dict['license']).json()
+            package_dict['license_id'] = (filter(lambda l: l['url'] and l['url'] in license_dict['description'], LICENSES))[0]['id']
+        except:
+            package_dict['license_id'] = 'other'
 
     package_dict['geographic_coverage-other'] = dcat_dict.get('spatial', '')
 
