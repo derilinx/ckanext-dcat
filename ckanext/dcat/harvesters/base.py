@@ -3,6 +3,7 @@ import uuid
 import logging
 
 import requests
+import socket
 
 from ckan import plugins as p
 from ckan import logic
