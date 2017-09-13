@@ -176,6 +176,11 @@ class DCATHarvester(HarvesterBase):
 
         ids = []
 
+        roscommon_id = "ce26b41c-6859-4118-acc0-e98d8edbe36e"
+        box = socket.gethostname()
+        if 'staging' in box:
+            roscommon_id = "cfa4b5e5-e329-4409-8b6f-6d25941d92ac"
+
         source_to_publisher = {
             'c45948e6-b6cc-4c88-a60f-ff9f98a8029b': 'c2f170ca-63d0-4498-9e81-759827708e97', #: 'ordnance-survey-ireland',
             '0b7e45bf-5035-4d3c-8344-e08e68c15c93': '0ec4257a-c410-4840-a702-08e351f6781c', #: 'galway-city-council',
