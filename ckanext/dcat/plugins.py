@@ -10,6 +10,8 @@ from ckanext.dcat.logic import (dcat_dataset_show,
                                 )
 from ckanext.dcat.utils import catalog_uri
 
+from ckanext.dcat import utils
+
 
 class DCATPlugin(p.SingletonPlugin):
 
@@ -17,6 +19,13 @@ class DCATPlugin(p.SingletonPlugin):
     p.implements(p.IRoutes, inherit=True)
     p.implements(p.IActions, inherit=True)
     p.implements(p.IAuthFunctions, inherit=True)
+    p.implements(p.ITemplateHelpers, inherit=True)
+
+    # ITemplateHelpers
+    def get_helpers(self):
+        return {
+            'structured_data': utils.structured_data,
+        }
 
     # IConfigurer
     def update_config(self, config):

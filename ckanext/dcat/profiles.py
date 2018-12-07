@@ -15,7 +15,6 @@ from ckan.plugins import toolkit
 
 from ckanext.dcat.utils import resource_uri, publisher_uri_from_dataset_dict
 
-from ckanext.dgu.lib import formats
 import logging
 
 log = logging.getLogger(__name__)
@@ -897,12 +896,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                     g.add((distribution, DCT['format'], Literal(dctFormat)))
                 else:
                     g.add((distribution, DCT['format'], Literal(_format.lower())))
-                # add dcat:mediaType
-                fmt = formats.Formats.match(_format.strip().lower())
-                mime_types = fmt['mime_types'] if fmt else None
-                if mime_types:
-                    g.add((distribution, DCAT.mediaType, Literal(mime_types)))
-                
+
             license_id = self._get_dataset_value(dataset_dict, 'license_id')
             if (license_id == 'cc-by'):
                 g.add((distribution, DCT.license, Literal('https://creativecommons.org/licenses/by/4.0/')))
