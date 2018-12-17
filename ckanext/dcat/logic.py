@@ -109,6 +109,9 @@ def _search_ckan_datasets(context, data_dict):
     search_data_dict['fq'] = data_dict.get('fq')
     search_data_dict['fq_list'] = []
 
+    #curl 'http://solr:8983/solr/ckan/query?q=*:*&fq=type:dataset+-url:*\+*+url:http*' | head
+    search_data_dict['fq_list'].append("-url:*\ *")
+
     # Exclude certain dataset types
     search_data_dict['fq_list'].append('-dataset_type:harvest')
     search_data_dict['fq_list'].append('-dataset_type:showcase')
