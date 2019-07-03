@@ -87,7 +87,7 @@ class DCATJSONHarvester(DCATHarvester):
             try:
                 content, content_type = \
                     self._get_content_and_type(url, harvest_job, page)
-            except requests.exceptions.HTTPError, error:
+            except requests.exceptions.HTTPError as error:
                 if error.response.status_code == 404:
                     if page > 1:
                         # Server returned a 404 after the first page, no more
@@ -101,9 +101,16 @@ class DCATJSONHarvester(DCATHarvester):
                         self._save_gather_error(msg, harvest_job)
                         return None
                 else:
-                    # This should never happen. Raising just in case.
-                    raise
-
+                    # Handle other unexpected errors. 
+                    msg = "Unexpected HTTPError in gather stage: status %s, %s" % (
+                        error.response.status_code, str(error))
+                    self._save_gather_error(msg, harvest_job)
+                    return None
+            except Exception as error:
+                self._save_gather_error("Unexpected error requesting page %s: %s" % (error, page),
+                                        harvest_job)
+                return None
+            
             if not content:
                 return None
 
@@ -144,11 +151,15 @@ class DCATJSONHarvester(DCATHarvester):
                     # Empty document, no more ids
                     break
 
-            except ValueError, e:
+            except ValueError as e:
                 msg = 'Error parsing file: {0}'.format(str(e))
                 self._save_gather_error(msg, harvest_job)
                 return None
-
+            except Exception as e: 
+                msg = 'Unexpected error parsing file: {0}'.format(str(e))
+                self._save_gather_error(msg, harvest_job)
+                return None
+            
             if sorted(previous_guids) == sorted(batch_guids):
                 # Server does not support pagination or no more pages
                 log.debug('Same content, no more pages')
