@@ -1288,11 +1288,13 @@ class RDFProfile(object):
                 default_datetime = datetime.datetime(1, 1, 1, 0, 0, 0)
                 _date = parse_date(value, default=default_datetime)
 
-                self.g.add(
-                    (subject, predicate, _type(_date.isoformat(), datatype=XSD.dateTime))
-                )
-            except ValueError:
-                self.g.add((subject, predicate, _type(value)))
+            # EDS: EU MQA might not be able to parse microseconds
+            self.g.add(
+                (subject, predicate, _type(_date.isoformat(timespec='seconds'),
+                                           datatype=XSD.dateTime))
+            )
+        except ValueError:
+            self.g.add((subject, predicate, _type(value)))
 
     def _last_catalog_modification(self):
         """
