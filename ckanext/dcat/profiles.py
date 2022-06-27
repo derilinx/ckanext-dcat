@@ -1357,6 +1357,10 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Resources
         for resource_dict in dataset_dict.get('resources', []):
 
+            # EDS - DCAT requires license in the resource, default to the dataset license
+            if not 'license_id' in resource_dict and 'license_id' in dateset_dict:
+                resource_dict['license_id'] = dateset_dict['license_id']
+
             distribution = CleanedURIRef(resource_uri(resource_dict))
 
             g.add((dataset_ref, DCAT.distribution, distribution))
