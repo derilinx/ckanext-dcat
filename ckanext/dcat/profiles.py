@@ -682,8 +682,10 @@ class RDFProfile(object):
             return
         try:
             default_datetime = datetime.datetime(1, 1, 1, 0, 0, 0)
-            _date = parse_date(value, default=default_datetime)
+            # EDS: EU MQA might not be able to parse microseconds
+            _date = parse_date(value, default=default_datetime).replace(microsecond=0)
 
+            # UNDONE - timespec='seconds' for py3
             self.g.add((subject, predicate, _type(_date.isoformat(),
                                                   datatype=XSD.dateTime)))
         except ValueError:
@@ -1216,7 +1218,10 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         # Resources
         for resource_dict in dataset_dict.get('resources', []):
-
+            # EDS - DCAT requires license in the resource, default to the dataset license
+            if not 'license' in resource_dict and 'license_url' in dataset_dict:
+                resource_dict['license'] = dataset_dict['license_url']
+                
             distribution = CleanedURIRef(resource_uri(resource_dict))
 
             g.add((dataset_ref, DCAT.distribution, distribution))
