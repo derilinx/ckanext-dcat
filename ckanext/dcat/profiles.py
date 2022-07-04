@@ -682,10 +682,11 @@ class RDFProfile(object):
             return
         try:
             default_datetime = datetime.datetime(1, 1, 1, 0, 0, 0)
-            _date = parse_date(value, default=default_datetime)
-
             # EDS: EU MQA might not be able to parse microseconds
-            self.g.add((subject, predicate, _type(_date.isoformat(timespec='seconds'),
+            _date = parse_date(value, default=default_datetime).replace(microsecond=0)
+
+            # UNDONE - timespec='seconds' for py3
+            self.g.add((subject, predicate, _type(_date.isoformat(),
                                                   datatype=XSD.dateTime)))
         except ValueError:
             self.g.add((subject, predicate, _type(value)))
