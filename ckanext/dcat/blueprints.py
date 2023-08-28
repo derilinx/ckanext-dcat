@@ -8,6 +8,13 @@ import ckan.plugins.toolkit as toolkit
 import ckanext.dcat.utils as utils
 from ckanext.dcat.helpers import endpoints_enabled, croissant as croissant_serialization
 
+import ckan.lib.base as base
+from ckan.common import _
+import ckan.logic as logic
+
+NotFound = logic.NotFound
+NotAuthorized = logic.NotAuthorized
+
 config = toolkit.config
 
 
@@ -19,7 +26,12 @@ def read_catalog(_format=None, package_type=None):
 
 
 def read_dataset(_id, _format=None, package_type=None):
-    return utils.read_dataset_page(_id, _format)
+    try:
+        return utils.read_dataset_page(_id, _format)
+    except NotFound:
+        return base.abort(404, _(u'Dataset not found'))
+    except NotAuthorized:
+        return base.abort(403, _(u'Unauthorized to read package %s') % _id)
 
 
 if endpoints_enabled():
