@@ -19,7 +19,10 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        # -*- Extra requirements: -*-
+        'rdflib==6.1.1',
+        'geomet>=0.2.0',
+        'ckantoolkit>=0.0.7',
+        'future>=0.18.2'
     ],
     entry_points='''
 
