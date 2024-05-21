@@ -3,6 +3,8 @@ import json
 from rdflib import URIRef, BNode, Literal
 from ckanext.dcat.utils import resource_uri
 
+from . import codelists
+
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
     RDF,
@@ -11,6 +13,7 @@ from .base import (
     DCATAP,
     DCT,
     XSD,
+    ELI
 )
 
 from .euro_dcat_ap import EuropeanDCATAPProfile
@@ -152,34 +155,17 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         )
 
         # Lists
-        for key, predicate, fallbacks, type, datatype in (
-            (
-                "temporal_resolution",
-                DCAT.temporalResolution,
-                None,
-                Literal,
-                XSD.duration,
-            ),
-            ("is_referenced_by", DCT.isReferencedBy, None, URIRefOrLiteral, None),
-            (
-                "applicable_legislation",
-                DCATAP.applicableLegislation,
-                None,
-                URIRefOrLiteral,
-                None,
-            ),
-            ("hvd_category", DCATAP.hvdCategory, None, URIRefOrLiteral, None),
+        for key, predicate, fallbacks, _type, datatype, _class in (
+            ('temporal_resolution', DCAT.temporalResolution, None, Literal, XSD.duration, None),
+            ('is_referenced_by', DCT.isReferencedBy, None, URIRefOrLiteral, None, None),
+            ('applicable_legislation', DCATAP.applicableLegislation, None, URIRefOrLiteral, None, ELI.LegalResource),
         ):
-            self._add_triple_from_dict(
-                dataset_dict,
-                dataset_ref,
-                predicate,
-                key,
-                list_value=True,
-                fallbacks=fallbacks,
-                _type=type,
-                _datatype=datatype,
-            )
+            self._add_triple_from_dict(dataset_dict, dataset_ref, predicate, key, list_value=True,
+                                       fallbacks=fallbacks, _type=_type, _datatype=datatype, _class=_class)
+
+        self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
+                                codelists.high_value_dataset_category,
+                                list_value=True)
 
         # Temporal
         start = self._get_dataset_value(dataset_dict, "temporal_start")
@@ -228,85 +214,67 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                         (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
                     )
 
-        # Resources
-        for resource_dict in dataset_dict.get("resources", []):
 
-            distribution = CleanedURIRef(resource_uri(resource_dict))
+    def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
+        distribution = super().graph_from_resource(g, dataset_ref, resource_dict, resource_license_fallback, distribution)
 
-            #  Simple values
-            items = [
-                ("availability", DCATAP.availability, None, URIRefOrLiteral),
-                ("compress_format", DCAT.compressFormat, None, URIRefOrLiteral),
-                ("package_format", DCAT.packageFormat, None, URIRefOrLiteral),
-            ]
+        #  Simple values
+        items = [
+            ('availability', DCATAP.availability, None, URIRefOrLiteral),
+            ('compress_format', DCAT.compressFormat, None, URIRefOrLiteral),
+            ('package_format', DCAT.packageFormat, None, URIRefOrLiteral)
+        ]
 
-            self._add_triples_from_dict(resource_dict, distribution, items)
+        self._add_triples_from_dict(resource_dict, distribution, items)
 
-            #  Lists
-            items = [
-                (
-                    "applicable_legislation",
-                    DCATAP.applicableLegislation,
-                    None,
-                    URIRefOrLiteral,
-                ),
-            ]
-            self._add_list_triples_from_dict(resource_dict, distribution, items)
+        #  Lists
+        items = [
+            ('applicable_legislation', DCATAP.applicableLegislation, None, URIRefOrLiteral),
+        ]
+        self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-            try:
-                access_service_list = json.loads(
-                    resource_dict.get("access_services", "[]")
-                )
-                # Access service
-                for access_service_dict in access_service_list:
+        try:
+            access_service_list = json.loads(resource_dict.get('access_services', '[]'))
+            # Access service
+            for access_service_dict in access_service_list:
 
-                    access_service_uri = access_service_dict.get("uri")
-                    if access_service_uri:
-                        access_service_node = CleanedURIRef(access_service_uri)
-                    else:
-                        access_service_node = BNode()
-                        # Remember the (internal) access service reference for referencing in
-                        # further profiles
-                        access_service_dict["access_service_ref"] = str(
-                            access_service_node
-                        )
+                access_service_uri = access_service_dict.get('uri')
+                if access_service_uri:
+                    access_service_node = CleanedURIRef(access_service_uri)
+                else:
+                    access_service_node = BNode()
+                    # Remember the (internal) access service reference for referencing in
+                    # further profiles
+                    access_service_dict['access_service_ref'] = str(access_service_node)
 
-                    self.g.add((distribution, DCAT.accessService, access_service_node))
+                self.g.add((distribution, DCAT.accessService, access_service_node))
 
-                    self.g.add((access_service_node, RDF.type, DCAT.DataService))
+                self.g.add((access_service_node, RDF.type, DCAT.DataService))
 
-                    #  Simple values
-                    items = [
-                        ("availability", DCATAP.availability, None, URIRefOrLiteral),
-                        ("license", DCT.license, None, URIRefOrLiteral),
-                        ("access_rights", DCT.accessRights, None, URIRefOrLiteral),
-                        ("title", DCT.title, None, Literal),
-                        (
-                            "endpoint_description",
-                            DCAT.endpointDescription,
-                            None,
-                            Literal,
-                        ),
-                        ("description", DCT.description, None, Literal),
-                    ]
+                 #  Simple values
+                items = [
+                    ('availability', DCATAP.availability, None, URIRefOrLiteral),
+                    ('license', DCT.license, None, URIRefOrLiteral),
+                    ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
+                    ('title', DCT.title, None, Literal),
+                    ('endpoint_description', DCAT.endpointDescription, None, Literal),
+                    ('description', DCT.description, None, Literal),
+                ]
 
-                    self._add_triples_from_dict(
-                        access_service_dict, access_service_node, items
-                    )
+                self._add_triples_from_dict(access_service_dict, access_service_node, items)
 
-                    #  Lists
-                    items = [
-                        ("endpoint_url", DCAT.endpointURL, None, URIRefOrLiteral),
-                        ("serves_dataset", DCAT.servesDataset, None, URIRefOrLiteral),
-                    ]
-                    self._add_list_triples_from_dict(
-                        access_service_dict, access_service_node, items
-                    )
+                #  Lists
+                items = [
+                    ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
+                    ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
+                ]
+                self._add_list_triples_from_dict(access_service_dict, access_service_node, items)
 
-                if access_service_list:
-                    resource_dict["access_services"] = json.dumps(access_service_list)
-            except ValueError:
-                pass
+            if access_service_list:
+                resource_dict['access_services'] = json.dumps(access_service_list)
+        except ValueError:
+            pass
+        return distribution
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 

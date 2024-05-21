@@ -15,9 +15,11 @@ from .base import (
     GSP,
     OWL,
     SPDX,
+    ELI,
     GEOJSON_IMT,
 )
 
 from .euro_dcat_ap import EuropeanDCATAPProfile
 from .euro_dcat_ap_2 import EuropeanDCATAP2Profile
 from .schemaorg import SchemaOrgProfile
+from .euro_dcat_ap_hvd_22 import EuropeanDCATAPHVD220Profile
