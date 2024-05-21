@@ -431,11 +431,15 @@ def read_catalog_page(_format):
     if _profiles:
         _profiles = _profiles.split(',')
 
+    fq = toolkit.request.params.get('fq')
+    if _profiles and 'euro_dcat_ap_hvd_220' in _profiles:
+        fq = 'extras_applicable_legislation:"http://data.europa.eu/eli/reg_impl/2023/138/oj"'
+
     data_dict = {
-        'page': toolkit.request.args.get('page'),
-        'modified_since': toolkit.request.args.get('modified_since'),
-        'q': toolkit.request.args.get('q'),
-        'fq': toolkit.request.args.get('fq'),
+        'page': toolkit.request.params.get('page'),
+        'modified_since': toolkit.request.params.get('modified_since'),
+        'q': toolkit.request.params.get('q'),
+        'fq': fq,
         'format': _format,
         'profiles': _profiles,
     }

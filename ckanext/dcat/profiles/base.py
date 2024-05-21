@@ -28,6 +28,7 @@ LOCN = Namespace("http://www.w3.org/ns/locn#")
 GSP = Namespace("http://www.opengis.net/ont/geosparql#")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
 SPDX = Namespace("http://spdx.org/rdf/terms#")
+ELI= Namespace('http://data.europa.eu/eli/ontology#')
 
 namespaces = {
     "cnt": CNT,
@@ -47,6 +48,7 @@ namespaces = {
     "owl": OWL,
     "org": ORG,
     "spdx": SPDX,
+    "eli": ELI
 }
 
 PREFIX_MAILTO = "mailto:"
@@ -1157,6 +1159,7 @@ class RDFProfile(object):
             except ValueError:
                 key, predicate, fallbacks, _type = item
                 _class = None
+
             self._add_triple_from_dict(
                 _dict,
                 subject,
@@ -1169,19 +1172,20 @@ class RDFProfile(object):
                 _class=_class,
             )
 
-    def _add_triple_from_dict(
-        self,
-        _dict,
-        subject,
-        predicate,
-        key,
-        fallbacks=None,
-        list_value=False,
-        date_value=False,
-        _type=Literal,
-        _datatype=None,
-        _class=None,
-        value_modifier=None,
+def _add_triple_from_dict(
+    self,
+    _dict,
+    subject,
+    predicate,
+    key,
+    fallbacks=None,
+    list_value=False,
+    date_value=False,
+    _type=Literal,
+    _datatype=None,
+    _class=None,
+    value_modifier=None,
+):
     ):
         """
         Adds a new triple to the graph with the provided parameters
@@ -1200,6 +1204,8 @@ class RDFProfile(object):
         If `list_value` or `date_value` are True, then the value is treated as
         a list or a date respectively (see `_add_list_triple` and
         `_add_date_triple` for details.
+
+        `_class` is the optional RDF class of the entity being added.
         """
         value = self._get_dict_value(_dict, key)
         if not value and fallbacks:
@@ -1213,7 +1219,7 @@ class RDFProfile(object):
             value = value_modifier(value)
 
         if value and list_value:
-            self._add_list_triple(subject, predicate, value, _type, _datatype, _class)
+            self._add_list_triple(subject, predicate, value, _type, _datatype, _class=_class)
         elif value and date_value:
             self._add_date_triple(subject, predicate, value, _type)
         elif value:
@@ -1235,6 +1241,8 @@ class RDFProfile(object):
             else:
                 object = _type(value)
             self.g.add((subject, predicate, object))
+            if _class:
+                self.g.add((object, RDF.type, _class))
 
             if _class and isinstance(object, URIRef):
                 self.g.add((object, RDF.type, _class))
@@ -1260,6 +1268,8 @@ class RDFProfile(object):
             else:
                 object = _type(item)
             self.g.add((subject, predicate, object))
+            if _class:
+                self.g.add((object, RDF.type, _class))
 
             if _class and isinstance(object, URIRef):
                 self.g.add((object, RDF.type, _class))
@@ -1383,6 +1393,41 @@ class RDFProfile(object):
         self.g.add((spatial_ref, RDF.type, DCT.Location))
         self.g.add((dataset_ref, DCT.spatial, spatial_ref))
         return spatial_ref
+
+    def _add_from_codelist(self, _dict, subject, predicate, key,
+                           codelist,
+                           _type=URIRefOrLiteral,
+                           list_value=False,
+                           fallbacks=False,
+                           value_modifier=False):
+        ''' Add an item from a codelist, stored in rdf in the codelists directory '''
+
+        value = self._get_dict_value(_dict, key)
+        if not value and fallbacks:
+            for fallback in fallbacks:
+                value = self._get_dict_value(_dict, fallback)
+                if value:
+                    break
+
+        if value and callable(value_modifier):
+            value = value_modifier(value)
+
+        def add(item):
+            ref = _type(item)
+            self.g.add((ref, RDF.type, SKOS.Concept))
+            self.g.add((ref, SKOS.inScheme, URIRef(codelist.scheme)))
+            self.g.add((subject, predicate, ref))
+            for lang, label in codelist.labels(item).items():
+                _label_ref = Literal(label, lang=lang)
+                self.g.add((ref, SKOS.prefLabel, _label_ref))
+
+        if list_value:
+            items = self._read_list_value(value)
+            for item in items:
+                add(item)
+        else:
+            add(value)
+
 
     # Public methods for profiles to implement
 

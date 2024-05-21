@@ -22,6 +22,13 @@ setup(
         'ckantoolkit>=0.0.7',
         'future>=0.18.2'
     ],
+    extras_require={
+        'dev': [
+            # ttll shaql validation of dcat schemas,
+            'pyshacl==0.19.1',  # version pinned for rdflib
+        ]
+    },
+
     entry_points='''
 
     [ckan.plugins]
@@ -44,6 +51,7 @@ setup(
     [ckan.rdf.profiles]
     euro_dcat_ap=ckanext.dcat.profiles:EuropeanDCATAPProfile
     euro_dcat_ap_2=ckanext.dcat.profiles:EuropeanDCATAP2Profile
+    euro_dcat_ap_hvd_220=ckanext.dcat.profiles:EuropeanDCATAPHVD220Profile
     schemaorg=ckanext.dcat.profiles:SchemaOrgProfile
 
     [babel.extractors]

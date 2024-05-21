@@ -18,6 +18,7 @@ from .base import (
     GSP,
     OWL,
     SPDX,
+    ELI,
     GEOJSON_IMT,
 )
 
@@ -29,3 +30,4 @@ from .euro_dcat_ap_scheming import EuropeanDCATAPSchemingProfile
 from .euro_health_dcat_ap import EuropeanHealthDCATAPProfile
 from .schemaorg import SchemaOrgProfile
 from .croissant import CroissantProfile
+from .euro_dcat_ap_hvd_22 import EuropeanDCATAPHVD220Profile
