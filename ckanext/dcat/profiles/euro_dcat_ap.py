@@ -400,6 +400,7 @@ class EuropeanDCATAPProfile(RDFProfile):
                 publisher_details = BNode()
 
             g.add((publisher_details, RDF.type, FOAF.Organization))
+            g.add((publisher_details, RDF.type, FOAF.Agent))
             g.add((dataset_ref, DCT.publisher, publisher_details))
 
             # In case no name and URI are available, again fall back to organization.
