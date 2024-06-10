@@ -1,9 +1,10 @@
 import json
 
 from rdflib import URIRef, BNode, Literal
-from ckanext.dcat.utils import resource_uri
 
-from . import codelists
+from ckanext.dcat.utils import resource_uri
+from ckanext.dcat import codelists
+from ckanext.dcat import legal_resources
 
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
@@ -163,6 +164,9 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
             self._add_triple_from_dict(dataset_dict, dataset_ref, predicate, key, list_value=True,
                                        fallbacks=fallbacks, _type=_type, _datatype=datatype, _class=_class)
 
+        for eli in dataset_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
+
         self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
                                 codelists.high_value_dataset_category,
                                 list_value=True)
@@ -232,6 +236,9 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
             ('applicable_legislation', DCATAP.applicableLegislation, None, URIRefOrLiteral),
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
+
+        for eli in resource_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
 
         try:
             access_service_list = json.loads(resource_dict.get('access_services', '[]'))

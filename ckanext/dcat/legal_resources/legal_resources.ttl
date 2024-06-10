@@ -1,0 +1,60 @@
+@prefix dcterms: <http://purl.org/dc/terms/> .
+
+<http://data.europa.eu/eli/dir/2007/2/2019-06-26> a <http://data.europa.eu/eli/ontology#LegalResource> ;
+    dcterms:description "Директива 2007/2/ЕО на Европейския парламент и на Съвета от 14 март 2007 година за създаване на инфраструктура за пространствена информация в Европейската общност (INSPIRE)"@bg,
+        "Směrnice Evropského parlamentu a Rady 2007/2/ES ze dne 14. března 2007 o zřízení Infrastruktury pro prostorové informace v Evropském společenství (INSPIRE)"@cs,
+        "Europa-Parlamentets og Rådets direktiv 2007/2/EF af 14. marts 2007 om opbygning af en infrastruktur for geografisk information i Det Europæiske Fællesskab (Inspire)"@da,
+        "Richtlinie 2007/2/EG des Europäischen Parlaments und des Rates vom 14. März 2007 zur Schaffung einer Geodateninfrastruktur in der Europäischen Gemeinschaft (INSPIRE)"@de,
+        "Οδηγία 2007/2/ΕΚ Του Ευρωπαϊκού Κοινοβουλίου και του Συμβουλίου, της 14ης Μαρτίου 2007, για τη δημιουργία υποδομής χωρικών πληροφοριών στην Ευρωπαϊκή Κοινότητα (Inspire)"@el,
+        "Directive 2007/2/EC of the European Parliament and of the Council of 14 March 2007 establishing an Infrastructure for Spatial Information in the European Community (INSPIRE)"@en,
+        "Directiva 2007/2/CE del Parlamento Europeo y del Consejo, de 14 de marzo de 2007, por la que se establece una infraestructura de información espacial en la Comunidad Europea (Inspire)"@es,
+        "Euroopa Parlamendi ja nõukogu direktiiv 2007/2/EÜ, 14. märts 2007, millega rajatakse Euroopa Ühenduse ruumiandmete infrastruktuur (INSPIRE)"@et,
+        "Euroopan parlamentin ja neuvoston direktiivi 2007/2/EY, annettu 14 päivänä maaliskuuta 2007, Euroopan yhteisön paikkatietoinfrastruktuurin (INSPIRE) perustamisesta"@fi,
+        "Directive 2007/2/CE du Parlement européen et du Conseil du 14 mars 2007 établissant une infrastructure d'information géographique dans la Communauté européenne (INSPIRE)"@fr,
+        "Direktiva 2007/2/EZ Europskog parlamenta i Vijeća od 14. ožujka 2007. o uspostavljanju infrastrukture za prostorne informacije u Europskoj zajednici (INSPIRE)"@hr,
+        "Az Európai Parlament és a Tanács 2007/2/EK irányelve (2007. március 14.) az Európai Közösségen belüli térinformációs infrastruktúra (INSPIRE) kialakításáról"@hu,
+        "Direttiva 2007/2/CE del Parlamento europeo e del Consiglio, del 14 marzo 2007, che istituisce un'Infrastruttura per l'informazione territoriale nella Comunità europea (Inspire)"@it,
+        "2007 m. kovo 14 d. Europos Parlamento ir Tarybos direktyva 2007/2/EB sukurianti Europos bendrijos erdvinės informacijos infrastruktūrą (INSPIRE)"@lt,
+        "Eiropas Parlamenta un Padomes Direktīva 2007/2/EK (2007. gada 14. marts), ar ko izveido Telpiskās informācijas infrastruktūru Eiropas Kopienā (INSPIRE)"@lv,
+        "Direttiva 2007/2/KE tal-Parlament Ewropew u tal-Kunsill ta' l-14 ta' Marzu 2007 li tistabbilixxi Infrastruttura għall-Informazzjoni Ġeografika fil-Komunità Ewropea (Inspire)"@mt,
+        "Richtlijn 2007/2/EG van het Europees Parlement en de Raad van 14 maart 2007 tot oprichting van een infrastructuur voor ruimtelijke informatie in de Gemeenschap (Inspire)"@nl,
+        "Dyrektywa 2007/2/WE Parlamentu Europejskiego i Rady z dnia 14 marca 2007 r. ustanawiająca infrastrukturę informacji przestrzennej we Wspólnocie Europejskiej (INSPIRE)"@pl,
+        "Directiva 2007/2/CE do Parlamento Europeu e do Conselho, de 14 de Março de 2007, que estabelece uma infra-estrutura de informação geográfica na Comunidade Europeia (Inspire)"@pt,
+        "Directiva 2007/2/CE a Parlamentului European și a Consiliului din 14 martie 2007 de instituire a unei infrastructuri pentru informații spațiale în Comunitatea Europeană (Inspire)"@ro,
+        "Smernica Európskeho parlamentu a Rady 2007/2/ES zo 14. marca 2007, ktorou sa zriaďuje Infraštruktúra pre priestorové informácie v Európskom spoločenstve (Inspire)"@sk,
+        "Direktiva 2007/2/ES Evropskega parlamenta in Sveta z dne 14. marca 2007 o vzpostavitvi infrastrukture za prostorske informacije v Evropski skupnosti (INSPIRE)"@sl,
+        "Europaparlamentets och rådets direktiv 2007/2/EG av den 14 mars 2007 om upprättande av en infrastruktur för rumslig information i Europeiska gemenskapen (Inspire)"@sv ;
+    dcterms:type <http://publications.europa.eu/resource/authority/resource-type/CONS_TEXT> .
+
+<http://data.europa.eu/eli/reg_impl/2023/138/oj> a <http://data.europa.eu/eli/ontology#LegalResource> ;
+    dcterms:description "Регламент за изпълнение (ЕС) 2023/138 на Комисията от 21 декември 2022 година за определяне на списък с конкретни набори от данни с висока стойност и реда и условията за тяхното публикуване и повторно използване (текст от значение за ЕИП)"@bg,
+        "Prováděcí nařízení Komise (EU) 2023/138 ze dne 21. prosince 2022, kterým se stanoví seznam konkrétních datových souborů s vysokou hodnotou a opatření pro jejich zveřejnění a opakované použití (Text s významem pro EHP)"@cs,
+        "Kommissionens gennemførelsesforordning (EU) 2023/138 af 21. december 2022 om en liste over særlige typer datasæt af høj værdi og ordningerne for deres offentliggørelse og videreanvendelse (EØS-relevant tekst)"@da,
+        "Durchführungsverordnung (EU) 2023/138 der Kommission vom 21. Dezember 2022 zur Festlegung bestimmter hochwertiger Datensätze und der Modalitäten ihrer Veröffentlichung und Weiterverwendung (Text von Bedeutung für den EWR)"@de,
+        "Εκτελεστικός κανονισμός (ΕΕ) 2023/138 της Επιτροπής της 21ης Δεκεμβρίου 2023 για την κατάρτιση καταλόγου συγκεκριμένων συνόλων δεδομένων υψηλής αξίας και τον καθορισμό των ρυθμίσεων για τη δημοσίευση και την περαιτέρω χρήση τους (Κείμενο που παρουσιάζει ενδιαφέρον για τον ΕΟΧ)"@el,
+        "Commission Implementing Regulation (EU) 2023/138 of 21 December 2022 laying down a list of specific high-value datasets and the arrangements for their publication and re-use (Text with EEA relevance)"@en,
+        "Reglamento de Ejecución (UE) 2023/138 de la Comisión de 21 de diciembre de 2022 por el que se establecen una lista de conjuntos de datos específicos de alto valor y modalidades de publicación y reutilización (Texto pertinente a efectos del EEE)"@es,
+        "Komisjoni rakendusmäärus (EL) 2023/138, 21. detsember 2022, milles sätestatakse teatavate väärtuslike andmestike nimekiri ning nende avaldamise ja taaskasutamise kord (EMPs kohaldatav tekst)"@et,
+        "Komission täytäntöönpanoasetus (EU) 2023/138, annettu 21 päivänä joulukuuta 2022, arvokkaiden tietoaineistojen luettelosta ja niiden julkaisemista ja uudelleenkäyttöä koskevista järjestelyistä (ETA:n kannalta merkityksellinen teksti)"@fi,
+        "Règlement d’exécution (UE) 2023/138 de la Commission du 21 décembre 2022 établissant une liste d’ensembles de données de forte valeur spécifiques et les modalités de leur publication et de leur réutilisation (Texte présentant de l’intérêt pour l’EEE)"@fr,
+        "Rialachán Cur Chun Feidhme (AE) 2023/138 ón gCoimisiún an 21 Nollaig 2022 lena leagtar síos liosta de thacair sonraí shonracha ardluacha agus na socruithe maidir lena bhfoilsiú agus lena n-athúsáid (Téacs atá ábhartha maidir le LEE)"@ga,
+        "Provedbena uredba Komisije (EU) 2023/138 оd 21. prosinca 2022. o utvrđivanju popisa posebnih visokovrijednih skupova podataka i modaliteta njihova objavljivanja i ponovne uporabe (Tekst značajan za EGP)"@hr,
+        "A Bizottság (EU) 2023/138 végrehajtási rendelete (2022. december 21.) a konkrét nagy értékű adatkészletek jegyzékének, valamint a közzétételükre és a további felhasználásukra vonatkozó szabályoknak a meghatározásáról (EGT-vonatkozású szöveg)"@hu,
+        "Regolamento di esecuzione (UE) 2023/138 della Commissione del 21 dicembre 2022 che stabilisce un elenco di specifiche serie di dati di elevato valore e le relative modalità di pubblicazione e riutilizzo (Testo rilevante ai fini del SEE)"@it,
+        "Komisijos įgyvendinimo reglamentas (ES) 2023/138 2022 m. gruodžio 21 d. kuriuo sudaromas konkrečių didelės vertės duomenų rinkinių sąrašas ir nustatoma jų skelbimo bei pakartotinio naudojimo tvarka (Tekstas svarbus EEE)"@lt,
+        "Komisijas Īstenošanas regula (ES) 2023/138 (2022. gada 21. decembris), ar ko nosaka konkrētu vērtīgu datu kopu sarakstu un to publicēšanas un atkalizmantošanas kārtību (Dokuments attiecas uz EEZ)"@lv,
+        "Regolament ta’ Implimentazzjoni tal-Kummissjoni (UE) 2023/138 tal-21 ta’ Diċembru 2022 li jistabbilixxi lista ta’ settijiet tad-data speċifiċi ta’ valur għoli u l-arranġamenti għall-pubblikazzjoni u għall-użu mill-ġdid tagħhom (Test b’rilevanza għaż-ŻEE)"@mt,
+        "Uitvoeringsverordening (EU) 2023/138 van de Commissie van 21 december 2022 tot vaststelling van een lijst met specifieke hoogwaardige datasets en de regelingen voor publicatie en hergebruik van die gegevens (Voor de EER relevante tekst)"@nl,
+        "Rozporządzenie wykonawcze Komisji (UE) 2023/138 z dnia 21 grudnia 2022 r. ustanawiające wykaz szczególnych zbiorów danych o wysokiej wartości oraz warunki ich publikacji i ponownego wykorzystywania (Tekst mający znaczenie dla EOG)"@pl,
+        "Regulamento de Execução (UE) 2023/138 da Comissão de 21 de dezembro de 2022 que estabelece uma lista de conjuntos específicos de dados de elevado valor e as disposições relativas à respetiva publicação e reutilização (Texto relevante para efeitos do EEE)"@pt,
+        "Regulamentul de punere în aplicare (UE) 2023/138 al Comisiei din 21 decembrie 2022 de stabilire a unei liste de seturi de date cu valoare ridicată specifice și a modalităților de publicare și reutilizare a acestora (Text cu relevanță pentru SEE)"@ro,
+        "Vykonávacie nariadenie Komisie (EÚ) 2023/138 z 21. decembra 2022, ktorým sa stanovuje zoznam konkrétnych súborov údajov s vysokou hodnotou a podmienky ich uverejňovania a opakovaného použitia (Text s významom pre EHP)"@sk,
+        "Izvedbena uredba Komisije (EU) 2023/138 z dne 21. decembra 2022 o določitvi seznama posebnih naborov podatkov velike vrednosti ter ureditve za njihovo objavo in ponovno uporabo (Besedilo velja za EGP)"@sl,
+        "Kommissionens genomförandeförordning (EU) 2023/138 av den 21 december 2022 om fastställande av en förteckning över särskilda värdefulla dataset och arrangemangen för offentliggörande och vidareutnyttjande av dessa (Text av betydelse för EES)"@sv ;
+    dcterms:type <http://publications.europa.eu/resource/authority/resource-type/REG_IMPL> .
+
+<http://publications.europa.eu/resource/authority/resource-type/CONS_TEXT> a <http://data.europa.eu/eli/ontology#ResourceType> .
+
+<http://publications.europa.eu/resource/authority/resource-type/REG_IMPL> a <http://data.europa.eu/eli/ontology#ResourceType> .
+
+
