@@ -58,13 +58,18 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Basic fields
         for key, predicate in (
             ("title", DCT.title),
-            ("notes", DCT.description),
             ("url", DCAT.landingPage),
             ("version", OWL.versionInfo),
         ):
             value = self._object_value(dataset_ref, predicate)
             if value:
                 dataset_dict[key] = value
+
+        for description in self.g.objects(dataset_ref, DCT.description):
+            if description.language:
+                dataset_dict.setdefault("notes_translated", {})[description.language] = description.value
+            else:
+                dataset_dict["notes"] = description.value
 
         if not dataset_dict.get("version"):
             # adms:version was supported on the first version of the DCAT-AP
@@ -287,7 +292,6 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Basic fields
         items = [
             ("title", DCT.title, None, Literal),
-            ("notes", DCT.description, None, Literal),
             ("url", DCAT.landingPage, None, URIRef),
             ("identifier", DCT.identifier, ["guid", "id"], URIRefOrLiteral),
             ("version", OWL.versionInfo, ["dcat_version"], Literal),
@@ -298,6 +302,9 @@ class EuropeanDCATAPProfile(RDFProfile):
             ("provenance", DCT.provenance, None, Literal),
         ]
         self._add_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        for (lang, notes) in dataset_dict.get('notes_translated', {}).items():
+            g.add((dataset_ref, DCT.description, Literal(notes, lang=lang)))
 
         # Tags
         for tag in dataset_dict.get("tags", []):
