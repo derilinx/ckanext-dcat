@@ -496,13 +496,23 @@ class EuropeanDCATAPProfile(RDFProfile):
                 # Use dct:format
                 mimetype = None
 
+        if mimetype and not mimetype.startswith('http'):
+            mimetype = 'https://www.iana.org/assignments/media-types/' + mimetype
+
         if mimetype:
             g.add((distribution, DCAT.mediaType,
                    URIRefOrLiteral(mimetype)))
 
         if fmt:
-            g.add((distribution, DCT['format'],
-                   URIRefOrLiteral(fmt)))
+            node = BNode()
+            g.add((distribution, DCT['format'], node))
+            g.add((node, RDF.type, DCT.MediaTypeOrExtent))
+            g.add((node, RDFS.label, URIRefOrLiteral(fmt)))
+            if mimetype:
+                g.add((node, RDF.value, URIRefOrLiteral(mimetype)))
+                g.add((node, RDF.type, DCT.IMT))
+            else:
+                g.add((node, RDF.value, URIRefOrLiteral(fmt)))
 
 
         # URL fallback and old behavior
