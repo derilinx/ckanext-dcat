@@ -28,6 +28,8 @@ from .euro_dcat_ap_3 import EuropeanDCATAP3Profile
 from .dcat_us_3 import DCATUS3Profile
 from .euro_dcat_ap_scheming import EuropeanDCATAPSchemingProfile
 from .euro_health_dcat_ap import EuropeanHealthDCATAPProfile
+from .euro_dcat_ap_breg import EuropeanDCATAPBRegProfile
+
 from .schemaorg import SchemaOrgProfile
 from .croissant import CroissantProfile
 from .euro_dcat_ap_hvd_22 import EuropeanDCATAPHVD220Profile

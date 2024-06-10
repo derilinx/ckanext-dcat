@@ -28,6 +28,9 @@ LOCN = Namespace("http://www.w3.org/ns/locn#")
 GSP = Namespace("http://www.opengis.net/ont/geosparql#")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
 SPDX = Namespace("http://spdx.org/rdf/terms#")
+ELI= Namespace('http://data.europa.eu/eli/ontology#')
+CPSV = Namespace("http://purl.org/vocab/cpsv#")
+DQV = Namespace("http://www.w3.org/ns/dqv#")
 
 namespaces = {
     "cnt": CNT,
@@ -47,6 +50,9 @@ namespaces = {
     "owl": OWL,
     "org": ORG,
     "spdx": SPDX,
+    "eli": ELI,
+    "cpsv": CPSV,
+    "dqv": DQV,
 }
 
 PREFIX_MAILTO = "mailto:"
