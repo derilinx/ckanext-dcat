@@ -3,6 +3,7 @@ from decimal import Decimal, DecimalException
 
 from rdflib import URIRef, BNode, Literal, Namespace, FOAF, PROV, RDF, RDFS
 from ckanext.dcat.utils import resource_uri
+from ckanext.dcat import legal_resources
 
 from .. import codelists
 
@@ -330,6 +331,12 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             if role:
                 self.g.add((attr_ref, DCAT.hadRole, URIRef(role)))
 
+        for eli in dataset_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
+
+        self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
+                                codelists.high_value_dataset_category,
+                                list_value=True)
 
         # Temporal
 
@@ -439,7 +446,9 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-        # Access services
+        for eli in resource_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
+
         try:
             access_service_list = json.loads(resource_dict.get("access_services", "[]"))
         except ValueError:
