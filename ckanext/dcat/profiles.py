@@ -22,6 +22,7 @@ from ckan.plugins import toolkit
 from ckan.lib.munge import munge_tag
 from ckanext.dcat.utils import resource_uri, publisher_uri_organization_fallback, DCAT_EXPOSE_SUBCATALOGS, DCAT_CLEAN_TAGS
 from . import codelists
+from . import vocabularies
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -1062,6 +1063,12 @@ class EuropeanDCATAPProfile(RDFProfile):
         tags = [{'name': tag} for tag in tags_val]
         dataset_dict['tags'] = tags
 
+        # TODO: Update dlxschema to allow multiple languages
+        dataset_dict['language'] = [
+            vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+            for lang in self.g.objects(dataset_ref, DCT.language)
+        ]
+
         # Extras
 
         #  Simple values
@@ -1080,7 +1087,6 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         #  Lists
         for key, predicate, in (
-                ('language', DCT.language),
                 ('theme', DCAT.theme),
                 ('alternate_identifier', ADMS.identifier),
                 ('conforms_to', DCT.conformsTo),
@@ -1177,9 +1183,15 @@ class EuropeanDCATAPProfile(RDFProfile):
                                                        DCAT.downloadURL) or
                                     self._object_value(distribution,
                                                        DCAT.accessURL))
+
+            # TODO: Update dlxschema to allow multiple languages
+            resource_dict['language'] = [
+                vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+                for lang in self.g.objects(distribution, DCT.language)
+            ]
+
             #  Lists
             for key, predicate in (
-                    ('language', DCT.language),
                     ('documentation', FOAF.page),
                     ('conforms_to', DCT.conformsTo),
                     ):
@@ -1282,9 +1294,15 @@ class EuropeanDCATAPProfile(RDFProfile):
         ]
         self._add_date_triples_from_dict(dataset_dict, dataset_ref, items)
 
+
+        langs = dataset_dict.get('language', [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((dataset_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
         #  Lists
         items = [
-            ('language', DCT.language, None, URIRefOrLiteral),
             ('theme', DCAT.theme, None, URIRef),
             ('conforms_to', DCT.conformsTo, None, Literal),
             ('alternate_identifier', ADMS.identifier, None, URIRefOrLiteral),
@@ -1429,10 +1447,15 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         self._add_triples_from_dict(resource_dict, distribution, items)
 
+        langs = resource_dict.get('language', [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((distribution, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
         #  Lists
         items = [
             ('documentation', FOAF.page, None, URIRefOrLiteral),
-            ('language', DCT.language, None, URIRefOrLiteral),
             ('conforms_to', DCT.conformsTo, None, Literal),
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
