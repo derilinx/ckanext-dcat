@@ -23,6 +23,7 @@ from ckan.lib.munge import munge_tag
 from ckanext.dcat.utils import resource_uri, publisher_uri_organization_fallback, DCAT_EXPOSE_SUBCATALOGS, DCAT_CLEAN_TAGS
 from . import codelists
 from . import vocabularies
+from . import legal_resources
 
 DCT = Namespace("http://purl.org/dc/terms/")
 DCAT = Namespace("http://www.w3.org/ns/dcat#")
@@ -1714,6 +1715,9 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         ):
             self._add_triple_from_dict(dataset_dict, dataset_ref, predicate, key, list_value=True,
                                        fallbacks=fallbacks, _type=_type, _datatype=datatype, _class=_class)
+
+        for eli in dataset_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
         
         self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
                                 codelists.high_value_dataset_category,
@@ -1774,6 +1778,9 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
             ('applicable_legislation', DCATAP.applicableLegislation, None, URIRefOrLiteral),
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
+
+        for eli in resource_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
 
         try:
             access_service_list = json.loads(resource_dict.get('access_services', '[]'))
