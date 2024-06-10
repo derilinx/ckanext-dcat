@@ -783,8 +783,10 @@ class RDFProfile(object):
             else:
                 label = str(_format)
         elif isinstance(_format, (BNode, URIRef)):
-            if self._object(_format, RDF.type) == DCT.IMT:
-                if not imt:
+            types = set(self.g.objects(_format, RDF.type))
+            is_imt = DCT.IMT in types
+            if is_imt or DCT.MediaTypeOrExtent in types:
+                if is_imt and not imt:
                     imt = str(self.g.value(_format, default=None))
                 label = self._object_value(_format, RDFS.label)
             elif isinstance(_format, URIRef):
