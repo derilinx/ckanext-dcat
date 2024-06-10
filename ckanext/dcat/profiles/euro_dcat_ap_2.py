@@ -1,8 +1,13 @@
 import json
 from decimal import Decimal, DecimalException
 
+
 from rdflib import URIRef, BNode, Literal, Namespace, FOAF, PROV, RDF, RDFS
+
 from ckanext.dcat.utils import resource_uri
+from ckanext.dcat import codelists
+from ckanext.dcat import legal_resources
+
 
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
@@ -333,6 +338,12 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             if role:
                 self.g.add((attr_ref, DCAT.hadRole, URIRef(role)))
 
+        for eli in dataset_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
+
+        self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
+                                codelists.high_value_dataset_category,
+                                list_value=True)
 
         # Temporal
 
@@ -466,6 +477,12 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                 except ValueError:
                     access_service_list = []
 
+        for eli in resource_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
+
+        try:
+            access_service_list = json.loads(resource_dict.get('access_services', '[]'))
+            # Access service
             for access_service_dict in access_service_list:
 
                 access_service_uri = access_service_dict.get("uri")
