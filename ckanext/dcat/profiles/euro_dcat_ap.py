@@ -1,5 +1,42 @@
 from .base import ADMS, URIRefOrLiteral
 from .euro_dcat_ap_base import BaseEuropeanDCATAPProfile
+import json
+
+from rdflib import term, URIRef, BNode, Literal
+import ckantoolkit as toolkit
+
+from ckan.lib.munge import munge_tag
+
+from ckanext.dcat import vocabularies
+from ckanext.dcat.utils import (
+    resource_uri,
+    DCAT_EXPOSE_SUBCATALOGS,
+    DCAT_CLEAN_TAGS,
+    publisher_uri_organization_fallback,
+)
+from .base import RDFProfile, URIRefOrLiteral, CleanedURIRef
+from .base import (
+    RDF,
+    XSD,
+    SKOS,
+    RDFS,
+    DCAT,
+    DCT,
+    ADMS,
+    XSD,
+    VCARD,
+    FOAF,
+    SCHEMA,
+    SKOS,
+    LOCN,
+    GSP,
+    OWL,
+    SPDX,
+    GEOJSON_IMT,
+    namespaces,
+)
+
+config = toolkit.config
 
 
 class EuropeanDCATAPProfile(BaseEuropeanDCATAPProfile):
