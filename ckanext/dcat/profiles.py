@@ -613,8 +613,10 @@ class RDFProfile(object):
             else:
                 label = str(_format)
         elif isinstance(_format, (BNode, URIRef)):
-            if self._object(_format, RDF.type) == DCT.IMT:
-                if not imt:
+            types = set(self.g.objects(_format, RDF.type))
+            is_imt = DCT.IMT in types
+            if is_imt or DCT.MediaTypeOrExtent in types:
+                if is_imt and not imt:
                     imt = str(self.g.value(_format, default=None))
                 label = str(self.g.label(_format, default=None))
             elif isinstance(_format, URIRef):
@@ -1458,13 +1460,23 @@ class EuropeanDCATAPProfile(RDFProfile):
                 # Use dct:format
                 mimetype = None
 
+        if mimetype and not mimetype.startswith('http'):
+            mimetype = 'https://www.iana.org/assignments/media-types/' + mimetype
+
         if mimetype:
             g.add((distribution, DCAT.mediaType,
                    URIRefOrLiteral(mimetype)))
 
         if fmt:
-            g.add((distribution, DCT['format'],
-                   URIRefOrLiteral(fmt)))
+            node = BNode()
+            g.add((distribution, DCT['format'], node))
+            g.add((node, RDF.type, DCT.MediaTypeOrExtent))
+            g.add((node, RDFS.label, URIRefOrLiteral(fmt)))
+            if mimetype:
+                g.add((node, RDF.value, URIRefOrLiteral(mimetype)))
+                g.add((node, RDF.type, DCT.IMT))
+            else:
+                g.add((node, RDF.value, URIRefOrLiteral(fmt)))
 
 
         # URL fallback and old behavior
