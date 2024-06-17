@@ -1,6 +1,45 @@
 from .base import ADMS, URIRefOrLiteral
 from .euro_dcat_ap_base import BaseEuropeanDCATAPProfile
 
+import json
+
+from rdflib import term, URIRef, BNode, Literal
+import ckantoolkit as toolkit
+
+from ckan.lib.munge import munge_tag
+
+from ckanext.dcat import vocabularies
+from ckanext.dcat.utils import (
+    resource_uri,
+    group_uri,
+    DCAT_EXPOSE_SUBCATALOGS,
+    DCAT_CLEAN_TAGS,
+    publisher_uri_organization_fallback,
+)
+from .base import RDFProfile, URIRefOrLiteral, CleanedURIRef
+from .base import (
+    RDF,
+    XSD,
+    SKOS,
+    RDFS,
+    DCAT,
+    DCT,
+    ADMS,
+    XSD,
+    VCARD,
+    FOAF,
+    SCHEMA,
+    SKOS,
+    LOCN,
+    GSP,
+    OWL,
+    SPDX,
+    GEOJSON_IMT,
+    namespaces,
+)
+
+config = toolkit.config
+
 
 class EuropeanDCATAPProfile(BaseEuropeanDCATAPProfile):
     """
@@ -24,8 +63,314 @@ class EuropeanDCATAPProfile(BaseEuropeanDCATAPProfile):
         # Call base method for common properties
         self._graph_from_dataset_base(dataset_dict, dataset_ref)
 
-        # DCAT AP v1 specific properties
-        self._graph_from_dataset_v1_only(dataset_dict, dataset_ref)
+        for prefix, namespace in namespaces.items():
+            g.bind(prefix, namespace)
+
+        g.add((dataset_ref, RDF.type, DCAT.Dataset))
+
+        # Basic fields
+        items = [
+            ("title", DCT.title, None, Literal),
+            ("url", DCAT.landingPage, None, URIRef),
+            ("identifier", DCT.identifier, ["guid", "id"], Literal),
+            ("version", OWL.versionInfo, ["dcat_version"], Literal),
+            ("version_notes", ADMS.versionNotes, None, Literal),
+            ("frequency", DCT.accrualPeriodicity, None, URIRefOrLiteral),
+            ("access_rights", DCT.accessRights, None, URIRefOrLiteral),
+            ("dcat_type", DCT.type, None, Literal),
+            ("provenance", DCT.provenance, None, Literal),
+        ]
+        self._add_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        for (lang, notes) in dataset_dict.get('notes_translated', {}).items():
+            g.add((dataset_ref, DCT.description, Literal(notes, lang=lang)))
+
+        # Tags
+        for tag in dataset_dict.get("tags", []):
+            g.add((dataset_ref, DCAT.keyword, Literal(tag["name"])))
+
+        # Dates
+        items = [
+            ("issued", DCT.issued, ["metadata_created"], Literal),
+            ("modified", DCT.modified, ["metadata_modified"], Literal),
+        ]
+        self._add_date_triples_from_dict(dataset_dict, dataset_ref, items)
+
+
+        langs = dataset_dict.get("language", [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((dataset_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+        #  Lists
+        items = [
+            ("theme", DCAT.theme, None, URIRef),
+            ("conforms_to", DCT.conformsTo, None, Literal),
+            ("alternate_identifier", ADMS.identifier, None, URIRefOrLiteral),
+            ("documentation", FOAF.page, None, URIRefOrLiteral),
+            ("related_resource", DCT.relation, None, URIRefOrLiteral),
+            ("has_version", DCT.hasVersion, None, URIRefOrLiteral),
+            ("is_version_of", DCT.isVersionOf, None, URIRefOrLiteral),
+            ("source", DCT.source, None, URIRefOrLiteral),
+            ("sample", ADMS.sample, None, URIRefOrLiteral),
+        ]
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        # Contact details
+        if any(
+            [
+                self._get_dataset_value(dataset_dict, "contact_uri"),
+                self._get_dataset_value(dataset_dict, "contact_name"),
+                self._get_dataset_value(dataset_dict, "contact_email"),
+                self._get_dataset_value(dataset_dict, "maintainer"),
+                self._get_dataset_value(dataset_dict, "maintainer_email"),
+                self._get_dataset_value(dataset_dict, "author"),
+                self._get_dataset_value(dataset_dict, "author_email"),
+            ]
+        ):
+
+            contact_uri = self._get_dataset_value(dataset_dict, "contact_uri")
+            if contact_uri:
+                contact_details = CleanedURIRef(contact_uri)
+            else:
+                contact_details = BNode()
+
+            g.add((contact_details, RDF.type, VCARD.Organization))
+            g.add((dataset_ref, DCAT.contactPoint, contact_details))
+
+            self._add_triple_from_dict(
+                dataset_dict,
+                contact_details,
+                VCARD.fn,
+                "contact_name",
+                ["maintainer", "author"],
+            )
+            # Add mail address as URIRef, and ensure it has a mailto: prefix
+            self._add_triple_from_dict(
+                dataset_dict,
+                contact_details,
+                VCARD.hasEmail,
+                "contact_email",
+                ["maintainer_email", "author_email"],
+                _type=URIRef,
+                value_modifier=self._add_mailto,
+            )
+
+        # Publisher
+        if any(
+            [
+                self._get_dataset_value(dataset_dict, "publisher_uri"),
+                self._get_dataset_value(dataset_dict, "publisher_name"),
+                dataset_dict.get("organization"),
+            ]
+        ):
+
+            publisher_uri = self._get_dataset_value(dataset_dict, "publisher_uri")
+            publisher_uri_fallback = publisher_uri_organization_fallback(dataset_dict)
+            publisher_name = self._get_dataset_value(dataset_dict, "publisher_name")
+            if publisher_uri:
+                publisher_details = CleanedURIRef(publisher_uri)
+            elif not publisher_name and publisher_uri_fallback:
+                # neither URI nor name are available, use organization as fallback
+                publisher_details = CleanedURIRef(publisher_uri_fallback)
+            else:
+                # No publisher_uri
+                publisher_details = BNode()
+
+            g.add((publisher_details, RDF.type, FOAF.Organization))
+            g.add((publisher_details, RDF.type, FOAF.Agent))
+            g.add((dataset_ref, DCT.publisher, publisher_details))
+
+            # In case no name and URI are available, again fall back to organization.
+            # If no name but an URI is available, the name literal remains empty to
+            # avoid mixing organization and dataset values.
+            if (
+                not publisher_name
+                and not publisher_uri
+                and dataset_dict.get("organization")
+            ):
+                publisher_name = dataset_dict["organization"]["title"]
+
+            g.add((publisher_details, FOAF.name, Literal(publisher_name)))
+            # TODO: It would make sense to fallback these to organization
+            # fields but they are not in the default schema and the
+            # `organization` object in the dataset_dict does not include
+            # custom fields
+            items = [
+                ("publisher_email", FOAF.mbox, None, Literal),
+                ("publisher_url", FOAF.homepage, None, URIRef),
+                ("publisher_type", DCT.type, None, URIRefOrLiteral),
+            ]
+
+            self._add_triples_from_dict(dataset_dict, publisher_details, items)
+
+        # Temporal
+        start = self._get_dataset_value(dataset_dict, "temporal_start")
+        end = self._get_dataset_value(dataset_dict, "temporal_end")
+        if start or end:
+            temporal_extent = BNode()
+
+            g.add((temporal_extent, RDF.type, DCT.PeriodOfTime))
+            if start:
+                self._add_date_triple(temporal_extent, SCHEMA.startDate, start)
+            if end:
+                self._add_date_triple(temporal_extent, SCHEMA.endDate, end)
+            g.add((dataset_ref, DCT.temporal, temporal_extent))
+
+        # Spatial
+        spatial_text = self._get_dataset_value(dataset_dict, "spatial_text")
+        spatial_geom = self._get_dataset_value(dataset_dict, "spatial")
+
+        if spatial_text or spatial_geom:
+            spatial_ref = self._get_or_create_spatial_ref(dataset_dict, dataset_ref)
+
+            if spatial_text:
+                g.add((spatial_ref, SKOS.prefLabel, Literal(spatial_text)))
+
+            if spatial_geom:
+                self._add_spatial_value_to_graph(
+                    spatial_ref, LOCN.geometry, spatial_geom
+                )
+
+        # Use fallback license if set in config
+        resource_license_fallback = None
+        if toolkit.asbool(config.get(DISTRIBUTION_LICENSE_FALLBACK_CONFIG, False)):
+            if "license_id" in dataset_dict and isinstance(
+                URIRefOrLiteral(dataset_dict["license_id"]), URIRef
+            ):
+                resource_license_fallback = dataset_dict["license_id"]
+            elif "license_url" in dataset_dict and isinstance(
+                URIRefOrLiteral(dataset_dict["license_url"]), URIRef
+            ):
+                resource_license_fallback = dataset_dict["license_url"]
+
+        # Resources
+        for resource_dict in dataset_dict.get("resources", []):
+            self.graph_from_resource(g, dataset_ref, resource_dict, resource_license_fallback)
+
+        # datasets don't actually list the types of groups,
+        # so we can't tell if this is actually a data service
+        for group in dataset_dict.get('groups', []):
+            self.g.add((URIRef(group_uri(group)), RDF.type, DCAT.DataService))
+
+    def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
+        if distribution is None:
+            distribution = CleanedURIRef(resource_uri(resource_dict))
+
+        g.add((dataset_ref, DCAT.distribution, distribution))
+
+        g.add((distribution, RDF.type, DCAT.Distribution))
+
+        #  Simple values
+        items = [
+            ('name', DCT.title, None, Literal),
+            ('description', DCT.description, None, Literal),
+            ('status', ADMS.status, None, URIRefOrLiteral),
+            ('rights', DCT.rights, None, URIRefOrLiteral),
+            ('license', DCT.license, None, URIRefOrLiteral, DCT.LicenseDocument),
+            ('access_url', DCAT.accessURL, None, URIRef),
+            ('download_url', DCAT.downloadURL, None, URIRef),
+        ]
+
+        self._add_triples_from_dict(resource_dict, distribution, items)
+
+        langs = resource_dict.get('language', [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((distribution, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+        #  Lists
+        items = [
+            ('documentation', FOAF.page, None, URIRefOrLiteral),
+            ('conforms_to', DCT.conformsTo, None, Literal),
+        ]
+        self._add_list_triples_from_dict(resource_dict, distribution, items)
+
+        # Set default license for distribution if needed and available
+        if resource_license_fallback and not (distribution, DCT.license, None) in g:
+            _ref = URIRefOrLiteral(resource_license_fallback)
+            g.add((_ref, RDF.type, DCT.LicenseDocument))
+            g.add((distribution, DCT.license, _ref))
+
+        # Format
+        mimetype = resource_dict.get('mimetype')
+        fmt = resource_dict.get('format')
+
+        # IANA media types (either URI or Literal) should be mapped as mediaType.
+        # In case format is available and mimetype is not set or identical to format,
+        # check which type is appropriate.
+        if fmt and (not mimetype or mimetype == fmt):
+            if ('iana.org/assignments/media-types' in fmt
+                    or not fmt.startswith('http') and '/' in fmt):
+                # output format value as dcat:mediaType instead of dct:format
+                mimetype = fmt
+                fmt = None
+            else:
+                # Use dct:format
+                mimetype = None
+
+        if mimetype and not mimetype.startswith('http'):
+            mimetype = 'https://www.iana.org/assignments/media-types/' + mimetype
+
+        if mimetype:
+            g.add((distribution, DCAT.mediaType,
+                   URIRefOrLiteral(mimetype)))
+
+        if fmt:
+            node = BNode()
+            g.add((distribution, DCT['format'], node))
+            g.add((node, RDF.type, DCT.MediaTypeOrExtent))
+            g.add((node, RDFS.label, URIRefOrLiteral(fmt)))
+            if mimetype:
+                g.add((node, RDF.value, URIRefOrLiteral(mimetype)))
+                g.add((node, RDF.type, DCT.IMT))
+            else:
+                g.add((node, RDF.value, URIRefOrLiteral(fmt)))
+
+
+        # URL fallback and old behavior
+        url = resource_dict.get('url')
+        download_url = resource_dict.get('download_url')
+        access_url = resource_dict.get('access_url')
+        # Use url as fallback for access_url if access_url is not set and download_url is not equal
+        if url and not access_url:
+            if (not download_url) or (download_url and url != download_url):
+              self._add_triple_from_dict(resource_dict, distribution, DCAT.accessURL, 'url', _type=URIRef)
+
+        # Dates
+        items = [
+            ('issued', DCT.issued, ['created'], Literal),
+            ('modified', DCT.modified, ['metadata_modified'], Literal),
+        ]
+
+        self._add_date_triples_from_dict(resource_dict, distribution, items)
+
+        # Numbers
+        if resource_dict.get('size'):
+            try:
+                g.add((distribution, DCAT.byteSize,
+                       Literal(float(resource_dict['size']),
+                               datatype=XSD.decimal)))
+            except (ValueError, TypeError):
+                g.add((distribution, DCAT.byteSize,
+                       Literal(resource_dict['size'])))
+        # Checksum
+        if resource_dict.get('hash'):
+            checksum = BNode()
+            g.add((checksum, RDF.type, SPDX.Checksum))
+            g.add((checksum, SPDX.checksumValue,
+                   Literal(resource_dict['hash'],
+                           datatype=XSD.hexBinary)))
+
+            if resource_dict.get('hash_algorithm'):
+                g.add((checksum, SPDX.algorithm,
+                       URIRefOrLiteral(resource_dict['hash_algorithm'])))
+
+            g.add((distribution, SPDX.checksum, checksum))
+
+        return distribution
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
