@@ -1436,6 +1436,9 @@ def _add_triple_from_dict(
         if value and callable(value_modifier):
             value = value_modifier(value)
 
+        if not value:
+            return
+
         def add(item):
             ref = _type(item)
             self.g.add((ref, RDF.type, SKOS.Concept))
