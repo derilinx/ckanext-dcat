@@ -179,6 +179,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         if values:
                             resource_dict[key] = json.dumps(values)
 
+<<<<<<< HEAD
                     # Access services
                     access_service_list = []
 
@@ -251,6 +252,8 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                             access_service_list
                         )
 
+=======
+>>>>>>> e238a24 (Emit data services as groups)
         return dataset_dict
 
     def _graph_from_dataset_v2(self, dataset_dict, dataset_ref):
@@ -449,6 +452,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         for eli in resource_dict.get('applicable_legislation'):
             self.g += legal_resources.info(eli)
 
+<<<<<<< HEAD
         try:
             access_service_list = json.loads(resource_dict.get("access_services", "[]"))
         except ValueError:
@@ -551,6 +555,44 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         """
         CKAN -> DCAT v2 specific properties (not applied to higher versions)
         """
+=======
+        for data_service in resource_dict.get('data_services', []):
+            service_uri = URIRef(group_uri({ 'id': data_service, 'type': 'data-service' }))
+
+            self.g.add((distribution, DCAT.accessService, service_uri))
+            self.g.add((service_uri, RDF.type, DCAT.DataService))
+
+        return distribution
+
+    def groups(self):
+        return { str(uri).split('/')[-1] for uri in self.g.subjects(RDF.type, DCAT.DataService) }
+
+    def graph_from_group(self, group_dict, group_ref):
+        if group_dict['type'] != 'data-service':
+            return
+
+        catalog = self.g.value(predicate=RDF.type, object=DCAT.Catalog)
+        if catalog:
+            self.g.add((catalog, DCAT.service, group_ref))
+
+        self._add_triples_from_dict(group_dict, group_ref, [
+            ('availability', DCATAP.availability, None, URIRefOrLiteral),
+            ('license', DCT.license, None, URIRefOrLiteral),
+            ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
+            ('title', DCT.title, None, Literal),
+            ('endpoint_description', DCAT.endpointDescription, None, Literal),
+            ('description', DCT.description, None, Literal),
+        ])
+
+        #  Lists
+        self._add_list_triples_from_dict(group_dict, group_ref, [
+            ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
+            ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
+        ])
+        return
+
+    def graph_from_catalog(self, catalog_dict, catalog_ref):
+>>>>>>> e238a24 (Emit data services as groups)
 
         # Other identifiers (these are handled differently in the
         # DCAT-AP v3 profile)
