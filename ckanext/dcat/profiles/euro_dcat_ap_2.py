@@ -4,7 +4,7 @@ from decimal import Decimal, DecimalException
 
 from rdflib import URIRef, BNode, Literal, Namespace, FOAF, PROV, RDF, RDFS
 
-from ckanext.dcat.utils import resource_uri
+from ckanext.dcat.utils import resource_uri, group_uri
 from ckanext.dcat import codelists
 from ckanext.dcat import legal_resources
 
@@ -477,115 +477,45 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                 except ValueError:
                     access_service_list = []
 
-        for eli in resource_dict.get('applicable_legislation'):
-            self.g += legal_resources.info(eli)
+            for eli in resource_dict.get('applicable_legislation'):
+                self.g += legal_resources.info(eli)
 
-        try:
-            access_service_list = json.loads(resource_dict.get('access_services', '[]'))
-            # Access service
-            for access_service_dict in access_service_list:
+            for data_service in resource_dict.get('data_services', []):
+                service_uri = URIRef(group_uri({ 'id': data_service, 'type': 'data-service' }))
 
-                access_service_uri = access_service_dict.get("uri")
-                if access_service_uri:
-                    access_service_node = CleanedURIRef(access_service_uri)
-                else:
-                    access_service_node = BNode()
-                    # Remember the (internal) access service reference for referencing
-                    # in further profiles
-                    access_service_dict["access_service_ref"] = str(access_service_node)
+                self.g.add((distribution_ref, DCAT.accessService, service_uri))
+                self.g.add((service_uri, RDF.type, DCAT.DataService))
 
-                self.g.add((distribution_ref, DCAT.accessService, access_service_node))
+        return distribution_ref
 
-                self.g.add((access_service_node, RDF.type, DCAT.DataService))
+    def groups(self):
+        return { str(uri).split('/')[-1] for uri in self.g.subjects(RDF.type, DCAT.DataService) }
 
-                #  Simple values
-                items = [
-                    ("availability", DCATAP.availability, None, URIRefOrLiteral),
-                    ("license", DCT.license, None, URIRefOrLiteral),
-                    ("access_rights", DCT.accessRights, None, URIRefOrLiteral),
-                    ("title", DCT.title, None, Literal),
-                    (
-                        "endpoint_description",
-                        DCAT.endpointDescription,
-                        None,
-                        URIRefOrLiteral,
-                        RDFS.Resource,
-                    ),
-                    ("description", DCT.description, None, Literal),
-                    ("modified", DCT.modified, None, Literal),
-                ]
-                self._add_triples_from_dict(
-                    access_service_dict, access_service_node, items
-                )
+    def graph_from_group(self, group_dict, group_ref):
+        if group_dict['type'] != 'data-service':
+            return
 
-                if access_service_dict.get("modified"):
-                    self._add_date_triple(access_service_node, DCT.modified, access_service_dict.get("modified"))
+        catalog = self.g.value(predicate=RDF.type, object=DCAT.Catalog)
+        if catalog:
+            self.g.add((catalog, DCAT.service, group_ref))
 
+        self._add_triples_from_dict(group_dict, group_ref, [
+            ('availability', DCATAP.availability, None, URIRefOrLiteral),
+            ('license', DCT.license, None, URIRefOrLiteral),
+            ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
+            ('title', DCT.title, None, Literal),
+            ('endpoint_description', DCAT.endpointDescription, None, Literal),
+            ('description', DCT.description, None, Literal),
+        ])
 
-                contact_point_dict = access_service_dict.get("contact")
-                if contact_point_dict:
-                    self._add_contact_to_graph(access_service_node, DCAT.contactPoint, contact_point_dict)
+        #  Lists
+        self._add_list_triples_from_dict(group_dict, group_ref, [
+            ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
+            ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
+        ])
+        return
 
-                publisher_dict = access_service_dict.get("publisher")
-                if publisher_dict:
-                    self._add_agent_to_graph(access_service_node, DCT.publisher, publisher_dict)
-
-                for creator_dict in access_service_dict.get("creator", []):
-                    self._add_agent_to_graph(access_service_node, DCT.creator, creator_dict)
-
-                # Extra list values for access services
-                extra_items = [
-                    ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral),
-                    ("format", DCT["format"], None, URIRefOrLiteral),
-                    ("language", DCT.language, None, URIRefOrLiteral),
-                    ("rights", DCT.rights, None, URIRefOrLiteral),
-                    ("landing_page", DCAT.landingPage, None, URIRefOrLiteral),
-                    ("applicable_legislation", DCATAP.applicableLegislation, None, URIRefOrLiteral, ELI.LegalResource),
-                    ("theme", DCAT.theme, None, URIRefOrLiteral),
-                ]
-                self._add_list_triples_from_dict(access_service_dict, access_service_node, extra_items)
-
-                # Add single-value triple for identifier
-                self._add_triple_from_dict(
-                    access_service_dict,
-                    access_service_node,
-                    DCT.identifier,
-                    "identifier",
-                    _type=URIRefOrLiteral
-                )
-
-                # Add keyword list
-                self._add_triple_from_dict(
-                    access_service_dict,
-                    access_service_node,
-                    DCAT.keyword,
-                    "keyword",
-                    list_value=True,
-                    _type=Literal
-                )
-
-                #  Lists
-                items = [
-                    (
-                        "endpoint_url",
-                        DCAT.endpointURL,
-                        None,
-                        URIRefOrLiteral,
-                        RDFS.Resource,
-                    ),
-                    ("serves_dataset", DCAT.servesDataset, None, URIRefOrLiteral),
-                ]
-                self._add_list_triples_from_dict(
-                    access_service_dict, access_service_node, items
-                )
-
-            if access_service_list:
-                resource_dict["access_services"] = json.dumps(access_service_list)
-
-    def _graph_from_dataset_v2_only(self, dataset_dict, dataset_ref):
-        """
-        CKAN -> DCAT v2 specific properties (not applied to higher versions)
-        """
+    def graph_from_catalog(self, catalog_dict, catalog_ref):
 
         # Other identifiers (these are handled differently in the
         # DCAT-AP v3 profile)
