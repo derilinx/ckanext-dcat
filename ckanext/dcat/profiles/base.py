@@ -989,6 +989,9 @@ class RDFProfile(object):
         if value and callable(value_modifier):
             value = value_modifier(value)
 
+        if not value:
+            return
+
         def add(item):
             ref = _type(item)
             self.g.add((ref, RDF.type, SKOS.Concept))
