@@ -219,6 +219,25 @@ def resource_uri(resource_dict):
 
     return uri
 
+def group_uri(group_dict):
+    '''
+    Returns an URI for the group
+
+    This will be used to uniquely reference the resource on the RDF
+    serializations.
+
+        `catalog_uri()/{type}/{id}`
+
+    Check the documentation for `catalog_uri()` for the recommended ways of
+    setting it.
+    '''
+
+    return '/'.join((
+        catalog_uri().rstrip('/'),
+        'group',
+        group_dict['id']
+    ))
+
 
 def publisher_uri_organization_fallback(dataset_dict):
     '''

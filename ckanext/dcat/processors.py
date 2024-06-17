@@ -13,7 +13,7 @@ from rdflib.namespace import Namespace, RDF
 
 import ckan.plugins as p
 
-from ckanext.dcat.utils import catalog_uri, dataset_uri, url_to_rdflib_format, DCAT_EXPOSE_SUBCATALOGS
+from ckanext.dcat.utils import catalog_uri, dataset_uri, group_uri, url_to_rdflib_format, DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.profiles import DCAT, DCT, FOAF
 from ckanext.dcat.exceptions import RDFProfileException, RDFParserException
 
@@ -282,6 +282,19 @@ class RDFSerializer(RDFProcessor):
 
         return catalog_ref
 
+    def graph_from_groups(self):
+        profiles = [cls(self.g, self.compatibility_mode) for cls in self._profiles]
+
+        groups = { group for profile in profiles for group in profile.groups() }
+
+        for group in groups:
+            group_dict = p.toolkit.get_action('group_show')({}, { 'id': group })
+            ref = URIRef(group_uri(group_dict))
+
+            for profile in profiles:
+                profile.graph_from_group(group_dict, ref)
+
+
     def serialize_dataset(self, dataset_dict, _format='xml', context=None):
         '''
         Given a CKAN dataset dict, returns an RDF serialization
@@ -295,6 +308,7 @@ class RDFSerializer(RDFProcessor):
         '''
 
         self.graph_from_dataset(dataset_dict)
+        self.graph_from_groups()
 
         if not _format:
             _format = 'xml'
@@ -360,6 +374,8 @@ class RDFSerializer(RDFProcessor):
                 cat_ref = self._add_source_catalog(catalog_ref, dataset_dict, dataset_ref)
                 if not cat_ref:
                     self.g.add((catalog_ref, DCAT.dataset, dataset_ref))
+
+        self.graph_from_groups()
 
         if pagination_info:
             self._add_pagination_triples(pagination_info)

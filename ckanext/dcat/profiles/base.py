@@ -1540,3 +1540,25 @@ def _add_triple_from_dict(
         that must be used to reference the dataset when working with the graph.
         """
         pass
+
+    def groups(self):
+        '''
+        List the groups that should be serialized in the output.
+        Should return a set of group ids, likely retrieved from the graph.
+        Not guaranteed to be called on the same instance as serialized from
+        any dataset.
+        '''
+        return set()
+
+    def graph_from_group(self, group_dict, group_ref):
+        '''
+        Given a CKAN group dict, creates an RDF graph.
+
+        The class RDFLib graph (accessible via `self.g`) should be updated on
+        this method
+
+        `group_dict` is a dict with the dataset metadata like the one
+        returned by `group_show`. `group_ref` is an rdflib URIRef object
+        that must be used to reference the group when working with the graph.
+        '''
+
