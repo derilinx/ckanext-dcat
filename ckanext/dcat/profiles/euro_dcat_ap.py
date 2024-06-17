@@ -293,7 +293,7 @@ class EuropeanDCATAPProfile(RDFProfile):
         items = [
             ("title", DCT.title, None, Literal),
             ("url", DCAT.landingPage, None, URIRef),
-            ("identifier", DCT.identifier, ["guid", "id"], URIRefOrLiteral),
+            ("identifier", DCT.identifier, ["guid", "id"], Literal),
             ("version", OWL.versionInfo, ["dcat_version"], Literal),
             ("version_notes", ADMS.versionNotes, None, Literal),
             ("frequency", DCT.accrualPeriodicity, None, URIRefOrLiteral),
