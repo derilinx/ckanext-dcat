@@ -1395,6 +1395,44 @@ class RDFProfile(object):
         self.g.add((dataset_ref, DCT.spatial, spatial_ref))
         return spatial_ref
 
+    def _add_from_codelist(self, _dict, subject, predicate, key,
+                           codelist,
+                           _type=URIRefOrLiteral,
+                           list_value=False,
+                           fallbacks=False,
+                           value_modifier=False):
+        ''' Add an item from a codelist, stored in rdf in the codelists directory '''
+
+        value = self._get_dict_value(_dict, key)
+        if not value and fallbacks:
+            for fallback in fallbacks:
+                value = self._get_dict_value(_dict, fallback)
+                if value:
+                    break
+
+        if value and callable(value_modifier):
+            value = value_modifier(value)
+
+        if not value:
+            return
+
+        def add(item):
+            ref = _type(item)
+            self.g.add((ref, RDF.type, SKOS.Concept))
+            self.g.add((ref, SKOS.inScheme, URIRef(codelist.scheme)))
+            self.g.add((subject, predicate, ref))
+            for lang, label in codelist.labels(item).items():
+                _label_ref = Literal(label, lang=lang)
+                self.g.add((ref, SKOS.prefLabel, _label_ref))
+
+        if list_value:
+            items = self._read_list_value(value)
+            for item in items:
+                add(item)
+        else:
+            add(value)
+
+
     # Public methods for profiles to implement
 
     def parse_dataset(self, dataset_dict, dataset_ref):
