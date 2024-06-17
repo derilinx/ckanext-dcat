@@ -1465,6 +1465,11 @@ class EuropeanDCATAPProfile(RDFProfile):
         for resource_dict in dataset_dict.get('resources', []):
             self.graph_from_resource(g, dataset_ref, resource_dict, resource_license_fallback)
 
+        # datasets don't actually list the types of groups,
+        # so we can't tell if this is actually a data service
+        for group in dataset_dict.get('groups', []):
+            self.g.add((URIRef(group_uri(group)), RDF.type, DCAT.DataService))
+
     def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
         if distribution is None:
             distribution = CleanedURIRef(resource_uri(resource_dict))
