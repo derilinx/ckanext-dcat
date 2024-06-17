@@ -10,6 +10,7 @@ from ckan.lib.munge import munge_tag
 from ckanext.dcat import vocabularies
 from ckanext.dcat.utils import (
     resource_uri,
+    group_uri,
     DCAT_EXPOSE_SUBCATALOGS,
     DCAT_CLEAN_TAGS,
     publisher_uri_organization_fallback,
