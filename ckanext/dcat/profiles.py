@@ -1308,7 +1308,7 @@ class EuropeanDCATAPProfile(RDFProfile):
             ('title', DCT.title, None, Literal),
             ('notes', DCT.description, None, Literal),
             ('url', DCAT.landingPage, None, URIRef),
-            ('identifier', DCT.identifier, ['guid', 'id'], URIRefOrLiteral),
+            ('identifier', DCT.identifier, ['guid', 'id'], Literal),
             ('version', OWL.versionInfo, ['dcat_version'], Literal),
             ('version_notes', ADMS.versionNotes, None, Literal),
             ('frequency', DCT.accrualPeriodicity, None, URIRefOrLiteral),
@@ -1864,21 +1864,23 @@ class EuropeanDCATAPHVD220Profile(EuropeanDCATAP2Profile):
 
 
 class EuropeanDCATAPBRegProfile(RDFProfile):
-    BREG_FIELDS = [
-        (DCT.identifier, 'identifiers', None),
-        (DCT.hasPart, 'has_part', DCAT.Dataset),
-        (DQV.hasQualityAnnotation, 'has_quality_annotation', DQV.QualityAnnotation),
-        (DQV.hasQualityMeasurement, 'has_quality_measurement', DQV.QualityMeasurement),
-        (DCT.isPartOf, 'is_part_of', DCAT.Dataset),
-        (DCT.isReplacedBy, 'is_replaced_by', DCAT.Dataset),
-        (DCT.isRequiredBy, 'is_required_by', DCAT.Dataset),
-        (DCT.references, 'references', RDFS.Resource),
-        (DCT.requires, 'requires', DCAT.Dataset),
+    DATASET_FIELDS = [
+        ('identifiers', DCT.identifier, None, Literal, None),
+        ('has_part', DCT.hasPart, None, URIRefOrLiteral, DCAT.Dataset),
+        ('has_quality_annotation', DQV.hasQualityAnnotation, None, URIRefOrLiteral, DQV.QualityAnnotation),
+        ('has_quality_measurement', DQV.hasQualityMeasurement, None, URIRefOrLiteral, DQV.QualityMeasurement),
+        ('is_part_of', DCT.isPartOf, None, URIRefOrLiteral, DCAT.Dataset),
+        ('is_replaced_by', DCT.isReplacedBy, None, URIRefOrLiteral, DCAT.Dataset),
+        ('is_required_by', DCT.isRequiredBy, None, URIRefOrLiteral, DCAT.Dataset),
+        ('references', DCT.references, None, URIRefOrLiteral, RDFS.Resource),
+        ('requires', DCT.requires, None, URIRefOrLiteral, DCAT.Dataset),
+    ]
+
     ]
     # TODO: Data Services, all the other BReg classes
 
     def parse_dataset(self, dataset_dict, dataset_ref):
-        for (pred, key, cls) in self.BREG_FIELDS:
+        for (pred, key, cls, type) in self.DATASET_FIELDS:
             dataset_dict[key] = self._object_value_list(dataset_ref, pred)
 
         dataset_dict['follows_rules'] = [
@@ -1892,8 +1894,7 @@ class EuropeanDCATAPBRegProfile(RDFProfile):
 
 
     def graph_from_dataset(self, dataset_dict, dataset_ref):
-        for (pred, key, cls) in self.BREG_FIELDS:
-            self._add_triple_from_dict(dataset_dict, dataset_ref, pred, key, _type=URIRefOrLiteral, list_value=True, _class=cls)
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, self.DATASET_FIELDS)
 
         for rule in dataset_dict.get('follows_rules', []):
             ref = URIRef(rule['identifier'])
