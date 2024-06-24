@@ -13,6 +13,7 @@ from rdflib.namespace import ORG, RDF, RDFS, SKOS, XSD, Namespace
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.validators import is_date, is_year, is_year_month
 
+
 CNT = Namespace("http://www.w3.org/2011/content#")
 CR = Namespace("http://mlcommons.org/croissant/")
 DCT = Namespace("http://purl.org/dc/terms/")
@@ -998,8 +999,9 @@ class RDFProfile(object):
 
         if "geojson" in spatial_formats:
             # GeoJSON
-            self.g.add((spatial_ref, predicate, Literal(json.dumps(value), datatype=GEOJSON_IMT)))
-
+            self.g.add(
+                (spatial_ref, predicate, Literal(json.dumps(value), datatype=GEOJSON_IMT))
+            )
 
     def _add_spatial_to_dict(self, dataset_dict, key, spatial):
         if spatial.get(key):

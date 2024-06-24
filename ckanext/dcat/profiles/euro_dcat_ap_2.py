@@ -198,7 +198,6 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                             ("access_rights", DCT.accessRights),
                             ("description", DCT.description),
                             ("identifier", DCT.identifier),
-                            ("description", DCT.description),
                             ("modified", DCT.modified),
                         ):
                             value = self._object_value(access_service, predicate)

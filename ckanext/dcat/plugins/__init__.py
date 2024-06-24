@@ -234,7 +234,6 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
                     pass
 
             for item in spatial:
-
                 value = _check_for_a_geom(item)
                 if value:
                     dataset_dict['spatial'] = value

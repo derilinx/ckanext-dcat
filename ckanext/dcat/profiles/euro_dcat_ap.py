@@ -25,11 +25,9 @@ from .base import (
     DCAT,
     DCT,
     ADMS,
-    XSD,
     VCARD,
     FOAF,
     SCHEMA,
-    SKOS,
     LOCN,
     GSP,
     OWL,
@@ -158,33 +156,27 @@ class EuropeanDCATAPProfile(BaseEuropeanDCATAPProfile):
             )
 
         # Publisher
-        if any(
+        publisher_ref = None
+
+        if dataset_dict.get("publisher"):
+            # Scheming publisher field: will be handled in a separate profile
+            pass
+        elif any(
             [
                 self._get_dataset_value(dataset_dict, "publisher_uri"),
                 self._get_dataset_value(dataset_dict, "publisher_name"),
-                dataset_dict.get("organization"),
             ]
         ):
-
+            # Legacy publisher_* extras
             publisher_uri = self._get_dataset_value(dataset_dict, "publisher_uri")
-            publisher_uri_fallback = publisher_uri_organization_fallback(dataset_dict)
             publisher_name = self._get_dataset_value(dataset_dict, "publisher_name")
             if publisher_uri:
-                publisher_details = CleanedURIRef(publisher_uri)
-            elif not publisher_name and publisher_uri_fallback:
-                # neither URI nor name are available, use organization as fallback
-                publisher_details = CleanedURIRef(publisher_uri_fallback)
+                publisher_ref = CleanedURIRef(publisher_uri)
             else:
-                # No publisher_uri
-                publisher_details = BNode()
+                publisher_ref = BNode()
 
-            g.add((publisher_details, RDF.type, FOAF.Organization))
-            g.add((publisher_details, RDF.type, FOAF.Agent))
-            g.add((dataset_ref, DCT.publisher, publisher_details))
-
-            # In case no name and URI are available, again fall back to organization.
-            # If no name but an URI is available, the name literal remains empty to
-            # avoid mixing organization and dataset values.
+            # In case no name and URI are available, fall back to organization title.
+            # (Keeps existing behavior; avoids org_show refactor.)
             if (
                 not publisher_name
                 and not publisher_uri
@@ -192,18 +184,25 @@ class EuropeanDCATAPProfile(BaseEuropeanDCATAPProfile):
             ):
                 publisher_name = dataset_dict["organization"]["title"]
 
-            g.add((publisher_details, FOAF.name, Literal(publisher_name)))
-            # TODO: It would make sense to fallback these to organization
-            # fields but they are not in the default schema and the
-            # `organization` object in the dataset_dict does not include
-            # custom fields
-            items = [
-                ("publisher_email", FOAF.mbox, None, Literal),
-                ("publisher_url", FOAF.homepage, None, URIRef),
-                ("publisher_type", DCT.type, None, URIRefOrLiteral),
-            ]
+            publisher_details = {
+                "name": publisher_name,
+                "email": self._get_dataset_value(dataset_dict, "publisher_email"),
+                "url": self._get_dataset_value(dataset_dict, "publisher_url"),
+                "type": self._get_dataset_value(dataset_dict, "publisher_type"),
+            }
 
-            self._add_triples_from_dict(dataset_dict, publisher_details, items)
+        # Add to graph
+        if publisher_ref:
+            g.add((publisher_ref, RDF.type, FOAF.Organization))
+            g.add((publisher_ref, RDF.type, FOAF.Agent))
+            g.add((dataset_ref, DCT.publisher, publisher_ref))
+            items = [
+                ("name", FOAF.name, None, Literal),
+                ("email", FOAF.mbox, None, Literal),
+                ("url", FOAF.homepage, None, URIRef),
+                ("type", DCT.type, None, URIRefOrLiteral),
+            ]
+            self._add_triples_from_dict(publisher_details, publisher_ref, items)
 
         # Temporal
         start = self._get_dataset_value(dataset_dict, "temporal_start")

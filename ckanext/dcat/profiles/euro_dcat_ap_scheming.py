@@ -23,7 +23,6 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
     """
 
     def parse_dataset(self, dataset_dict, dataset_ref):
-
         return self._parse_dataset_v2_scheming(dataset_dict, dataset_ref)
 
     def graph_from_dataset(self, dataset_dict, dataset_ref):
@@ -213,7 +212,7 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
                     self.g.add((spatial_ref, SKOS.prefLabel, Literal(item["text"])))
 
                 for field in [
-                    ("geom", LOCN.Geometry),
+                    ("geom", LOCN.geometry),
                     ("bbox", DCAT.bbox),
                     ("centroid", DCAT.centroid),
                 ]:
