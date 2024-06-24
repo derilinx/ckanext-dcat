@@ -94,56 +94,52 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                         if values:
                             resource_dict[key] = json.dumps(values)
 
-                        # Access services
-                        access_service_list = []
+                    # Access services
+                    access_service_list = []
 
-                        for access_service in self.g.objects(
-                            distribution, DCAT.accessService
+                    for access_service in self.g.objects(
+                        distribution, DCAT.accessService
+                    ):
+                        access_service_dict = {}
+
+                        #  Simple values
+                        for key, predicate in (
+                            ("availability", DCATAP.availability),
+                            ("title", DCT.title),
+                            ("endpoint_description", DCAT.endpointDescription),
+                            ("license", DCT.license),
+                            ("access_rights", DCT.accessRights),
+                            ("description", DCT.description),
                         ):
-                            access_service_dict = {}
+                            value = self._object_value(access_service, predicate)
+                            if value:
+                                access_service_dict[key] = value
+                        #  List
+                        for key, predicate in (
+                            ("endpoint_url", DCAT.endpointURL),
+                            ("serves_dataset", DCAT.servesDataset),
+                        ):
+                            values = self._object_value_list(access_service, predicate)
+                            if values:
+                                access_service_dict[key] = values
 
-                            #  Simple values
-                            for key, predicate in (
-                                ("availability", DCATAP.availability),
-                                ("title", DCT.title),
-                                ("endpoint_description", DCAT.endpointDescription),
-                                ("license", DCT.license),
-                                ("access_rights", DCT.accessRights),
-                                ("description", DCT.description),
-                            ):
-                                value = self._object_value(access_service, predicate)
-                                if value:
-                                    access_service_dict[key] = value
-                            #  List
-                            for key, predicate in (
-                                ("endpoint_url", DCAT.endpointURL),
-                                ("serves_dataset", DCAT.servesDataset),
-                            ):
-                                values = self._object_value_list(
-                                    access_service, predicate
-                                )
-                                if values:
-                                    access_service_dict[key] = values
+                        # Access service URI (explicitly show the missing ones)
+                        access_service_dict["uri"] = (
+                            str(access_service)
+                            if isinstance(access_service, URIRef)
+                            else ""
+                        )
 
-                            # Access service URI (explicitly show the missing ones)
-                            access_service_dict["uri"] = (
-                                str(access_service)
-                                if isinstance(access_service, URIRef)
-                                else ""
-                            )
+                        # Remember the (internal) access service reference for referencing in
+                        # further profiles, e.g. for adding more properties
+                        access_service_dict["access_service_ref"] = str(access_service)
 
-                            # Remember the (internal) access service reference for referencing in
-                            # further profiles, e.g. for adding more properties
-                            access_service_dict["access_service_ref"] = str(
-                                access_service
-                            )
+                        access_service_list.append(access_service_dict)
 
-                            access_service_list.append(access_service_dict)
-
-                        if access_service_list:
-                            resource_dict["access_services"] = json.dumps(
-                                access_service_list
-                            )
+                    if access_service_list:
+                        resource_dict["access_services"] = json.dumps(
+                            access_service_list
+                        )
 
         return dataset_dict
 
@@ -234,8 +230,14 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
         try:
-            access_service_list = json.loads(resource_dict.get('access_services', '[]'))
+            access_service_list = resource_dict.get("access_services", [])
             # Access service
+            if isinstance(access_service_list, str):
+                try:
+                    access_service_list = json.loads(access_service_list)
+                except ValueError:
+                    access_service_list = []
+
             for access_service_dict in access_service_list:
 
                 access_service_uri = access_service_dict.get('uri')
