@@ -4,7 +4,7 @@ from decimal import Decimal, DecimalException
 from rdflib import URIRef, BNode, Literal, Namespace, FOAF, PROV, RDF, RDFS
 from ckanext.dcat.utils import resource_uri
 
-from . import codelists
+from .. import codelists
 
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
