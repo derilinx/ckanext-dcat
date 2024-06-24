@@ -8,7 +8,6 @@ from ckanext.dcat.utils import resource_uri, group_uri
 from ckanext.dcat import codelists
 from ckanext.dcat import legal_resources
 
-
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
     RDF,
