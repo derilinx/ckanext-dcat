@@ -301,8 +301,26 @@ class RDFProfile(object):
 
         If no values found, returns an empty string
         """
-        return [str(o) for o in self.g.objects(subject, predicate)]
+        return [self._get_skos_value(o) for o in self.g.objects(subject, predicate)]
 
+    def _get_skos_value(self, subject):
+        """ 
+        Return the prefLabel for a skos:Concept, 
+        UNDONE - language, identifier for those that aren't using a preflabel, integration with codelists?
+        """
+
+        _type = self.g.value(subject, RDF.type)
+        # fallback for if this isn't actually a skos concept
+        if _type != SKOS.Concept:
+            return str(subject)
+        
+        value = self.g.value(subject=subject, predicate=SKOS.prefLabel)
+        if value:
+            return str(value)
+        
+        return str(subject)
+    
+            
     def _get_vcard_property_value(
         self, subject, predicate, predicate_string_property=None
     ):
