@@ -38,6 +38,7 @@ setup(
     dcat_json_harvester=ckanext.dcat.harvesters:DCATJSONHarvester
 
     dcat_rdf_harvester=ckanext.dcat.harvesters:DCATRDFHarvester
+    dcat_esri_dcat211_harvester=ckanext.dcat.harvesters:EsriInspireDcat211Harvester
 
     dcat_json_interface=ckanext.dcat.plugins:DCATJSONInterface
 
