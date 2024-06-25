@@ -31,6 +31,7 @@ SPDX = Namespace("http://spdx.org/rdf/terms#")
 ELI= Namespace('http://data.europa.eu/eli/ontology#')
 CPSV = Namespace("http://purl.org/vocab/cpsv#")
 DQV = Namespace("http://www.w3.org/ns/dqv#")
+EPSG = Namespace("http://www.opengis.net/def/crs/EPSG/0/")
 
 namespaces = {
     "cnt": CNT,
@@ -53,6 +54,7 @@ namespaces = {
     "eli": ELI,
     "cpsv": CPSV,
     "dqv": DQV,
+    "epsg": EPSG
 }
 
 PREFIX_MAILTO = "mailto:"
