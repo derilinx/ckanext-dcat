@@ -26,6 +26,9 @@ GSP = Namespace("http://www.opengis.net/ont/geosparql#")
 OWL = Namespace("http://www.w3.org/2002/07/owl#")
 SPDX = Namespace("http://spdx.org/rdf/terms#")
 ELI= Namespace('http://data.europa.eu/eli/ontology#')
+CPSV = Namespace("http://purl.org/vocab/cpsv#")
+DQV = Namespace("http://www.w3.org/ns/dqv#")
+EPSG = Namespace("http://www.opengis.net/def/crs/EPSG/0/")
 
 namespaces = {
     "dct": DCT,
@@ -41,7 +44,10 @@ namespaces = {
     "gsp": GSP,
     "owl": OWL,
     "spdx": SPDX,
-    "eli": ELI
+    "eli": ELI,
+    "cpsv": CPSV,
+    "dqv": DQV,
+    "epsg": EPSG
 }
 
 PREFIX_MAILTO = "mailto:"
@@ -684,8 +690,10 @@ class RDFProfile(object):
             else:
                 label = str(_format)
         elif isinstance(_format, (BNode, URIRef)):
-            if self._object(_format, RDF.type) == DCT.IMT:
-                if not imt:
+            types = set(self.g.objects(_format, RDF.type))
+            is_imt = DCT.IMT in types
+            if is_imt or DCT.MediaTypeOrExtent in types:
+                if is_imt and not imt:
                     imt = str(self.g.value(_format, default=None))
                 label = self._object_value(_format, RDFS.label)
             elif isinstance(_format, URIRef):
@@ -1100,6 +1108,9 @@ class RDFProfile(object):
         if value and callable(value_modifier):
             value = value_modifier(value)
 
+        if not value:
+            return
+
         def add(item):
             ref = _type(item)
             self.g.add((ref, RDF.type, SKOS.Concept))
@@ -1201,3 +1212,25 @@ class RDFProfile(object):
         that must be used to reference the dataset when working with the graph.
         """
         pass
+
+    def groups(self):
+        '''
+        List the groups that should be serialized in the output.
+        Should return a set of group ids, likely retrieved from the graph.
+        Not guaranteed to be called on the same instance as serialized from
+        any dataset.
+        '''
+        return set()
+
+    def graph_from_group(self, group_dict, group_ref):
+        '''
+        Given a CKAN group dict, creates an RDF graph.
+
+        The class RDFLib graph (accessible via `self.g`) should be updated on
+        this method
+
+        `group_dict` is a dict with the dataset metadata like the one
+        returned by `group_show`. `group_ref` is an rdflib URIRef object
+        that must be used to reference the group when working with the graph.
+        '''
+

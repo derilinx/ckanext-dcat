@@ -1,0 +1,1302 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rdf:RDF
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:ns1="http://publications.europa.eu/ontology/authority/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+>
+  <rdf:Description rdf:nodeID="N1dd20e4d70d3424780a42ea32d955d84">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SWA">
+    <ns1:op-mapped-code rdf:nodeID="N52371997d75947efa7035d1d963cea27"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ndc3c591ee6044f848ea5427683d38454">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>it</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ncf06929d5efe4bd0bec469b8855a8abf">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ak</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N9d5b16fb92744ed587ec38cbd4e68400">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>gu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HMO">
+    <ns1:op-mapped-code rdf:nodeID="N5493b7932e654882b62131fc3a592244"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbc58fc998725451daeeddfa4833df1ae">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>xh</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N70ecebb405d5460dbfaeb8f4b620b526">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mt</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N093c5624e14143ba82ec25c1f76c98e6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>om</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KON">
+    <ns1:op-mapped-code rdf:nodeID="N34a1ac6a0a1b4dd4a372e7c21dcb1036"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KUR">
+    <ns1:op-mapped-code rdf:nodeID="N63d4edd3cee64de791819bffd4564149"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CYM">
+    <ns1:op-mapped-code rdf:nodeID="N4ffd15ac9ec446f98dd164adb4d242d2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CHA">
+    <ns1:op-mapped-code rdf:nodeID="Ne93d55f1d3814c2fa94f54f3870a4f6c"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TON">
+    <ns1:op-mapped-code rdf:nodeID="N5ea843270e5c41e2af323df106a47aa9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TSO">
+    <ns1:op-mapped-code rdf:nodeID="N1d4c57e4cfbe47de867bca2d1af4d2cc"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nba1146ae26084618ac6d7b5dc82a5bdb">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>th</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N899b4d9ac2f74ce688a126635471dc29">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sk</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nb9a6eb90c7484f31b4c083d7230fd18a">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bs</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N924fd9b2158747249e0e56d5e727dc81">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ug</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N28afa12239424ae18f2106071600c9fa">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>hz</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SSW">
+    <ns1:op-mapped-code rdf:nodeID="Na6c5488094aa43dc8c911e831a9eb9ae"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N79bdac386e0f495a9419c597eb7c89cd">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>eu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ndfac333b92b54c62b6e473556084c38e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fy</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbdd7629d20d944e98b46baf672d9f95e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>rm</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4ac210f7d7dd415d93dae0bb5e11829d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>km</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na3e89c2cdc834a18a0a9d6d485a40ee0">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ta</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HAT">
+    <ns1:op-mapped-code rdf:nodeID="N6369140d0f4a48b2b325849dcd70f6c1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N310dde22acbd460d8e51b45d5c31c9b8">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lb</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2eb3061094ae437a89ec5b628850e655">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TEL">
+    <ns1:op-mapped-code rdf:nodeID="N3808771339514acca40e9a9a36381654"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5b1c6e96dcc44d7782c5c8587708d68c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>br</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/WLN">
+    <ns1:op-mapped-code rdf:nodeID="N5f94faa1213e43c1bc547e62e92f8ba2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/UKR">
+    <ns1:op-mapped-code rdf:nodeID="Nba917191b2144b23b1dcdb8d0cafe3ff"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAT">
+    <ns1:op-mapped-code rdf:nodeID="N736efa1417ad48dca02be09dccc4c34e"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbabc18c6528d43ae885fd8ce9141ce0c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ay</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N19017f1b7a0d42068c924eb294df3297">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>es</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N976317c97c224d0b8e46be687bb9be9b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>hy</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SLK">
+    <ns1:op-mapped-code rdf:nodeID="N899b4d9ac2f74ce688a126635471dc29"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N52986d21e9a74216954ff664801c117b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ru</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TWI">
+    <ns1:op-mapped-code rdf:nodeID="N0476f748b81b450ebe475de34f454f4d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nb44e25446d9147a4963e8027463fea87">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nb</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Naf175553bedf45a0b8a5a93d436b4703">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>pi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2f57dc6a1a8642d9b14257f6facb2b59">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nfb1a0c02c0714a128faec32460c007ca">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ko</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N84499e610a154a0991de88204a724cc6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>as</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd24225daac054dedacb9623ea354d8b3">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>co</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N7b9cff01a36243d3979c1311ab2d77a6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ii</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf3f1691a137e4a649bcb55072d10767b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>gd</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N950b44a5a8b94c91af696e2e0d924ebb">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ti</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N67c68f1f616f4ab6b06bd6d5b93a706b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ar</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MON">
+    <ns1:op-mapped-code rdf:nodeID="N2417c6f3422742d4a79cfb988db59a0b"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd0fe0088685f4ac69802905f8e83fff4">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>av</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N16a1372d8a1243f2943a04c27e8de21d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mk</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ne65d92d2c8964578aa55d07238bcd119">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ga</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GUJ">
+    <ns1:op-mapped-code rdf:nodeID="N9d5b16fb92744ed587ec38cbd4e68400"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1e05d6c29c6849faac5c5e9b2f96b238">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>li</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CHE">
+    <ns1:op-mapped-code rdf:nodeID="Nfdfc042ce9824bddbe0beebbcdb08412"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Necb60671ad8c41eebf299b02afea6769">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>cr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd53a5378164e452d8f8ce23cf2bf1144">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kj</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NAU">
+    <ns1:op-mapped-code rdf:nodeID="N4414bf2ad38e4f849c3eab33826a6efc"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/JPN">
+    <ns1:op-mapped-code rdf:nodeID="N51e3fa3d2e564ba18f10c061e6654037"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5623093e78e8430dab2f5bdcc83e7c17">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>cv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ne245c3ad51014d64a4ae32efda456d49">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nd</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nade9efc50cf946edbe1ae1979c933747">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5ea843270e5c41e2af323df106a47aa9">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>to</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BOS">
+    <ns1:op-mapped-code rdf:nodeID="Nb9a6eb90c7484f31b4c083d7230fd18a"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nc2f3567ac5d2487092113b3fa094852f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>az</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N86e9bcf24ef147dcacfc76ffc269977b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sc</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TGK">
+    <ns1:op-mapped-code rdf:nodeID="N21c96419d2a44706b0311a1314aa426b"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N37904cd1cb3546d6bf87aabdecb43e67">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CRE">
+    <ns1:op-mapped-code rdf:nodeID="Necb60671ad8c41eebf299b02afea6769"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N78183e9e382e470babf917f7b4583a7d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>dz</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4a80c39120a14c0eb48086a735f7eedb">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>am</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4414bf2ad38e4f849c3eab33826a6efc">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>na</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6369140d0f4a48b2b325849dcd70f6c1">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ht</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HIN">
+    <ns1:op-mapped-code rdf:nodeID="N0d5513ee35624129ade47f71207884c2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ITA">
+    <ns1:op-mapped-code rdf:nodeID="Ndc3c591ee6044f848ea5427683d38454"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N32b84682ee9744a0aaf0aed3686fb29f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4f458876de7743d68ece007440486dec">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sd</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/JAV">
+    <ns1:op-mapped-code rdf:nodeID="N79695caac97c401eae7af46995cca53f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FIN">
+    <ns1:op-mapped-code rdf:nodeID="Neb30c80333e34aba80ca3e1dcf776fe1"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2082ec4405f947f6ad682b9ed1a3ed0b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>hu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAZ">
+    <ns1:op-mapped-code rdf:nodeID="N1c890d312e06459db3b7cf2a126ec0a5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2f3200b16146484284227ca62a017d0a">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>id</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/POL">
+    <ns1:op-mapped-code rdf:nodeID="Naee29c377a494dde9fab4afb85264d66"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Neb30c80333e34aba80ca3e1dcf776fe1">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4b754515a8784c27b867a32339a718b9">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd794a2f4589f40b19dae146698d8286f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fj</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SND">
+    <ns1:op-mapped-code rdf:nodeID="N4f458876de7743d68ece007440486dec"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/EWE">
+    <ns1:op-mapped-code rdf:nodeID="N90684c5a95d0407e89bd86de72729157"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N8a3735003d0f4f5e806617d4f652a28b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>da</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N17e234495b2c4d2c92439300b6e23ff9">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N34a1ac6a0a1b4dd4a372e7c21dcb1036">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/VEN">
+    <ns1:op-mapped-code rdf:nodeID="Nbe85323003de42c2a6f05503c00c8fdd"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2b93974626e044c6b5dad21c9aa3a581">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ab</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6289d3a7a4e84e94b852e94ab5c6291f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4c38a37c61734603b55185cae34244f5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lt</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N3be4c198b2564aed86f62cbc5bddc1e2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>rn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SME">
+    <ns1:op-mapped-code rdf:nodeID="N69da81b9163f4fc98306acff0cc87119"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N0476f748b81b450ebe475de34f454f4d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tw</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ZHO">
+    <ns1:op-mapped-code rdf:nodeID="Nfdf40d49b4f146918ea430295a78fbd4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N54f64e8910a54c009c77c0bc46a69d6d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N77ada5a3f443409eaa9fe522865a6240">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bm</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N23c5a36e44c74b84a4b59655cfd7b004">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>be</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SAG">
+    <ns1:op-mapped-code rdf:nodeID="Nc3a955ab03e0410e95414da28533d9c7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LAT">
+    <ns1:op-mapped-code rdf:nodeID="N11af29a0365540e39aebd68dffae16e9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TSN">
+    <ns1:op-mapped-code rdf:nodeID="Ncc7ae89b7c304d64bafe435fa6b56b63"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N487eb0270183478ca04b9a0cd8082c0e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>af</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nfdf40d49b4f146918ea430295a78fbd4">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>zh</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N7f3726c1de11441b9a199d614a3850f5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sq</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N0d5513ee35624129ade47f71207884c2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>hi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BEN">
+    <ns1:op-mapped-code rdf:nodeID="N7cb5c57974b64b718991011c68764bfe"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAN">
+    <ns1:op-mapped-code rdf:nodeID="N6315227d2d764b628496fac8e6d68fd5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N7e6f8225770c4576918ad9c7f4d62310">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf4a8af2e194b46b9b5343a4b7d52f903">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N9895d1cf288949d8b91d10860b974f25">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>fa</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nda6f8298364c49d5bc28ec610ed779bc">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HER">
+    <ns1:op-mapped-code rdf:nodeID="N28afa12239424ae18f2106071600c9fa"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/EUS">
+    <ns1:op-mapped-code rdf:nodeID="N79bdac386e0f495a9419c597eb7c89cd"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SUN">
+    <ns1:op-mapped-code rdf:nodeID="N41f3841eab18471597a453d55d00a2f6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/EST">
+    <ns1:op-mapped-code rdf:nodeID="N6bf32ab58922450aa4ba1504362dce41"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N59034e8b09e64639886a6743b23407f0">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>os</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6315227d2d764b628496fac8e6d68fd5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NDE">
+    <ns1:op-mapped-code rdf:nodeID="Ne245c3ad51014d64a4ae32efda456d49"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N52371997d75947efa7035d1d963cea27">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sw</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/DEU">
+    <ns1:op-mapped-code rdf:nodeID="N6a6d4f87f00d4ad5bbb92416325da0c3"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1c0a4770c0114255a8ca1c20f5ac1b4d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sh</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N9559a0f6f966493390fc1de229eb21ef">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>dv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ne6a1ee4b991a452199f8d1ba2b446483">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ur</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ZUL">
+    <ns1:op-mapped-code rdf:nodeID="Nd7b188a3937f46ec9df15b2ba29d83f4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2f2f34a4410d4a798a4510fc3499d86b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>wo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TAT">
+    <ns1:op-mapped-code rdf:nodeID="N8a5a325ea4124311b8913f91bd5e1060"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N96573ca8124a42c0b1badc0f713735fa">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>uz</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N11af29a0365540e39aebd68dffae16e9">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>la</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ABK">
+    <ns1:op-mapped-code rdf:nodeID="N2b93974626e044c6b5dad21c9aa3a581"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/COS">
+    <ns1:op-mapped-code rdf:nodeID="Nd24225daac054dedacb9623ea354d8b3"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ndd46528bf53a4cd889ade83b798cf4f5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mh</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbe85323003de42c2a6f05503c00c8fdd">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ve</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf6f9a2a5da3843aeb1215c88a4cd1fc6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AAR">
+    <ns1:op-mapped-code rdf:nodeID="N8b39b35a75754d87822070abb6534ea2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nb625953de3544d5fa23535cb2e245f65">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>hr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbedce4799ac04b148bcbd93eef972ccf">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>pt</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GLV">
+    <ns1:op-mapped-code rdf:nodeID="N914c96c311b24ff38559edbf0d2ce156"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbe38fff3c73a43cd9d959f5b47480487">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>rw</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N37ea4cd4aadd4939937bcc1d9abbb210">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>no</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nc3a955ab03e0410e95414da28533d9c7">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4eec4c8666d04b57802d97f8073fc1a4">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ty</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/EPO">
+    <ns1:op-mapped-code rdf:nodeID="Na1c2aebe3b3b48dbae412ab17381a1eb"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FRA">
+    <ns1:op-mapped-code rdf:nodeID="Nf4a8af2e194b46b9b5343a4b7d52f903"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NOB">
+    <ns1:op-mapped-code rdf:nodeID="Nb44e25446d9147a4963e8027463fea87"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N914c96c311b24ff38559edbf0d2ce156">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>gv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HBS">
+    <ns1:op-mapped-code rdf:nodeID="N1c0a4770c0114255a8ca1c20f5ac1b4d"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MYA">
+    <ns1:op-mapped-code rdf:nodeID="N92a6d8aac8a34a639c8f08d75eea5993"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CHU">
+    <ns1:op-mapped-code rdf:nodeID="N5c4747425e4a4d7e891efc8753862715"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2b91ab5dfbda45ba9b97b05e8ffca8fc">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>is</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N50d5267b99a74c9b834af2943841fde6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LUG">
+    <ns1:op-mapped-code rdf:nodeID="Necbe79403f5a44158cef382fadd7cdd5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1fd2b09394324ae48074af73e11eca49">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ae</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nfdfc042ce9824bddbe0beebbcdb08412">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ce</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MKD">
+    <ns1:op-mapped-code rdf:nodeID="N16a1372d8a1243f2943a04c27e8de21d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nea0012c0f3f642b4b164d75653cd468e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N8b39b35a75754d87822070abb6534ea2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>aa</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MAL">
+    <ns1:op-mapped-code rdf:nodeID="N794c60878b34432d88f825ee2c382937"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nee33d9ad63b247db9b5f94ad02b6d064">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>iu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TAH">
+    <ns1:op-mapped-code rdf:nodeID="N4eec4c8666d04b57802d97f8073fc1a4"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N0f92985c6a3145d0b73c427707a6d3ed">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>el</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ne0a7b474a9774fbd98af2e71ba7e4082">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N233c59ccd9004c0ba0532b671af043e3">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5f94faa1213e43c1bc547e62e92f8ba2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>wa</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6bf32ab58922450aa4ba1504362dce41">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>et</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2beebbbd18a04917b686e850e63e8420">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kw</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BOD">
+    <ns1:op-mapped-code rdf:nodeID="N37904cd1cb3546d6bf87aabdecb43e67"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TGL">
+    <ns1:op-mapped-code rdf:nodeID="N54f64e8910a54c009c77c0bc46a69d6d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N92a6d8aac8a34a639c8f08d75eea5993">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>my</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N8f3bb5b887de4c64a86f374a2ca093be">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ik</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N4ffd15ac9ec446f98dd164adb4d242d2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>cy</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N69da81b9163f4fc98306acff0cc87119">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>se</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd06e9cd37d9943b2be9648feecae6e2f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>vo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LAV">
+    <ns1:op-mapped-code rdf:nodeID="N233c59ccd9004c0ba0532b671af043e3"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GLE">
+    <ns1:op-mapped-code rdf:nodeID="Ne65d92d2c8964578aa55d07238bcd119"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N431c3f7760f44d83ade46bc15c8a6a45">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>oj</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N794c60878b34432d88f825ee2c382937">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ml</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N52ef77c4efe64e8badf618e09d27e0a2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>si</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N33ede98ad29f4d7ebb1203733635e28e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kr</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6da1bdfa0e5e473f9b3a9a317d27adc6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ig</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BAM">
+    <ns1:op-mapped-code rdf:nodeID="N77ada5a3f443409eaa9fe522865a6240"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd7cf25e7181e4331aa2af03aba75790b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ps</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd4160171c6b94b8c85bd56386d9506be">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>vi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/DZO">
+    <ns1:op-mapped-code rdf:nodeID="N78183e9e382e470babf917f7b4583a7d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf2e8ea3af69d409cac9275c4d4e2d1ba">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ca</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/INA">
+    <ns1:op-mapped-code rdf:nodeID="N07db4e55bda845a9a50b2404b261b850"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N289680125f164e3cba2c7af650fa6065">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ng</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KIR">
+    <ns1:op-mapped-code rdf:nodeID="Nb2a7e9253d0648b8a1c31e6428541c32"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/YOR">
+    <ns1:op-mapped-code rdf:nodeID="Nf9c202e87a40428899497d074c14c843"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FIJ">
+    <ns1:op-mapped-code rdf:nodeID="Nd794a2f4589f40b19dae146698d8286f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/RUN">
+    <ns1:op-mapped-code rdf:nodeID="N3be4c198b2564aed86f62cbc5bddc1e2"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd7b188a3937f46ec9df15b2ba29d83f4">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>zu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6811d5ee499248f6b196294b59127280">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>he</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2417c6f3422742d4a79cfb988db59a0b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ne93d55f1d3814c2fa94f54f3870a4f6c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ch</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N8a5a325ea4124311b8913f91bd5e1060">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tt</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/URD">
+    <ns1:op-mapped-code rdf:nodeID="Ne6a1ee4b991a452199f8d1ba2b446483"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MLG">
+    <ns1:op-mapped-code rdf:nodeID="N4b754515a8784c27b867a32339a718b9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AKA">
+    <ns1:op-mapped-code rdf:nodeID="Ncf06929d5efe4bd0bec469b8855a8abf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/VOL">
+    <ns1:op-mapped-code rdf:nodeID="Nd06e9cd37d9943b2be9648feecae6e2f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NBL">
+    <ns1:op-mapped-code rdf:nodeID="Ne0a7b474a9774fbd98af2e71ba7e4082"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/PAN">
+    <ns1:op-mapped-code rdf:nodeID="N493405b3a69a42dbb9f7dd042db15e90"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N309badf2553f4e2b98755cd1c5b045ea">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sa</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KUA">
+    <ns1:op-mapped-code rdf:nodeID="Nd53a5378164e452d8f8ce23cf2bf1144"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NAV">
+    <ns1:op-mapped-code rdf:nodeID="N32b84682ee9744a0aaf0aed3686fb29f"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nb2a7e9253d0648b8a1c31e6428541c32">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ky</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ROH">
+    <ns1:op-mapped-code rdf:nodeID="Nbdd7629d20d944e98b46baf672d9f95e"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ILE">
+    <ns1:op-mapped-code rdf:nodeID="Naf4123c9a7e948cd814e72e069408a8c"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CAT">
+    <ns1:op-mapped-code rdf:nodeID="Nf2e8ea3af69d409cac9275c4d4e2d1ba"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nb51bc6f079e84e559f2536c8ed9d652e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>gn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1c890d312e06459db3b7cf2a126ec0a5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kk</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ORM">
+    <ns1:op-mapped-code rdf:nodeID="N093c5624e14143ba82ec25c1f76c98e6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SPA">
+    <ns1:op-mapped-code rdf:nodeID="N19017f1b7a0d42068c924eb294df3297"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf9aa35c5a19e45548dbd4daf53697343">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ki</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AZE">
+    <ns1:op-mapped-code rdf:nodeID="Nc2f3567ac5d2487092113b3fa094852f"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6a6d4f87f00d4ad5bbb92416325da0c3">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>de</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AVE">
+    <ns1:op-mapped-code rdf:nodeID="N1fd2b09394324ae48074af73e11eca49"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FUL">
+    <ns1:op-mapped-code rdf:nodeID="Na4ad10fe926540eb8cd587a7254c6c50"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N6cba4edf06f14907af4050439d7d1d7c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ha</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na1c2aebe3b3b48dbae412ab17381a1eb">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>eo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N48d950e5c9cd4fe1a779b8ee8d38f3ea">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>en</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N8a99532611454ab283c3c7165efc7592">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>st</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N49b4f52b8a1c4cec965a079d7f210674">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>cs</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N3be96972e17147fb897aea1721d3d2f8">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>io</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/VIE">
+    <ns1:op-mapped-code rdf:nodeID="Nd4160171c6b94b8c85bd56386d9506be"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N63d4edd3cee64de791819bffd4564149">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ku</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NOR">
+    <ns1:op-mapped-code rdf:nodeID="N37ea4cd4aadd4939937bcc1d9abbb210"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N493405b3a69a42dbb9f7dd042db15e90">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>pa</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N67952ab775994d09a801efa6da10e949">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>kl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ARG">
+    <ns1:op-mapped-code rdf:nodeID="Ncf53773b962148bb8a296ea9b74fb972"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5363ca4959224cdfacd794e69f31c5d0">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ro</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N7cb5c57974b64b718991011c68764bfe">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/IPK">
+    <ns1:op-mapped-code rdf:nodeID="N8f3bb5b887de4c64a86f374a2ca093be"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nba917191b2144b23b1dcdb8d0cafe3ff">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>uk</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BAK">
+    <ns1:op-mapped-code rdf:nodeID="Naca634f4a6304aa3b9fe9bad3de8c966"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KIK">
+    <ns1:op-mapped-code rdf:nodeID="Nf9aa35c5a19e45548dbd4daf53697343"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FRY">
+    <ns1:op-mapped-code rdf:nodeID="Ndfac333b92b54c62b6e473556084c38e"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5c4747425e4a4d7e891efc8753862715">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>cu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/OCI">
+    <ns1:op-mapped-code rdf:nodeID="N57061b88002b4e83b715a773fea499ba"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/YID">
+    <ns1:op-mapped-code rdf:nodeID="N95bca757a2ad4bb594d259dfb4303da5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Naf4123c9a7e948cd814e72e069408a8c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ie</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/IKU">
+    <ns1:op-mapped-code rdf:nodeID="Nee33d9ad63b247db9b5f94ad02b6d064"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/QUE">
+    <ns1:op-mapped-code rdf:nodeID="N0cbc56c074c74d928de642db44b5ce81"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NLD">
+    <ns1:op-mapped-code rdf:nodeID="Nade9efc50cf946edbe1ae1979c933747"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N5493b7932e654882b62131fc3a592244">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ho</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/UZB">
+    <ns1:op-mapped-code rdf:nodeID="N96573ca8124a42c0b1badc0f713735fa"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SWE">
+    <ns1:op-mapped-code rdf:nodeID="N7e6f8225770c4576918ad9c7f4d62310"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/OSS">
+    <ns1:op-mapped-code rdf:nodeID="N59034e8b09e64639886a6743b23407f0"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N79695caac97c401eae7af46995cca53f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>jv</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na4ad10fe926540eb8cd587a7254c6c50">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ff</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N67a2e2fba32b416cb72e8a2051b09b1d">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ks</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/PLI">
+    <ns1:op-mapped-code rdf:nodeID="Naf175553bedf45a0b8a5a93d436b4703"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CHV">
+    <ns1:op-mapped-code rdf:nodeID="N5623093e78e8430dab2f5bdcc83e7c17"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nafdb3033899247da85ffd989b45baf81">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sm</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ARA">
+    <ns1:op-mapped-code rdf:nodeID="N67c68f1f616f4ab6b06bd6d5b93a706b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KIN">
+    <ns1:op-mapped-code rdf:nodeID="Nbe38fff3c73a43cd9d959f5b47480487"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ncf53773b962148bb8a296ea9b74fb972">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>an</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FAS">
+    <ns1:op-mapped-code rdf:nodeID="N9895d1cf288949d8b91d10860b974f25"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ASM">
+    <ns1:op-mapped-code rdf:nodeID="N84499e610a154a0991de88204a724cc6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Necbe79403f5a44158cef382fadd7cdd5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ndf7e96e3fff742e793923fb91ce93214">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>mi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/PUS">
+    <ns1:op-mapped-code rdf:nodeID="Nd7cf25e7181e4331aa2af03aba75790b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LIM">
+    <ns1:op-mapped-code rdf:nodeID="N1e05d6c29c6849faac5c5e9b2f96b238"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AVA">
+    <ns1:op-mapped-code rdf:nodeID="Nd0fe0088685f4ac69802905f8e83fff4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BIS">
+    <ns1:op-mapped-code rdf:nodeID="N1dd20e4d70d3424780a42ea32d955d84"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Naee29c377a494dde9fab4afb85264d66">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>pl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SAN">
+    <ns1:op-mapped-code rdf:nodeID="N309badf2553f4e2b98755cd1c5b045ea"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/IDO">
+    <ns1:op-mapped-code rdf:nodeID="N3be96972e17147fb897aea1721d3d2f8"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MSA">
+    <ns1:op-mapped-code rdf:nodeID="N66fdd334a1464bab8053fea8e92f06a7"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N230261e8f53a462d9a82df88b41cf3a4">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>gl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LIT">
+    <ns1:op-mapped-code rdf:nodeID="N4c38a37c61734603b55185cae34244f5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SRD">
+    <ns1:op-mapped-code rdf:nodeID="N86e9bcf24ef147dcacfc76ffc269977b"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N69499e7c7adc42d8b9c8f1bfc4f0c09f">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>bg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HYE">
+    <ns1:op-mapped-code rdf:nodeID="N976317c97c224d0b8e46be687bb9be9b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NDO">
+    <ns1:op-mapped-code rdf:nodeID="N289680125f164e3cba2c7af650fa6065"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MOL">
+    <ns1:op-mapped-code rdf:nodeID="N17e234495b2c4d2c92439300b6e23ff9"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ORI">
+    <ns1:op-mapped-code rdf:nodeID="Nd59359b0cfbf4dbdac4de9733599c328"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf9c202e87a40428899497d074c14c843">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>yo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N90684c5a95d0407e89bd86de72729157">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ee</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NYA">
+    <ns1:op-mapped-code rdf:nodeID="Nbbeed74997f34c938b5bc1ee93bae001"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MLT">
+    <ns1:op-mapped-code rdf:nodeID="N70ecebb405d5460dbfaeb8f4b620b526"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GLA">
+    <ns1:op-mapped-code rdf:nodeID="Nf3f1691a137e4a649bcb55072d10767b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAU">
+    <ns1:op-mapped-code rdf:nodeID="N33ede98ad29f4d7ebb1203733635e28e"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HRV">
+    <ns1:op-mapped-code rdf:nodeID="Nb625953de3544d5fa23535cb2e245f65"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/IBO">
+    <ns1:op-mapped-code rdf:nodeID="N6da1bdfa0e5e473f9b3a9a317d27adc6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Naeeb9cb45ae04895b4e304ffd70403d2">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ne</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SOT">
+    <ns1:op-mapped-code rdf:nodeID="N8a99532611454ab283c3c7165efc7592"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAS">
+    <ns1:op-mapped-code rdf:nodeID="N67a2e2fba32b416cb72e8a2051b09b1d"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N41f3841eab18471597a453d55d00a2f6">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>su</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N95bca757a2ad4bb594d259dfb4303da5">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>yi</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HEB">
+    <ns1:op-mapped-code rdf:nodeID="N6811d5ee499248f6b196294b59127280"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TUK">
+    <ns1:op-mapped-code rdf:nodeID="N777958ad6ccb42418da15d6c6af20ce7"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AMH">
+    <ns1:op-mapped-code rdf:nodeID="N4a80c39120a14c0eb48086a735f7eedb"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/COR">
+    <ns1:op-mapped-code rdf:nodeID="N2beebbbd18a04917b686e850e63e8420"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N66fdd334a1464bab8053fea8e92f06a7">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ms</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/RUS">
+    <ns1:op-mapped-code rdf:nodeID="N52986d21e9a74216954ff664801c117b"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N21c96419d2a44706b0311a1314aa426b">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tg</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Naca634f4a6304aa3b9fe9bad3de8c966">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ba</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nf82129dfea354c6fb02aaf28181ed48c">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>za</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ZHA">
+    <ns1:op-mapped-code rdf:nodeID="Nf82129dfea354c6fb02aaf28181ed48c"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/FAO">
+    <ns1:op-mapped-code rdf:nodeID="N2f57dc6a1a8642d9b14257f6facb2b59"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ENG">
+    <ns1:op-mapped-code rdf:nodeID="N48d950e5c9cd4fe1a779b8ee8d38f3ea"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N51e3fa3d2e564ba18f10c061e6654037">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ja</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N3808771339514acca40e9a9a36381654">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>te</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd59359b0cfbf4dbdac4de9733599c328">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>or</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SNA">
+    <ns1:op-mapped-code rdf:nodeID="Nea0012c0f3f642b4b164d75653cd468e"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SQI">
+    <ns1:op-mapped-code rdf:nodeID="N7f3726c1de11441b9a199d614a3850f5"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/DIV">
+    <ns1:op-mapped-code rdf:nodeID="N9559a0f6f966493390fc1de229eb21ef"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N1d4c57e4cfbe47de867bca2d1af4d2cc">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ts</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/RON">
+    <ns1:op-mapped-code rdf:nodeID="N5363ca4959224cdfacd794e69f31c5d0"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KAL">
+    <ns1:op-mapped-code rdf:nodeID="N67952ab775994d09a801efa6da10e949"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ELL">
+    <ns1:op-mapped-code rdf:nodeID="N0f92985c6a3145d0b73c427707a6d3ed"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MAH">
+    <ns1:op-mapped-code rdf:nodeID="Ndd46528bf53a4cd889ade83b798cf4f5"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N01ef159e13a848c1a8a37119bea2f139">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>sl</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MAR">
+    <ns1:op-mapped-code rdf:nodeID="N6289d3a7a4e84e94b852e94ab5c6291f"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N0ed6168f126046f0b28e24038a7ae546">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ln</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N777958ad6ccb42418da15d6c6af20ce7">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tk</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nbbeed74997f34c938b5bc1ee93bae001">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ny</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BRE">
+    <ns1:op-mapped-code rdf:nodeID="N5b1c6e96dcc44d7782c5c8587708d68c"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N0cbc56c074c74d928de642db44b5ce81">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>qu</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N07db4e55bda845a9a50b2404b261b850">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ia</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NEP">
+    <ns1:op-mapped-code rdf:nodeID="Naeeb9cb45ae04895b4e304ffd70403d2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TUR">
+    <ns1:op-mapped-code rdf:nodeID="N50d5267b99a74c9b834af2943841fde6"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/CES">
+    <ns1:op-mapped-code rdf:nodeID="N49b4f52b8a1c4cec965a079d7f210674"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/OJI">
+    <ns1:op-mapped-code rdf:nodeID="N431c3f7760f44d83ade46bc15c8a6a45"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Nd41c31722e554b048221db50c84e57a8">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>lo</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SLV">
+    <ns1:op-mapped-code rdf:nodeID="N01ef159e13a848c1a8a37119bea2f139"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LTZ">
+    <ns1:op-mapped-code rdf:nodeID="N310dde22acbd460d8e51b45d5c31c9b8"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HAU">
+    <ns1:op-mapped-code rdf:nodeID="N6cba4edf06f14907af4050439d7d1d7c"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N736efa1417ad48dca02be09dccc4c34e">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ka</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LUB">
+    <ns1:op-mapped-code rdf:nodeID="N2eb3061094ae437a89ec5b628850e655"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/UIG">
+    <ns1:op-mapped-code rdf:nodeID="N924fd9b2158747249e0e56d5e727dc81"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KOM">
+    <ns1:op-mapped-code rdf:nodeID="Nf6f9a2a5da3843aeb1215c88a4cd1fc6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N57061b88002b4e83b715a773fea499ba">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>oc</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Ncc7ae89b7c304d64bafe435fa6b56b63">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>tn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/THA">
+    <ns1:op-mapped-code rdf:nodeID="Nba1146ae26084618ac6d7b5dc82a5bdb"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N2766628e90ae40519c6fa02b505c7f96">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>so</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/III">
+    <ns1:op-mapped-code rdf:nodeID="N7b9cff01a36243d3979c1311ab2d77a6"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="N392b92d976334138b04ac789853e3c61">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>nn</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/WOL">
+    <ns1:op-mapped-code rdf:nodeID="N2f2f34a4410d4a798a4510fc3499d86b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LIN">
+    <ns1:op-mapped-code rdf:nodeID="N0ed6168f126046f0b28e24038a7ae546"/>
+  </rdf:Description>
+  <rdf:Description rdf:nodeID="Na6c5488094aa43dc8c911e831a9eb9ae">
+    <dc:source>iso-639-1</dc:source>
+    <ns1:legacy-code>ss</ns1:legacy-code>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/HUN">
+    <ns1:op-mapped-code rdf:nodeID="N2082ec4405f947f6ad682b9ed1a3ed0b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AYM">
+    <ns1:op-mapped-code rdf:nodeID="Nbabc18c6528d43ae885fd8ce9141ce0c"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GLG">
+    <ns1:op-mapped-code rdf:nodeID="N230261e8f53a462d9a82df88b41cf3a4"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/LAO">
+    <ns1:op-mapped-code rdf:nodeID="Nd41c31722e554b048221db50c84e57a8"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KHM">
+    <ns1:op-mapped-code rdf:nodeID="N4ac210f7d7dd415d93dae0bb5e11829d"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SRP">
+    <ns1:op-mapped-code rdf:nodeID="Nda6f8298364c49d5bc28ec610ed779bc"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SOM">
+    <ns1:op-mapped-code rdf:nodeID="N2766628e90ae40519c6fa02b505c7f96"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/AFR">
+    <ns1:op-mapped-code rdf:nodeID="N487eb0270183478ca04b9a0cd8082c0e"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/XHO">
+    <ns1:op-mapped-code rdf:nodeID="Nbc58fc998725451daeeddfa4833df1ae"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TIR">
+    <ns1:op-mapped-code rdf:nodeID="N950b44a5a8b94c91af696e2e0d924ebb"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/MRI">
+    <ns1:op-mapped-code rdf:nodeID="Ndf7e96e3fff742e793923fb91ce93214"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/POR">
+    <ns1:op-mapped-code rdf:nodeID="Nbedce4799ac04b148bcbd93eef972ccf"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SMO">
+    <ns1:op-mapped-code rdf:nodeID="Nafdb3033899247da85ffd989b45baf81"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/TAM">
+    <ns1:op-mapped-code rdf:nodeID="Na3e89c2cdc834a18a0a9d6d485a40ee0"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/SIN">
+    <ns1:op-mapped-code rdf:nodeID="N52ef77c4efe64e8badf618e09d27e0a2"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/ISL">
+    <ns1:op-mapped-code rdf:nodeID="N2b91ab5dfbda45ba9b97b05e8ffca8fc"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BEL">
+    <ns1:op-mapped-code rdf:nodeID="N23c5a36e44c74b84a4b59655cfd7b004"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/DAN">
+    <ns1:op-mapped-code rdf:nodeID="N8a3735003d0f4f5e806617d4f652a28b"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/NNO">
+    <ns1:op-mapped-code rdf:nodeID="N392b92d976334138b04ac789853e3c61"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/IND">
+    <ns1:op-mapped-code rdf:nodeID="N2f3200b16146484284227ca62a017d0a"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/KOR">
+    <ns1:op-mapped-code rdf:nodeID="Nfb1a0c02c0714a128faec32460c007ca"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/BUL">
+    <ns1:op-mapped-code rdf:nodeID="N69499e7c7adc42d8b9c8f1bfc4f0c09f"/>
+  </rdf:Description>
+  <rdf:Description rdf:about="http://publications.europa.eu/resource/authority/language/GRN">
+    <ns1:op-mapped-code rdf:nodeID="Nb51bc6f079e84e559f2536c8ed9d652e"/>
+  </rdf:Description>
+</rdf:RDF>

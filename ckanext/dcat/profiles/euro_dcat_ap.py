@@ -5,8 +5,10 @@ import ckantoolkit as toolkit
 
 from ckan.lib.munge import munge_tag
 
+from ckanext.dcat import vocabularies
 from ckanext.dcat.utils import (
     resource_uri,
+    group_uri,
     DCAT_EXPOSE_SUBCATALOGS,
     DCAT_CLEAN_TAGS,
     publisher_uri_organization_fallback,
@@ -55,13 +57,18 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Basic fields
         for key, predicate in (
             ("title", DCT.title),
-            ("notes", DCT.description),
             ("url", DCAT.landingPage),
             ("version", OWL.versionInfo),
         ):
             value = self._object_value(dataset_ref, predicate)
             if value:
                 dataset_dict[key] = value
+
+        for description in self.g.objects(dataset_ref, DCT.description):
+            if description.language:
+                dataset_dict.setdefault("notes_translated", {})[description.language] = description.value
+            else:
+                dataset_dict["notes"] = description.value
 
         if not dataset_dict.get("version"):
             # adms:version was supported on the first version of the DCAT-AP
@@ -77,6 +84,12 @@ class EuropeanDCATAPProfile(RDFProfile):
         ]
         tags = [{"name": tag} for tag in tags_val]
         dataset_dict["tags"] = tags
+
+        # TODO: Update dlxschema to allow multiple languages
+        dataset_dict['language'] = [
+            vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+            for lang in self.g.objects(dataset_ref, DCT.language)
+        ]
 
         # Extras
 
@@ -96,7 +109,6 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         #  Lists
         for key, predicate, in (
-            ("language", DCT.language),
             ("theme", DCAT.theme),
             ("alternate_identifier", ADMS.identifier),
             ("conforms_to", DCT.conformsTo),
@@ -189,9 +201,15 @@ class EuropeanDCATAPProfile(RDFProfile):
             resource_dict["url"] = self._object_value(
                 distribution, DCAT.downloadURL
             ) or self._object_value(distribution, DCAT.accessURL)
+
+             # TODO: Update dlxschema to allow multiple languages
+            resource_dict["language"] = [
+                vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+                for lang in self.g.objects(distribution, DCT.language)
+            ]
+
             #  Lists
             for key, predicate in (
-                ("language", DCT.language),
                 ("documentation", FOAF.page),
                 ("conforms_to", DCT.conformsTo),
             ):
@@ -273,9 +291,8 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Basic fields
         items = [
             ("title", DCT.title, None, Literal),
-            ("notes", DCT.description, None, Literal),
             ("url", DCAT.landingPage, None, URIRef),
-            ("identifier", DCT.identifier, ["guid", "id"], URIRefOrLiteral),
+            ("identifier", DCT.identifier, ["guid", "id"], Literal),
             ("version", OWL.versionInfo, ["dcat_version"], Literal),
             ("version_notes", ADMS.versionNotes, None, Literal),
             ("frequency", DCT.accrualPeriodicity, None, URIRefOrLiteral),
@@ -284,6 +301,9 @@ class EuropeanDCATAPProfile(RDFProfile):
             ("provenance", DCT.provenance, None, Literal),
         ]
         self._add_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        for (lang, notes) in dataset_dict.get('notes_translated', {}).items():
+            g.add((dataset_ref, DCT.description, Literal(notes, lang=lang)))
 
         # Tags
         for tag in dataset_dict.get("tags", []):
@@ -296,9 +316,15 @@ class EuropeanDCATAPProfile(RDFProfile):
         ]
         self._add_date_triples_from_dict(dataset_dict, dataset_ref, items)
 
+
+        langs = dataset_dict.get("language", [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((dataset_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
         #  Lists
         items = [
-            ("language", DCT.language, None, URIRefOrLiteral),
             ("theme", DCAT.theme, None, URIRef),
             ("conforms_to", DCT.conformsTo, None, Literal),
             ("alternate_identifier", ADMS.identifier, None, URIRefOrLiteral),
@@ -404,6 +430,7 @@ class EuropeanDCATAPProfile(RDFProfile):
         # Add to graph
         if publisher_ref:
             g.add((publisher_ref, RDF.type, FOAF.Organization))
+            g.add((publisher_ref, RDF.type, FOAF.Agent))
             g.add((dataset_ref, DCT.publisher, publisher_ref))
             items = [
                 ("name", FOAF.name, None, Literal),
@@ -457,6 +484,11 @@ class EuropeanDCATAPProfile(RDFProfile):
         for resource_dict in dataset_dict.get("resources", []):
             self.graph_from_resource(g, dataset_ref, resource_dict, resource_license_fallback)
 
+        # datasets don't actually list the types of groups,
+        # so we can't tell if this is actually a data service
+        for group in dataset_dict.get('groups', []):
+            self.g.add((URIRef(group_uri(group)), RDF.type, DCAT.DataService))
+
     def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
         if distribution is None:
             distribution = CleanedURIRef(resource_uri(resource_dict))
@@ -478,10 +510,15 @@ class EuropeanDCATAPProfile(RDFProfile):
 
         self._add_triples_from_dict(resource_dict, distribution, items)
 
+        langs = resource_dict.get('language', [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((distribution, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
         #  Lists
         items = [
             ('documentation', FOAF.page, None, URIRefOrLiteral),
-            ('language', DCT.language, None, URIRefOrLiteral),
             ('conforms_to', DCT.conformsTo, None, Literal),
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
@@ -509,13 +546,23 @@ class EuropeanDCATAPProfile(RDFProfile):
                 # Use dct:format
                 mimetype = None
 
+        if mimetype and not mimetype.startswith('http'):
+            mimetype = 'https://www.iana.org/assignments/media-types/' + mimetype
+
         if mimetype:
             g.add((distribution, DCAT.mediaType,
                    URIRefOrLiteral(mimetype)))
 
         if fmt:
-            g.add((distribution, DCT['format'],
-                   URIRefOrLiteral(fmt)))
+            node = BNode()
+            g.add((distribution, DCT['format'], node))
+            g.add((node, RDF.type, DCT.MediaTypeOrExtent))
+            g.add((node, RDFS.label, URIRefOrLiteral(fmt)))
+            if mimetype:
+                g.add((node, RDF.value, URIRefOrLiteral(mimetype)))
+                g.add((node, RDF.type, DCT.IMT))
+            else:
+                g.add((node, RDF.value, URIRefOrLiteral(fmt)))
 
 
         # URL fallback and old behavior

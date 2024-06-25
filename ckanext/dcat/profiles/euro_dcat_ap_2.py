@@ -1,9 +1,9 @@
 import json
 
 from rdflib import URIRef, BNode, Literal
-from ckanext.dcat.utils import resource_uri
 
-from .. import codelists
+from .. import codelists, legal_resources
+from ..utils import resource_uri, group_uri
 
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
@@ -94,52 +94,7 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                         if values:
                             resource_dict[key] = json.dumps(values)
 
-                    # Access services
-                    access_service_list = []
-
-                    for access_service in self.g.objects(
-                        distribution, DCAT.accessService
-                    ):
-                        access_service_dict = {}
-
-                        #  Simple values
-                        for key, predicate in (
-                            ("availability", DCATAP.availability),
-                            ("title", DCT.title),
-                            ("endpoint_description", DCAT.endpointDescription),
-                            ("license", DCT.license),
-                            ("access_rights", DCT.accessRights),
-                            ("description", DCT.description),
-                        ):
-                            value = self._object_value(access_service, predicate)
-                            if value:
-                                access_service_dict[key] = value
-                        #  List
-                        for key, predicate in (
-                            ("endpoint_url", DCAT.endpointURL),
-                            ("serves_dataset", DCAT.servesDataset),
-                        ):
-                            values = self._object_value_list(access_service, predicate)
-                            if values:
-                                access_service_dict[key] = values
-
-                        # Access service URI (explicitly show the missing ones)
-                        access_service_dict["uri"] = (
-                            str(access_service)
-                            if isinstance(access_service, URIRef)
-                            else ""
-                        )
-
-                        # Remember the (internal) access service reference for referencing in
-                        # further profiles, e.g. for adding more properties
-                        access_service_dict["access_service_ref"] = str(access_service)
-
-                        access_service_list.append(access_service_dict)
-
-                    if access_service_list:
-                        resource_dict["access_services"] = json.dumps(
-                            access_service_list
-                        )
+            # Note: data services are not parsed
 
         return dataset_dict
 
@@ -158,6 +113,9 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         ):
             self._add_triple_from_dict(dataset_dict, dataset_ref, predicate, key, list_value=True,
                                        fallbacks=fallbacks, _type=_type, _datatype=datatype, _class=_class)
+
+        for eli in dataset_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
 
         self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
                                 codelists.high_value_dataset_category,
@@ -229,54 +187,43 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-        try:
-            access_service_list = resource_dict.get("access_services", [])
-            # Access service
-            if isinstance(access_service_list, str):
-                try:
-                    access_service_list = json.loads(access_service_list)
-                except ValueError:
-                    access_service_list = []
+        for eli in resource_dict.get('applicable_legislation'):
+            self.g += legal_resources.info(eli)
 
-            for access_service_dict in access_service_list:
+        for data_service in resource_dict.get('data_services', []):
+            service_uri = URIRef(group_uri({ 'id': data_service, 'type': 'data-service' }))
 
-                access_service_uri = access_service_dict.get('uri')
-                if access_service_uri:
-                    access_service_node = CleanedURIRef(access_service_uri)
-                else:
-                    access_service_node = BNode()
-                    # Remember the (internal) access service reference for referencing in
-                    # further profiles
-                    access_service_dict['access_service_ref'] = str(access_service_node)
+            self.g.add((distribution, DCAT.accessService, service_uri))
+            self.g.add((service_uri, RDF.type, DCAT.DataService))
 
-                self.g.add((distribution, DCAT.accessService, access_service_node))
-
-                self.g.add((access_service_node, RDF.type, DCAT.DataService))
-
-                 #  Simple values
-                items = [
-                    ('availability', DCATAP.availability, None, URIRefOrLiteral),
-                    ('license', DCT.license, None, URIRefOrLiteral),
-                    ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
-                    ('title', DCT.title, None, Literal),
-                    ('endpoint_description', DCAT.endpointDescription, None, Literal),
-                    ('description', DCT.description, None, Literal),
-                ]
-
-                self._add_triples_from_dict(access_service_dict, access_service_node, items)
-
-                #  Lists
-                items = [
-                    ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
-                    ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
-                ]
-                self._add_list_triples_from_dict(access_service_dict, access_service_node, items)
-
-            if access_service_list:
-                resource_dict['access_services'] = json.dumps(access_service_list)
-        except ValueError:
-            pass
         return distribution
+
+    def groups(self):
+        return { str(uri).split('/')[-1] for uri in self.g.subjects(RDF.type, DCAT.DataService) }
+
+    def graph_from_group(self, group_dict, group_ref):
+        if group_dict['type'] != 'data-service':
+            return
+
+        catalog = self.g.value(predicate=RDF.type, object=DCAT.Catalog)
+        if catalog:
+            self.g.add((catalog, DCAT.service, group_ref))
+
+        self._add_triples_from_dict(group_dict, group_ref, [
+            ('availability', DCATAP.availability, None, URIRefOrLiteral),
+            ('license', DCT.license, None, URIRefOrLiteral),
+            ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
+            ('title', DCT.title, None, Literal),
+            ('endpoint_description', DCAT.endpointDescription, None, Literal),
+            ('description', DCT.description, None, Literal),
+        ])
+
+        #  Lists
+        self._add_list_triples_from_dict(group_dict, group_ref, [
+            ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
+            ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
+        ])
+        return
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
