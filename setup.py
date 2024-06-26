@@ -56,6 +56,7 @@ setup(
     euro_dcat_ap_breg=ckanext.dcat.profiles:EuropeanDCATAPBRegProfile
     euro_dcat_ap_scheming=ckanext.dcat.profiles:EuropeanDCATAPSchemingProfile
     euro_dcat_ap_geo=ckanext.dcat.profiles:EuropeanDCATAPGeoProfile
+    euro_dcat_ap_stat=ckanext.dcat.profiles:EuropeanDCATAPStatProfile
     schemaorg=ckanext.dcat.profiles:SchemaOrgProfile
 
     [babel.extractors]

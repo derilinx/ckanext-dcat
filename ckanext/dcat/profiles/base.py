@@ -33,6 +33,9 @@ ELI= Namespace('http://data.europa.eu/eli/ontology#')
 CPSV = Namespace("http://purl.org/vocab/cpsv#")
 DQV = Namespace("http://www.w3.org/ns/dqv#")
 EPSG = Namespace("http://www.opengis.net/def/crs/EPSG/0/")
+QB = Namespace("http://purl.org/linked-data/cube#")
+STAT = Namespace("http://data.europa.eu/m8g/")
+OA = Namespace("http://www.w3.org/ns/oa#")
 
 namespaces = {
     "cnt": CNT,
@@ -55,7 +58,10 @@ namespaces = {
     "eli": ELI,
     "cpsv": CPSV,
     "dqv": DQV,
-    "epsg": EPSG
+    "epsg": EPSG,
+    "qb": QB,
+    "stat": STAT,
+    "oa": OA
 }
 
 PREFIX_MAILTO = "mailto:"

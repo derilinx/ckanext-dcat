@@ -31,6 +31,7 @@ from .euro_health_dcat_ap import EuropeanHealthDCATAPProfile
 from .euro_dcat_ap_breg import EuropeanDCATAPBRegProfile
 
 from .euro_dcat_ap_geo import EuropeanDCATAPGeoProfile
+from .euro_dcat_ap_stat import EuropeanDCATAPStatProfile
 from .schemaorg import SchemaOrgProfile
 from .croissant import CroissantProfile
 from .euro_dcat_ap_hvd_22 import EuropeanDCATAPHVD220Profile

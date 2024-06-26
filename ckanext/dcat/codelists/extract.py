@@ -83,10 +83,7 @@ def extract(f:Path):
 
     for subject in g.subjects(RDF.type, SKOS.Concept):
         labels = {l.language: str(l) for l in g.objects(subject, SKOS.prefLabel) if l.language in LANGS }
-        try:
-            order = list(g.objects(subject, EUVOC.order))[0]
-        except KeyError:
-            order = str(subject)
+        order = g.value(subject, EUVOC.order, default=str(subject))
 
         choice = {"label": labels,
                   "value": str(subject)}
