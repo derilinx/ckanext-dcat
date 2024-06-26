@@ -24,5 +24,6 @@ from .euro_dcat_ap_2 import EuropeanDCATAP2Profile
 from .euro_dcat_ap_scheming import EuropeanDCATAPSchemingProfile
 from .euro_dcat_ap_breg import EuropeanDCATAPBRegProfile
 from .euro_dcat_ap_geo import EuropeanDCATAPGeoProfile
+from .euro_dcat_ap_stat import EuropeanDCATAPStatProfile
 from .schemaorg import SchemaOrgProfile
 from .euro_dcat_ap_hvd_22 import EuropeanDCATAPHVD220Profile
