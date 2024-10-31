@@ -334,7 +334,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             if role:
                 self.g.add((attr_ref, DCAT.hadRole, URIRef(role)))
 
-        for eli in dataset_dict.get('applicable_legislation'):
+        for eli in dataset_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
         self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
@@ -449,7 +449,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-        for eli in resource_dict.get('applicable_legislation'):
+        for eli in resource_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
 <<<<<<< HEAD
