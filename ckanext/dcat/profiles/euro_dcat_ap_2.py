@@ -114,7 +114,7 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
             self._add_triple_from_dict(dataset_dict, dataset_ref, predicate, key, list_value=True,
                                        fallbacks=fallbacks, _type=_type, _datatype=datatype, _class=_class)
 
-        for eli in dataset_dict.get('applicable_legislation'):
+        for eli in dataset_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
         self._add_from_codelist(dataset_dict, dataset_ref, DCATAP.hvdCategory, 'hvd_category',
@@ -187,7 +187,7 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-        for eli in resource_dict.get('applicable_legislation'):
+        for eli in resource_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
         for data_service in resource_dict.get('data_services', []):
