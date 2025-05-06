@@ -54,6 +54,13 @@ def dcat_to_ckan(dcat_dict):
     return package_dict
 
 
+not_downloadable_types = ['data viewer', 'db_table', 'null', 'ogc', 'wms', 'api', 'arcsde connection', 'rest',
+                               'website', 'mapviewer', 'AGOL', 'feature service', 'rest service url', 'aspx', 'wms',
+                               'www:download-1.0', 'html', 'arcgis rest geoservices', 'ArcGIS GeoServices REST API']
+
+lowered = set([item.lower() for item in not_downloadable_types])
+
+
 def ckan_to_dcat(package_dict):
 
     dcat_dict = {}
@@ -93,6 +100,10 @@ def ckan_to_dcat(package_dict):
 
     dcat_dict['distribution'] = []
     for resource in package_dict.get('resources', []):
+        downloadURL = ''
+        if resource.get('format').lower() not in lowered:
+            log.info('Type %s is a downloadable file.', resource.get('format'))
+            downloadURL= resource.get('url')
         distribution = {
             'title': resource.get('name'),
             'description': resource.get('description'),
@@ -100,6 +111,7 @@ def ckan_to_dcat(package_dict):
             'byteSize': resource.get('size'),
             # TODO: downloadURL or accessURL depending on resource type?
             'accessURL': resource.get('url'),
+            'downloadURL': downloadURL
         }
         dcat_dict['distribution'].append(distribution)
 
