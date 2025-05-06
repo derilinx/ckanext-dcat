@@ -23,6 +23,10 @@ from ckanext.dcat import helpers
 from ckanext.dcat import utils
 from ckanext.dcat.validators import dcat_validators
 
+import logging
+
+log = logging.getLogger(__name__)
+
 
 CUSTOM_ENDPOINT_CONFIG = 'ckanext.dcat.catalog_endpoint'
 TRANSLATE_KEYS_CONFIG = 'ckanext.dcat.translate_keys'
@@ -70,6 +74,7 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.IActions, inherit=True)
     p.implements(p.IAuthFunctions, inherit=True)
     p.implements(p.IPackageController, inherit=True)
+    p.implements(p.IResourceController, inherit=True)
     p.implements(p.ITranslation, inherit=True)
     p.implements(p.IClick)
     p.implements(p.IBlueprint)
@@ -180,6 +185,20 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
                     extra['key'] = field_labels[extra['key']]
 
         return data_dict
+
+    # Make sure download_url makes it to the dcat output
+    def before_show(self, resource_dict):
+        not_downloadable_types = ['data viewer', 'db_table', 'null', 'ogc', 'wms', 'api', 'arcsde connection', 'rest',
+                                  'website', 'mapviewer', 'AGOL', 'feature service', 'rest service url', 'aspx', 'wms',
+                                  'www:download-1.0', 'html', 'arcgis rest geoservices', 'ArcGIS GeoServices REST API']
+
+        lowered = set([item.lower() for item in not_downloadable_types])
+
+        if resource_dict.get('format').lower() not in lowered:
+            resource_dict['download_url'] = resource_dict.get('url')
+
+        resource_dict['access_url'] = resource_dict.get('url')
+        return resource_dict
 
     def before_dataset_index(self, dataset_dict):
         schema = _get_dataset_schema(dataset_dict["type"])
