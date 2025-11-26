@@ -206,6 +206,14 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
         if schema:
             for field in schema['dataset_fields']:
                 if field['field_name'] in dataset_dict and 'repeating_subfields' in field:
+
+                    # Determine which subfields contain nested repeating_subfields
+                    nested_repeats = set(
+                        _sf['field_name']
+                        for _sf in field['repeating_subfields']
+                        if 'repeating_subfields' in _sf
+                    )
+
                     # Check value because of ckan/ckan#8953
                     value = dataset_dict[field['field_name']]
                     if isinstance(value, str):
@@ -216,14 +224,17 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
 
                     for item in value:
                         for key in item:
-                            value = item[key]
-                            if value and not isinstance(value, dict):
+                            v = item[key]
+                            if v and key in nested_repeats and isinstance(v, (list, dict)):
+                                v = json.dumps(v)
+
+                            if v and not isinstance(v, dict):
                                 # Index a flattened version
                                 new_key = f'extras_{field["field_name"]}__{key}'
                                 if not dataset_dict.get(new_key):
-                                    dataset_dict[new_key] = str(value)
+                                    dataset_dict[new_key] = str(v)
                                 else:
-                                    dataset_dict[new_key] += ' ' + str(value)
+                                    dataset_dict[new_key] += ' ' + str(v)
 
                     subfields = dataset_dict.pop(field['field_name'], None)
                     if field['field_name'] == 'spatial_coverage':
