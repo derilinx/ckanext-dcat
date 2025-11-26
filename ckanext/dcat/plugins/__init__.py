@@ -217,6 +217,8 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
                     for item in value:
                         for key in item:
                             value = item[key]
+                            if value and key in nested_repeats and isinstance(value, (list, dict)):
+                                value = json.dumps(value)
                             if value and not isinstance(value, dict):
                                 # Index a flattened version
                                 new_key = f'extras_{field["field_name"]}__{key}'
