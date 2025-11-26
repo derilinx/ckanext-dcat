@@ -187,9 +187,12 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
         if schema:
             for field in schema['dataset_fields']:
                 if field['field_name'] in dataset_dict and 'repeating_subfields' in field:
+                    nested_repeats = set([_sf['field_name'] for _sf in field['repeating_subfields'] if 'repeating_subfields' in _sf])
                     for item in dataset_dict[field['field_name']]:
                         for key in item:
                             value = item[key]
+                            if value and key in nested_repeats and isinstance(value, (list, dict)):
+                                value = json.dumps(value)
                             if value and not isinstance(value, dict):
                                 # Index a flattened version
                                 new_key = f'extras_{field["field_name"]}__{key}'
