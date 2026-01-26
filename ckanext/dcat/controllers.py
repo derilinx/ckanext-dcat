@@ -16,7 +16,7 @@ class DCATController(toolkit.BaseController):
        datasets =  utils.dcat_json_page()
        content = json.dumps(datasets)
 
-       toolkit.response.headers['Content-Type'] = 'application/json'
+       toolkit.response.headers['Content-Type'] = 'application/json; charset=utf-8'
        toolkit.response.headers['Content-Length'] = len(content)
 
        return content

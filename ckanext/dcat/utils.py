@@ -27,11 +27,11 @@ log = logging.getLogger(__name__)
 DCAT_EXPOSE_SUBCATALOGS = 'ckanext.dcat.expose_subcatalogs'
 
 CONTENT_TYPES = {
-    'rdf': 'application/rdf+xml',
-    'xml': 'application/rdf+xml',
-    'n3': 'text/n3',
-    'ttl': 'text/turtle',
-    'jsonld': 'application/ld+json',
+    'rdf': 'application/rdf+xml; charset=utf-8',
+    'xml': 'application/rdf+xml; charset=utf-8',
+    'n3': 'text/n3; charset=utf-8',
+    'ttl': 'text/turtle; charset=utf-8',
+    'jsonld': 'application/ld+json; charset=utf-8',
 }
 
 DCAT_CLEAN_TAGS = 'ckanext.dcat.clean_tags'
@@ -329,7 +329,8 @@ def parse_accept_header(accept_header=''):
     content_types = CONTENT_TYPES.copy()
     content_types.pop('xml')
 
-    accepted_media_types = dict((value, key)
+    # Extract media type without charset for Accept header matching
+    accepted_media_types = dict((value.split(';')[0].strip(), key)
                                 for key, value
                                 in content_types.items())
 
