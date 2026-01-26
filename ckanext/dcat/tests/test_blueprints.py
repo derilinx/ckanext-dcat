@@ -53,7 +53,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "application/rdf+xml"
+        assert response.headers['Content-Type'] == 'application/rdf+xml; charset=utf-8'
 
         content = response.body
 
@@ -108,7 +108,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "application/rdf+xml"
+        assert response.headers['Content-Type'] == 'application/rdf+xml; charset=utf-8'
 
         content = response.body
 
@@ -134,7 +134,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        assert response.headers['Content-Type'] == 'text/turtle; charset=utf-8'
 
         content = response.body
 
@@ -160,7 +160,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/n3"
+        assert response.headers['Content-Type'] == 'text/n3; charset=utf-8'
 
         content = response.body
 
@@ -186,7 +186,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "application/ld+json"
+        assert response.headers['Content-Type'] == 'application/ld+json; charset=utf-8'
 
         content = response.body
 
@@ -217,7 +217,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "application/ld+json"
+        assert response.headers['Content-Type'] == 'application/ld+json; charset=utf-8'
 
         content = response.body
 
@@ -263,7 +263,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "application/rdf+xml"
+        assert response.headers['Content-Type'] == 'application/rdf+xml; charset=utf-8'
 
         content = response.body
 
@@ -285,7 +285,7 @@ class TestEndpoints:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        assert response.headers['Content-Type'] == 'text/turtle; charset=utf-8'
 
         content = response.body
 
@@ -469,7 +469,7 @@ class TestAcceptHeader:
 
         response = app.get(url, headers=headers)
 
-        assert response.headers["Content-Type"] == "application/ld+json"
+        assert response.headers['Content-Type'] == 'application/ld+json; charset=utf-8'
 
     def test_dataset_multiple(self, app):
 
@@ -483,7 +483,7 @@ class TestAcceptHeader:
 
         response = app.get(url, headers=headers)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        assert response.headers['Content-Type'] == 'text/turtle; charset=utf-8'
 
     def test_dataset_not_supported_returns_html(self, app):
 
@@ -515,7 +515,7 @@ class TestAcceptHeader:
 
         response = app.get(url, headers=headers)
 
-        assert response.headers["Content-Type"] == "application/ld+json"
+        assert response.headers['Content-Type'] == 'application/ld+json; charset=utf-8'
 
     def test_catalog_multiple(self, app):
 
@@ -527,7 +527,7 @@ class TestAcceptHeader:
 
         response = app.get(url, headers=headers)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        assert response.headers['Content-Type'] == 'text/turtle; charset=utf-8'
 
     def test_catalog_not_supported_returns_html(self, app):
 
