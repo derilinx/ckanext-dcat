@@ -329,7 +329,6 @@ def parse_accept_header(accept_header=''):
     content_types = CONTENT_TYPES.copy()
     content_types.pop('xml')
 
-    # Extract media type without charset for Accept header matching
     accepted_media_types = dict((value.split(';')[0].strip(), key)
                                 for key, value
                                 in content_types.items())
