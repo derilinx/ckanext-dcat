@@ -3,10 +3,15 @@ about: Presets for the ckanext-dcat extension
 about_url": "http://github.com/ckan/ckanext-dcat"
 
 presets:
+  - preset_name: cr_title
+    values:
+      validators: not_empty unicode_safe
+      form_snippet: large_text.html
+      form_attrs:
+        data-module: slug-preview-target
 
-- preset_name: cr_title
-  values:
-    validators: not_empty unicode_safe
-    form_snippet: large_text.html
-    form_attrs:
-      data-module: slug-preview-target
+  - preset_name: dcat_date
+    values:
+      validators: dcat_date
+      form_snippet: date.html
+      display_snippet: dcat_date.html

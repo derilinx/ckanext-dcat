@@ -6,7 +6,7 @@ from dateutil.parser import parse as parse_date
 from ckantoolkit import (
     missing,
     StopOnError,
-    get_validator
+    get_validator,
     Invalid,
     _,
 )
