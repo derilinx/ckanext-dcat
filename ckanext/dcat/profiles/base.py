@@ -1204,80 +1204,79 @@ class RDFProfile(object):
                 _class=_class,
             )
 
-def _add_triple_from_dict(
-    self,
-    _dict,
-    subject,
-    predicate,
-    key,
-    fallbacks=None,
-    list_value=False,
-    date_value=False,
-    _type=Literal,
-    _datatype=None,
-    _class=None,
-    value_modifier=None,
-):
-    ):
-        """
-        Adds a new triple to the graph with the provided parameters
+    def _add_triple_from_dict(
+        self,
+        _dict,
+        subject,
+        predicate,
+        key,
+        fallbacks=None,
+        list_value=False,
+        date_value=False,
+        _type=Literal,
+        _datatype=None,
+        _class=None,
+        value_modifier=None,
+        ):
+            """
+            Adds a new triple to the graph with the provided parameters
 
-        The subject and predicate of the triple are passed as the relevant
-        RDFLib objects (URIRef or BNode). As default, the object is a
-        literal value, which is extracted from the dict using the provided key
-        (see `_get_dict_value`). If the value for the key is not found, then
-        additional fallback keys are checked.
-        Using `value_modifier`, a function taking the extracted value and
-        returning a modified value can be passed.
-        If a value was found, the modifier is applied before adding the value.
+            The subject and predicate of the triple are passed as the relevant
+            RDFLib objects (URIRef or BNode). As default, the object is a
+            literal value, which is extracted from the dict using the provided key
+            (see `_get_dict_value`). If the value for the key is not found, then
+            additional fallback keys are checked.
+            Using `value_modifier`, a function taking the extracted value and
+            returning a modified value can be passed.
+            If a value was found, the modifier is applied before adding the value.
 
-        `_class` is the optional RDF class of the entity being added.
+            `_class` is the optional RDF class of the entity being added.
 
-        If `list_value` or `date_value` are True, then the value is treated as
-        a list or a date respectively (see `_add_list_triple` and
-        `_add_date_triple` for details.
+            If `list_value` or `date_value` are True, then the value is treated as
+            a list or a date respectively (see `_add_list_triple` and
+            `_add_date_triple` for details.
 
-        `_class` is the optional RDF class of the entity being added.
-        """
-        value = self._get_dict_value(_dict, key)
-        if not value and fallbacks:
-            for fallback in fallbacks:
-                value = self._get_dict_value(_dict, fallback)
-                if value:
-                    break
+            `_class` is the optional RDF class of the entity being added.
+            """
+            value = self._get_dict_value(_dict, key)
+            if not value and fallbacks:
+                for fallback in fallbacks:
+                    value = self._get_dict_value(_dict, fallback)
+                    if value:
+                        break
 
-        # if a modifying function was given, apply it to the value
-        if value and callable(value_modifier):
-            value = value_modifier(value)
+            # if a modifying function was given, apply it to the value
+            if value and callable(value_modifier):
+                value = value_modifier(value)
 
-        if value and list_value:
-            self._add_list_triple(subject, predicate, value, _type, _datatype, _class=_class)
-        elif value and date_value:
-            self._add_date_triple(subject, predicate, value, _type)
-        elif value:
-            # If it is a dict, we assume it's a fluent multilingual field
-            if isinstance(value, dict):
-                # We assume that all translated field values are Literals
-                for lang, translated_value in value.items():
-                    object = Literal(translated_value, datatype=_datatype, lang=lang)
-                    self.g.add((subject, predicate, object))
-                return
+            if value and list_value:
+                self._add_list_triple(subject, predicate, value, _type, _datatype, _class=_class)
+            elif value and date_value:
+                self._add_date_triple(subject, predicate, value, _type)
+            elif value:
+                # If it is a dict, we assume it's a fluent multilingual field
+                if isinstance(value, dict):
+                    # We assume that all translated field values are Literals
+                    for lang, translated_value in value.items():
+                        object = Literal(translated_value, datatype=_datatype, lang=lang)
+                        self.g.add((subject, predicate, object))
+                    return
 
-            # Normal text value
+                # Normal text value
 
-            # ensure URIRef items are preprocessed (space removal/url encoding)
-            if _type == URIRef:
-                _type = CleanedURIRef
-            if _datatype:
-                object = _type(value, datatype=_datatype)
-            else:
-                object = _type(value)
-            self.g.add((subject, predicate, object))
-            if _class:
-                self.g.add((object, RDF.type, _class))
+                # ensure URIRef items are preprocessed (space removal/url encoding)
+                if _type == URIRef:
+                    _type = CleanedURIRef
+                if _datatype:
+                    object = _type(value, datatype=_datatype)
+                else:
+                    object = _type(value)
+                self.g.add((subject, predicate, object))
+                if _class:
+                    self.g.add((object, RDF.type, _class))
 
-            if _class and isinstance(object, URIRef):
-                self.g.add((object, RDF.type, _class))
+                if _class and isinstance(object, URIRef):
+                    self.g.add((object, RDF.type, _class))
 
     def _add_list_triple(
         self, subject, predicate, value, _type=Literal, _datatype=None, _class=None
@@ -1330,13 +1329,13 @@ def _add_triple_from_dict(
                 default_datetime = datetime.datetime(1, 1, 1, 0, 0, 0)
                 _date = parse_date(value, default=default_datetime)
 
-            # EDS: EU MQA might not be able to parse microseconds
-            self.g.add(
-                (subject, predicate, _type(_date.isoformat(timespec='seconds'),
-                                           datatype=XSD.dateTime))
-            )
-        except ValueError:
-            self.g.add((subject, predicate, _type(value)))
+                # EDS: EU MQA might not be able to parse microseconds
+                self.g.add(
+                    (subject, predicate, _type(_date.isoformat(timespec='seconds'),
+                                            datatype=XSD.dateTime))
+                )
+            except ValueError:
+                self.g.add((subject, predicate, _type(value)))
 
     def _last_catalog_modification(self):
         """
