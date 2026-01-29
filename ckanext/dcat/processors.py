@@ -283,7 +283,7 @@ class RDFSerializer(RDFProcessor):
         return catalog_ref
 
     def graph_from_groups(self):
-        profiles = [cls(self.g, self.compatibility_mode) for cls in self._profiles]
+        profiles = [cls(self.g, compatibility_mode=self.compatibility_mode) for cls in self._profiles]
 
         groups = { group for profile in profiles for group in profile.groups() }
 
