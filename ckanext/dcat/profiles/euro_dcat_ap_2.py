@@ -153,8 +153,8 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         spatial_resolution_in_meters = self._read_list_value(
             self._get_dataset_value(dataset_dict, "spatial_resolution_in_meters")
         )
-        if spatial_resolution_in_meters:
-            for value in spatial_resolution_in_meters:
+        if any(spatial_resolution_in_meters):
+            for value in filter(None, spatial_resolution_in_meters):
                 try:
                     self.g.add(
                         (
