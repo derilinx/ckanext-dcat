@@ -533,6 +533,12 @@ class EuropeanDCATAPProfile(RDFProfile):
         mimetype = resource_dict.get('mimetype')
         fmt = resource_dict.get('format')
 
+        # hardwire datastore csv type if the download url is to datastore.
+        if ((resource_dict.get('url_type') in ('datastore', 'tabledesigner') or fmt == 'data')
+           and 'datastore' in resource_dict.get('download_url')):
+            mimetype = 'text/csv'
+            fmt = None
+
         # IANA media types (either URI or Literal) should be mapped as mediaType.
         # In case format is available and mimetype is not set or identical to format,
         # check which type is appropriate.
