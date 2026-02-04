@@ -19,8 +19,17 @@ class Vocabulary:
 
     def lookup(self, ckan=None, uri=None):
         if isinstance(ckan, str):
-            ckan = Literal(ckan)
-        (binding, ) = self.graph.query(self.query, initBindings={'ckan': ckan} if ckan else {'uri': uri}).bindings
+            ckan_lit = Literal(ckan)
+        else:
+            ckan_lit = ckan
+
+        try:
+            (binding, ) = self.graph.query(self.query, initBindings={'ckan': ckan_lit} if ckan else {'uri': uri}).bindings
+        except ValueError:
+            if '_' in ckan:
+                (binding, ) = self.graph.query(self.query, initBindings={'ckan': Literal(ckan.split('_')[0])}).bindings
+            else:
+                raise
         return binding[Variable('uri' if ckan else 'ckan')]
 
 

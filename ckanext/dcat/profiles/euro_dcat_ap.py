@@ -626,13 +626,14 @@ class EuropeanDCATAPProfile(RDFProfile):
                 Literal,
             ),
             ("homepage", FOAF.homepage, config.get("ckan.site_url"), URIRef),
-            (
-                "language",
-                DCT.language,
-                config.get("ckan.locale_default", "en"),
-                URIRefOrLiteral,
-            ),
         ]
+
+        for language in toolkit.aslist(config.get('ckan.locales_offered', [config.get("ckan.locale_default", "en")])):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((catalog_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+
         for item in items:
             key, predicate, fallback, _type = item
             if catalog_dict:
