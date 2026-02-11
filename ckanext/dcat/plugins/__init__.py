@@ -201,6 +201,7 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
         return resource_dict
 
     def before_dataset_index(self, dataset_dict):
+        nested_repeats = [] 
         schema = _get_dataset_schema(dataset_dict["type"])
         spatial = None
         if schema:
