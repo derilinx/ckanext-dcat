@@ -39,6 +39,7 @@ DCAT_CLEAN_TAGS = 'ckanext.dcat.clean_tags'
 DEFAULT_CATALOG_ENDPOINT = '/catalog.{_format}'
 ENABLE_RDF_ENDPOINTS_CONFIG = 'ckanext.dcat.enable_rdf_endpoints'
 ENABLE_CONTENT_NEGOTIATION_CONFIG = 'ckanext.dcat.enable_content_negotiation'
+DEFAULT_CATALOG_FILTER = 'ckanext.dcat.default_fq'
 
 
 def _get_package_type(id):
@@ -401,8 +402,8 @@ def check_access_header():
 
 def dcat_json_page():
      data_dict = {
-         'page': toolkit.request.params.get('page'),
-         'modified_since': toolkit.request.params.get('modified_since'),
+         'page': toolkit.request.args.get('page'),
+         'modified_since': toolkit.request.args.get('modified_since'),
      }
 
      try:
@@ -421,7 +422,7 @@ def read_dataset_page(_id, _format):
     if not _format:
         return read_endpoint(_get_package_type(_id), _id)
 
-    _profiles = toolkit.request.params.get('profiles')
+    _profiles = toolkit.request.args.get('profiles')
     if _profiles:
         _profiles = _profiles.split(',')
 
@@ -448,18 +449,25 @@ def read_catalog_page(_format):
     if not _format:
         return index_endpoint()
 
-    _profiles = toolkit.request.params.get('profiles')
+    fq = config.get(DEFAULT_CATALOG_FILTER, None)
+
+    _profiles = toolkit.request.args.get('profiles')
     if _profiles:
         _profiles = _profiles.split(',')
 
-    fq = toolkit.request.params.get('fq')
+    fq_from_request = toolkit.request.args.get('fq')
+
+    fq = f"({fq}) AND ({fq_from_request})" if fq_from_request else fq
+
     if _profiles and 'euro_dcat_ap_hvd_220' in _profiles:
-        fq = 'extras_applicable_legislation:"http://data.europa.eu/eli/reg_impl/2023/138/oj"'
+        fq_hvd = 'extras_applicable_legislation:"http://data.europa.eu/eli/reg_impl/2023/138/oj"'
+        fq = f"{fq} AND {fq_hvd}" if fq_hvd else fq
+
 
     data_dict = {
-        'page': toolkit.request.params.get('page'),
-        'modified_since': toolkit.request.params.get('modified_since'),
-        'q': toolkit.request.params.get('q'),
+        'page': toolkit.request.args.get('page'),
+        'modified_since': toolkit.request.args.get('modified_since'),
+        'q': toolkit.request.args.get('q'),
         'fq': fq,
         'format': _format,
         'profiles': _profiles,
