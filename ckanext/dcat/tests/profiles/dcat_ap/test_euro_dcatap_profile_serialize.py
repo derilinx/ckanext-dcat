@@ -2,6 +2,7 @@ from builtins import str
 from builtins import object
 import json
 import uuid
+from decimal import Decimal
 
 import pytest
 
@@ -21,7 +22,7 @@ from ckanext.dcat.profiles import (
     DCAT, DCT, ADMS, XSD, VCARD, FOAF, SCHEMA,
     SKOS, LOCN, GSP, OWL, SPDX, GEOJSON_IMT,
 )
-from ckanext.dcat.profiles.euro_dcat_ap import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
+from ckanext.dcat.profiles.euro_dcat_ap_base import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.tests.utils import BaseSerializeTest
 
@@ -394,7 +395,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert publisher
         assert str(publisher) == extras['publisher_uri']
 
-        assert self._triple(g, publisher, RDF.type, FOAF.Organization)
+        assert self._triple(g, publisher, RDF.type, FOAF.Agent)
         assert self._triple(g, publisher, FOAF.name, extras['publisher_name'])
         assert self._triple(g, publisher, FOAF.mbox, extras['publisher_email'])
         assert self._triple(g, publisher, FOAF.homepage, URIRef(extras['publisher_url']))
@@ -425,7 +426,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         publisher = self._triple(g, dataset_ref, DCT.publisher, None)[2]
         assert publisher
 
-        assert self._triple(g, publisher, RDF.type, FOAF.Organization)
+        assert self._triple(g, publisher, RDF.type, FOAF.Agent)
         assert self._triple(g, publisher, FOAF.name, dataset['organization']['title'])
 
     def test_publisher_no_uri(self):
@@ -447,7 +448,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert publisher
         assert isinstance(publisher, BNode)
 
-        assert self._triple(g, publisher, RDF.type, FOAF.Organization)
+        assert self._triple(g, publisher, RDF.type, FOAF.Agent)
         assert self._triple(g, publisher, FOAF.name, extras['publisher_name'])
 
     def test_publisher_org_no_uri(self):
@@ -477,7 +478,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert publisher
         assert isinstance(publisher, BNode)
 
-        assert self._triple(g, publisher, RDF.type, FOAF.Organization)
+        assert self._triple(g, publisher, RDF.type, FOAF.Agent)
         assert self._triple(g, publisher, FOAF.name, extras['publisher_name'])
         assert self._triple(g, publisher, FOAF.mbox, extras['publisher_email'])
         assert self._triple(g, publisher, FOAF.homepage, URIRef(extras['publisher_url']))
@@ -530,9 +531,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert self._triple(g, spatial, RDF.type, DCT.Location)
         assert self._triple(g, spatial, SKOS.prefLabel, extras['spatial_text'])
 
-        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 2
-        # Geometry in GeoJSON
-        assert self._triple(g, spatial, LOCN.geometry, extras['spatial'], GEOJSON_IMT)
+        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 1
 
         # Geometry in WKT
         wkt_geom = wkt.dumps(json.loads(extras['spatial']), decimals=4)
@@ -557,11 +556,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         spatial = self._triple(g, dataset_ref, DCT.spatial, None)[2]
         assert spatial
         assert isinstance(spatial, BNode)
-        # Geometry in GeoJSON
-        assert self._triple(g, spatial, LOCN.geometry, extras['spatial'], GEOJSON_IMT)
-
-        # Geometry in WKT
-        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 1
+        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 0
 
     def test_spatial_bad_json_no_wkt(self):
         dataset = {
@@ -582,11 +577,8 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         spatial = self._triple(g, dataset_ref, DCT.spatial, None)[2]
         assert spatial
         assert isinstance(spatial, BNode)
-        # Geometry in GeoJSON
-        assert self._triple(g, spatial, LOCN.geometry, extras['spatial'], GEOJSON_IMT)
 
-        # Geometry in WKT
-        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 1
+        assert len([t for t in g.triples((spatial, LOCN.geometry, None))]) == 0
 
     def test_distributions(self):
 
@@ -702,7 +694,7 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert self._triple(g, distribution, DCT.modified, resource['modified'], XSD.dateTime)
 
         # Numbers
-        assert self._triple(g, distribution, DCAT.byteSize, float(resource['size']), XSD.decimal)
+        assert self._triple(g, distribution, DCAT.byteSize, Decimal(resource['size']), XSD.decimal)
 
         # Checksum
         checksum = self._triple(g, distribution, SPDX.checksum, None)[2]

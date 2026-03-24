@@ -1,5 +1,6 @@
 from unittest import mock
 import json
+from decimal import Decimal
 
 import pytest
 from rdflib.namespace import RDF
@@ -19,12 +20,10 @@ from ckanext.dcat.profiles import (
     XSD,
     VCARD,
     FOAF,
-    SCHEMA,
     SKOS,
     LOCN,
     GSP,
     OWL,
-    GEOJSON_IMT,
     SPDX,
 )
 from ckanext.dcat.tests.utils import BaseSerializeTest, BaseParseTest
@@ -33,7 +32,7 @@ from ckanext.dcat.tests.utils import BaseSerializeTest, BaseParseTest
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 @pytest.mark.ckan_config("ckan.plugins", "dcat scheming_datasets")
 @pytest.mark.ckan_config(
-    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_2.1_full.yaml"
+    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_full.yaml"
 )
 @pytest.mark.ckan_config(
     "scheming.presets",
@@ -101,7 +100,7 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
                 {"start": "1905-03-01", "end": "2013-01-05"},
                 {"start": "2024-04-10", "end": "2024-05-29"},
             ],
-            "temporal_resolution": ["PT15M", "P1D"],
+            "temporal_resolution": "PT15M",
             "spatial_coverage": [
                 {
                     "geom": {
@@ -133,7 +132,7 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
                     "centroid": {"type": "Point", "coordinates": [1.26639, 41.12386]},
                 }
             ],
-            "spatial_resolution_in_meters": [1.5, 2.0],
+            "spatial_resolution_in_meters": 1.5,
             "resources": [
                 {
                     "name": "Resource 1",
@@ -195,6 +194,13 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         assert self._triple(g, dataset_ref, DCT.type, dataset["dcat_type"])
         assert self._triple(g, dataset_ref, ADMS.versionNotes, dataset["version_notes"])
         assert self._triple(g, dataset_ref, DCT.accessRights, dataset["access_rights"])
+        assert self._triple(
+            g,
+            dataset_ref,
+            DCAT.spatialResolutionInMeters,
+            dataset["spatial_resolution_in_meters"],
+            data_type=XSD.decimal,
+        )
 
         # Dates
         assert self._triple(
@@ -210,6 +216,13 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             DCT.modified,
             dataset["modified"],
             data_type=XSD.date,
+        )
+        assert self._triple(
+            g,
+            dataset_ref,
+            DCAT.temporalResolution,
+            dataset["temporal_resolution"],
+            data_type=XSD.duration,
         )
 
         # List fields
@@ -232,23 +245,12 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             == dataset["documentation"]
         )
         assert (
-            self._triples_list_values(g, dataset_ref, DCAT.temporalResolution)
-            == dataset["temporal_resolution"]
-        )
-        assert (
             self._triples_list_values(g, dataset_ref, DCT.isReferencedBy)
             == dataset["is_referenced_by"]
         )
         assert (
             self._triples_list_values(g, dataset_ref, DCATAP.applicableLegislation)
             == dataset["applicable_legislation"]
-        )
-
-        assert (
-            self._triples_list_python_values(
-                g, dataset_ref, DCAT.spatialResolutionInMeters
-            )
-            == dataset["spatial_resolution_in_meters"]
         )
 
         # Repeating subfields
@@ -306,28 +308,28 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         assert self._triple(
             g,
             temporal[0][2],
-            SCHEMA.startDate,
+            DCAT.startDate,
             dataset_dict["temporal_coverage"][0]["start"],
             data_type=XSD.date,
         )
         assert self._triple(
             g,
             temporal[0][2],
-            SCHEMA.endDate,
+            DCAT.endDate,
             dataset_dict["temporal_coverage"][0]["end"],
             data_type=XSD.date,
         )
         assert self._triple(
             g,
             temporal[1][2],
-            SCHEMA.startDate,
+            DCAT.startDate,
             dataset_dict["temporal_coverage"][1]["start"],
             data_type=XSD.date,
         )
         assert self._triple(
             g,
             temporal[1][2],
-            SCHEMA.endDate,
+            DCAT.endDate,
             dataset_dict["temporal_coverage"][1]["end"],
             data_type=XSD.date,
         )
@@ -340,18 +342,10 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             g, spatial[0][2], SKOS.prefLabel, dataset["spatial_coverage"][0]["text"]
         )
 
-        assert len([t for t in g.triples((spatial[0][2], LOCN.geometry, None))]) == 2
-        # Geometry in GeoJSON
-        assert self._triple(
-            g,
-            spatial[0][2],
-            LOCN.geometry,
-            dataset["spatial_coverage"][0]["geom"],
-            GEOJSON_IMT,
-        )
+        assert len([t for t in g.triples((spatial[0][2], LOCN.Geometry, None))]) == 1
         # Geometry in WKT
         wkt_geom = wkt.dumps(dataset["spatial_coverage"][0]["geom"], decimals=4)
-        assert self._triple(g, spatial[0][2], LOCN.geometry, wkt_geom, GSP.wktLiteral)
+        assert self._triple(g, spatial[0][2], LOCN.Geometry, wkt_geom, GSP.wktLiteral)
 
         distribution_ref = self._triple(g, dataset_ref, DCAT.distribution, None)[2]
         resource = dataset_dict["resources"][0]
@@ -369,7 +363,9 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         # Resources: standard fields
 
         assert self._triple(g, distribution_ref, DCT.rights, resource["rights"])
-        assert self._triple(g, distribution_ref, ADMS.status, URIRef(resource["status"]))
+        assert self._triple(
+            g, distribution_ref, ADMS.status, URIRef(resource["status"])
+        )
         assert self._triple(
             g,
             distribution_ref,
@@ -402,7 +398,7 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         )
 
         assert self._triple(
-            g, distribution_ref, DCAT.byteSize, float(resource["size"]), XSD.decimal
+            g, distribution_ref, DCAT.byteSize, Decimal(resource["size"]), XSD.decimal
         )
         # Checksum
         checksum = self._triple(g, distribution_ref, SPDX.checksum, None)[2]
@@ -514,6 +510,28 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             g, publisher[0][2], FOAF.name, dataset_dict["publisher"][0]["name"]
         )
 
+    def test_empty_repeating_subfields_not_serialized(self):
+
+        dataset_dict = {
+            "name": "test-dataset-3",
+            "title": "Test DCAT dataset 3",
+            "notes": "Lorem ipsum",
+            "spatial_coverage": [
+                {
+                    "uri": "",
+                    "geom": "",
+                },
+            ],
+        }
+
+        dataset = call_action("package_create", **dataset_dict)
+
+        s = RDFSerializer()
+        g = s.g
+
+        dataset_ref = s.graph_from_dataset(dataset)
+        assert not [t for t in g.triples((dataset_ref, DCT.spatial, None))]
+
     def test_legacy_fields(self):
 
         dataset_dict = {
@@ -544,11 +562,118 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         assert len(publisher) == 1
         assert self._triple(g, publisher[0][2], FOAF.name, "Test Publisher")
 
+    def test_dcat_date(self):
+        dataset_dict = {
+            # Core fields
+            "name": "test-dataset",
+            "title": "Test DCAT dataset",
+            "notes": "Some notes",
+            "issued": "2024",
+            "modified": "2024-10",
+            "temporal_coverage": [
+                {"start": "1905-03-01T10:07:31.182680", "end": "2013-01-05"},
+                {"start": "2024-04-10T10:07:31", "end": "2024-05-29"},
+                {"start": "11/24/24", "end": "06/12/12"},
+            ],
+        }
+
+        dataset = call_action("package_create", **dataset_dict)
+
+        s = RDFSerializer()
+        g = s.g
+
+        dataset_ref = s.graph_from_dataset(dataset)
+
+        # Year
+        assert dataset["issued"] == dataset_dict["issued"]
+        assert self._triple(
+            g,
+            dataset_ref,
+            DCT.issued,
+            dataset_dict["issued"],
+            data_type=XSD.gYear,
+        )
+
+        # Year-month
+        assert dataset["modified"] == dataset_dict["modified"]
+        assert self._triple(
+            g,
+            dataset_ref,
+            DCT.modified,
+            dataset_dict["modified"],
+            data_type=XSD.gYearMonth,
+        )
+
+        temporal = [t for t in g.triples((dataset_ref, DCT.temporal, None))]
+
+        # Date
+        assert (
+            dataset["temporal_coverage"][0]["end"]
+            == dataset_dict["temporal_coverage"][0]["end"]
+        )
+
+        assert self._triple(
+            g,
+            temporal[0][2],
+            DCAT.endDate,
+            dataset_dict["temporal_coverage"][0]["end"],
+            data_type=XSD.date,
+        )
+
+        # Datetime
+        assert (
+            dataset["temporal_coverage"][0]["start"]
+            == dataset_dict["temporal_coverage"][0]["start"]
+        )
+        assert self._triple(
+            g,
+            temporal[0][2],
+            DCAT.startDate,
+            dataset_dict["temporal_coverage"][0]["start"],
+            data_type=XSD.dateTime,
+        )
+
+        assert (
+            dataset["temporal_coverage"][1]["start"]
+            == dataset_dict["temporal_coverage"][1]["start"]
+        )
+        assert self._triple(
+            g,
+            temporal[1][2],
+            DCAT.startDate,
+            dataset_dict["temporal_coverage"][1]["start"],
+            data_type=XSD.dateTime,
+        )
+
+        # Ambiguous Datetime
+        assert (
+            dataset["temporal_coverage"][2]["start"]
+            == dataset_dict["temporal_coverage"][2]["start"]
+        )
+        assert self._triple(
+            g,
+            temporal[2][2],
+            DCAT.startDate,
+            "2024-11-24T00:00:00",
+            data_type=XSD.dateTime,
+        )
+        assert (
+            dataset["temporal_coverage"][2]["end"]
+            == dataset_dict["temporal_coverage"][2]["end"]
+        )
+        assert self._triple(
+            g,
+            temporal[2][2],
+            DCAT.endDate,
+            "2012-06-12T00:00:00",
+            data_type=XSD.dateTime,
+        )
+
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 @pytest.mark.ckan_config("ckan.plugins", "dcat scheming_datasets")
 @pytest.mark.ckan_config(
-    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_2.1_full.yaml"
+    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_full.yaml"
 )
 @pytest.mark.ckan_config(
     "scheming.presets",
@@ -580,7 +705,7 @@ class TestSchemingValidators:
 @pytest.mark.usefixtures("with_plugins", "clean_db")
 @pytest.mark.ckan_config("ckan.plugins", "dcat scheming_datasets")
 @pytest.mark.ckan_config(
-    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_2.1_full.yaml"
+    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_full.yaml"
 )
 @pytest.mark.ckan_config(
     "scheming.presets",
@@ -595,7 +720,7 @@ class TestSchemingParseSupport(BaseParseTest):
         Parse a DCAT RDF graph into a CKAN dataset dict, create a dataset with package_create
         and check that all expected fields are there
         """
-        contents = self._get_file_contents("dataset.rdf")
+        contents = self._get_file_contents("dcat/dataset.rdf")
 
         p = RDFParser()
 
@@ -636,6 +761,8 @@ class TestSchemingParseSupport(BaseParseTest):
 
         assert dataset["issued"] == u"2012-05-10"
         assert dataset["modified"] == u"2012-05-10T21:04:00"
+        assert dataset["temporal_resolution"] == "PT15M"
+        assert dataset["spatial_resolution_in_meters"] == "1.5"
 
         # List fields
         assert sorted(dataset["conforms_to"]) == ["Standard 1", "Standard 2"]
@@ -653,14 +780,7 @@ class TestSchemingParseSupport(BaseParseTest):
             "http://dataset.info.org/doc1",
             "http://dataset.info.org/doc2",
         ]
-        assert sorted(dataset["temporal_resolution"]) == [
-            "P1D",
-            "PT15M",
-        ]
-        assert sorted(dataset["spatial_resolution_in_meters"]) == [
-            1.5,
-            2.0,
-        ]
+
         assert sorted(dataset["is_referenced_by"]) == [
             "https://doi.org/10.1038/sdata.2018.22",
             "test_isreferencedby",
@@ -740,7 +860,7 @@ class TestSchemingParseSupport(BaseParseTest):
 @pytest.mark.usefixtures("with_plugins", "clean_db", "clean_index")
 @pytest.mark.ckan_config("ckan.plugins", "dcat scheming_datasets")
 @pytest.mark.ckan_config(
-    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_2.1_full.yaml"
+    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_full.yaml"
 )
 @pytest.mark.ckan_config(
     "scheming.presets",
@@ -837,55 +957,3 @@ class TestSchemingIndexFields:
             assert search_dict["spatial"] == json.dumps(
                 dataset_dict["spatial_coverage"][0]["centroid"]
             )
-
-
-@pytest.mark.usefixtures("with_plugins", "clean_db")
-@pytest.mark.ckan_config("ckan.plugins", "dcat scheming_datasets")
-@pytest.mark.ckan_config(
-    "scheming.dataset_schemas", "ckanext.dcat.schemas:dcat_ap_2.1_full.yaml"
-)
-@pytest.mark.ckan_config(
-    "scheming.presets",
-    "ckanext.scheming:presets.json ckanext.dcat.schemas:presets.yaml",
-)
-@pytest.mark.ckan_config(
-    "ckanext.dcat.rdf.profiles", "euro_dcat_ap_2 euro_dcat_ap_scheming"
-)
-class TestSchemingPresets:
-    def test_dcat_date(self):
-        dataset_dict = {
-            # Core fields
-            "name": "test-dataset",
-            "title": "Test DCAT dataset",
-            "notes": "Some notes",
-            "issued": "2024",
-            "modified": "2024-10",
-            "temporal_coverage": [
-                {"start": "1905-03-01T10:07:31.182680", "end": "2013-01-05"},
-                {"start": "2024-04-10T10:07:31", "end": "2024-05-29"},
-            ],
-        }
-
-        dataset = call_action("package_create", **dataset_dict)
-
-        # Year
-        assert dataset["issued"] == dataset_dict["issued"]
-
-        # Year-month
-        assert dataset["modified"] == dataset_dict["modified"]
-
-        # Date
-        assert (
-            dataset["temporal_coverage"][0]["end"]
-            == dataset_dict["temporal_coverage"][0]["end"]
-        )
-
-        # Datetime
-        assert (
-            dataset["temporal_coverage"][0]["start"]
-            == dataset_dict["temporal_coverage"][0]["start"]
-        )
-        assert (
-            dataset["temporal_coverage"][1]["start"]
-            == dataset_dict["temporal_coverage"][1]["start"]
-        )

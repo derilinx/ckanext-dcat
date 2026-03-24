@@ -7,7 +7,7 @@ from rdflib import term, URIRef, BNode, Literal
 from rdflib.namespace import Namespace, RDF, XSD, SKOS, RDFS
 from geomet import wkt, InvalidGeoJSONException
 
-from ckantoolkit import config, url_for, asbool, get_action, ObjectNotFound
+from ckantoolkit import config, url_for, asbool, aslist, get_action, ObjectNotFound
 from ckan.model.license import LicenseRegister
 from ckan.lib.helpers import resource_formats
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
@@ -59,6 +59,8 @@ namespaces = {
 PREFIX_MAILTO = "mailto:"
 
 GEOJSON_IMT = "https://www.iana.org/assignments/media-types/application/vnd.geo+json"
+
+DEFAULT_SPATIAL_FORMATS = ["wkt"]
 
 ROOT_DATASET_FIELDS = [
     'name',
@@ -747,7 +749,7 @@ class RDFProfile(object):
         # List of values
         if isinstance(value, list):
             items = value
-        elif isinstance(value, str):
+        elif value and isinstance(value, str):
             try:
                 items = json.loads(value)
                 if isinstance(items, ((int, float, complex))):
@@ -762,26 +764,41 @@ class RDFProfile(object):
 
     def _add_spatial_value_to_graph(self, spatial_ref, predicate, value):
         """
-        Adds spatial triples to the graph.
+        Adds spatial triples to the graph. Assumes that value is a GeoJSON string
+        or object.
         """
-        # GeoJSON
-        self.g.add((spatial_ref, predicate, Literal(value, datatype=GEOJSON_IMT)))
-        # WKT, because GeoDCAT-AP says so
-        try:
-            if isinstance(value, str):
-                value = json.loads(value)
-            self.g.add(
-                (
-                    spatial_ref,
-                    predicate,
-                    Literal(
-                        wkt.dumps(value, decimals=4),
-                        datatype=GSP.wktLiteral,
-                    ),
-                )
+        spatial_formats = aslist(
+            config.get(
+                "ckanext.dcat.output_spatial_format", DEFAULT_SPATIAL_FORMATS
             )
-        except (TypeError, ValueError, InvalidGeoJSONException) as e:
-            pass
+        )
+
+        if isinstance(value, str):
+            try:
+                value = json.loads(value)
+            except (TypeError, ValueError):
+                return
+
+        if "wkt" in spatial_formats:
+            # WKT, because GeoDCAT-AP says so
+            try:
+                self.g.add(
+                    (
+                        spatial_ref,
+                        predicate,
+                        Literal(
+                            wkt.dumps(value, decimals=4),
+                            datatype=GSP.wktLiteral,
+                        ),
+                    )
+                )
+            except (TypeError, ValueError, InvalidGeoJSONException):
+                pass
+
+        if "geojson" in spatial_formats:
+            # GeoJSON
+            self.g.add((spatial_ref, predicate, Literal(json.dumps(value), datatype=GEOJSON_IMT)))
+
 
     def _add_spatial_to_dict(self, dataset_dict, key, spatial):
         if spatial.get(key):
@@ -875,12 +892,13 @@ class RDFProfile(object):
     def _add_triples_from_dict(
         self, _dict, subject, items, list_value=False, date_value=False
     ):
+
         for item in items:
             try:
                 key, predicate, fallbacks, _type, _class = item
             except ValueError:
                 key, predicate, fallbacks, _type = item
-                _class=None
+                _class = None
             self._add_triple_from_dict(
                 _dict,
                 subject,
@@ -890,22 +908,22 @@ class RDFProfile(object):
                 list_value=list_value,
                 date_value=date_value,
                 _type=_type,
-                _class=_class
+                _class=_class,
             )
 
     def _add_triple_from_dict(
-            self,
-            _dict,
-            subject,
-            predicate,
-            key,
-            fallbacks=None,
-            list_value=False,
-            date_value=False,
-            _type=Literal,
-            _datatype=None,
-            value_modifier=None,
-            _class=None
+        self,
+        _dict,
+        subject,
+        predicate,
+        key,
+        fallbacks=None,
+        list_value=False,
+        date_value=False,
+        _type=Literal,
+        _datatype=None,
+        _class=None,
+        value_modifier=None,
     ):
         """
         Adds a new triple to the graph with the provided parameters
@@ -918,6 +936,8 @@ class RDFProfile(object):
         Using `value_modifier`, a function taking the extracted value and
         returning a modified value can be passed.
         If a value was found, the modifier is applied before adding the value.
+
+        `_class` is the optional RDF class of the entity being added.
 
         If `list_value` or `date_value` are True, then the value is treated as
         a list or a date respectively (see `_add_list_triple` and
@@ -937,7 +957,7 @@ class RDFProfile(object):
             value = value_modifier(value)
 
         if value and list_value:
-            self._add_list_triple(subject, predicate, value, _type, _datatype, _class=_class)
+            self._add_list_triple(subject, predicate, value, _type, _datatype, _class)
         elif value and date_value:
             self._add_date_triple(subject, predicate, value, _type)
         elif value:
@@ -953,8 +973,11 @@ class RDFProfile(object):
             if _class:
                 self.g.add((object, RDF.type, _class))
 
+            if _class and isinstance(object, URIRef):
+                self.g.add((object, RDF.type, _class))
+
     def _add_list_triple(
-            self, subject, predicate, value, _type=Literal, _datatype=None, _class=None
+        self, subject, predicate, value, _type=Literal, _datatype=None, _class=None
     ):
         """
         Adds as many triples to the graph as values
@@ -974,10 +997,11 @@ class RDFProfile(object):
             else:
                 object = _type(item)
             self.g.add((subject, predicate, object))
-            if _class:
+
+            if _class and isinstance(object, URIRef):
                 self.g.add((object, RDF.type, _class))
 
-    def _add_date_triple(self, subject, predicate, value, _type=Literal): # UNDONE add class here?? looks like we already have a type.
+    def _add_date_triple(self, subject, predicate, value, _type=Literal):
         """
         Adds a new triple with a date object
 

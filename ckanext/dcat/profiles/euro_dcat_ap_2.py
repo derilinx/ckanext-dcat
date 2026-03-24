@@ -1,25 +1,30 @@
 import json
+from decimal import Decimal, DecimalException
 
-from rdflib import URIRef, BNode, Literal
-
+from rdflib import URIRef, BNode, Literal, Namespace
+from ckanext.dcat.utils import resource_uri, group_uri
 from .. import codelists, legal_resources
-from ..utils import resource_uri, group_uri
 
 from .base import URIRefOrLiteral, CleanedURIRef
 from .base import (
     RDF,
-    SKOS,
     DCAT,
     DCATAP,
     DCT,
     XSD,
     ELI
+    SCHEMA,
+    RDFS,
+    ADMS,
 )
 
-from .euro_dcat_ap import EuropeanDCATAPProfile
+from .euro_dcat_ap_base import BaseEuropeanDCATAPProfile
 
 
-class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
+ELI = Namespace("http://data.europa.eu/eli/ontology#")
+
+
+class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
     """
     An RDF profile based on the DCAT-AP 2 for data portals in Europe
 
@@ -31,12 +36,46 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
 
     def parse_dataset(self, dataset_dict, dataset_ref):
 
-        # call super method
-        super(EuropeanDCATAP2Profile, self).parse_dataset(dataset_dict, dataset_ref)
+        # Call base method for common properties
+        dataset_dict = self._parse_dataset_base(dataset_dict, dataset_ref)
+
+        # DCAT AP v2 properties also applied to higher versions
+        dataset_dict = self._parse_dataset_v2(dataset_dict, dataset_ref)
+
+        return dataset_dict
+
+    def graph_from_dataset(self, dataset_dict, dataset_ref):
+
+        # Call base method for common properties
+        self._graph_from_dataset_base(dataset_dict, dataset_ref)
+
+        # DCAT AP v2 properties also applied to higher versions
+        self._graph_from_dataset_v2(dataset_dict, dataset_ref)
+
+        # DCAT AP v2 specific properties
+        self._graph_from_dataset_v2_only(dataset_dict, dataset_ref)
+
+    def graph_from_catalog(self, catalog_dict, catalog_ref):
+
+        self._graph_from_catalog_base(catalog_dict, catalog_ref)
+
+    def _parse_dataset_v2(self, dataset_dict, dataset_ref):
+        """
+        DCAT -> CKAN properties carried forward to higher DCAT-AP versions
+        """
+
+        # Call base super method for common properties
+        super().parse_dataset(dataset_dict, dataset_ref)
+
+        # Standard values
+        value = self._object_value(dataset_ref, DCAT.temporalResolution)
+        if value:
+            dataset_dict["extras"].append(
+                {"key": "temporal_resolution", "value": value}
+            )
 
         # Lists
         for key, predicate in (
-            ("temporal_resolution", DCAT.temporalResolution),
             ("is_referenced_by", DCT.isReferencedBy),
             ("applicable_legislation", DCATAP.applicableLegislation),
             ("hvd_category", DCATAP.hvdCategory),
@@ -57,14 +96,21 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
             self._add_spatial_to_dict(dataset_dict, key, spatial)
 
         # Spatial resolution in meters
-        spatial_resolution_in_meters = self._object_value_float_list(
+        spatial_resolution = self._object_value_float_list(
             dataset_ref, DCAT.spatialResolutionInMeters
         )
-        if spatial_resolution_in_meters:
+        if spatial_resolution:
+            # For some reason we incorrectly allowed lists in this property at
+            # some point, keep support for it but default to single value
+            value = (
+                spatial_resolution[0]
+                if len(spatial_resolution) == 1
+                else json.dumps(spatial_resolution)
+            )
             dataset_dict["extras"].append(
                 {
                     "key": "spatial_resolution_in_meters",
-                    "value": json.dumps(spatial_resolution_in_meters),
+                    "value": value,
                 }
             )
 
@@ -98,11 +144,18 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
 
         return dataset_dict
 
-    def graph_from_dataset(self, dataset_dict, dataset_ref):
+    def _graph_from_dataset_v2(self, dataset_dict, dataset_ref):
+        """
+        CKAN -> DCAT properties carried forward to higher DCAT-AP versions
+        """
 
-        # call super method
-        super(EuropeanDCATAP2Profile, self).graph_from_dataset(
-            dataset_dict, dataset_ref
+        # Standard values
+        self._add_triple_from_dict(
+            dataset_dict,
+            dataset_ref,
+            DCAT.temporalResolution,
+            "temporal_resolution",
+            _datatype=XSD.duration,
         )
 
         # Lists
@@ -121,7 +174,16 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                                 codelists.high_value_dataset_category,
                                 list_value=True)
 
+
         # Temporal
+
+        # The profile for DCAT-AP 1 stored triples using schema:startDate,
+        # remove them to avoid duplication
+        for temporal in self.g.objects(dataset_ref, DCT.temporal):
+            if SCHEMA.startDate in [t for t in self.g.predicates(temporal, None)]:
+                self.g.remove((temporal, None, None))
+                self.g.remove((dataset_ref, DCT.temporal, temporal))
+
         start = self._get_dataset_value(dataset_dict, "temporal_start")
         end = self._get_dataset_value(dataset_dict, "temporal_end")
         if start or end:
@@ -160,33 +222,53 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                         (
                             dataset_ref,
                             DCAT.spatialResolutionInMeters,
-                            Literal(float(value), datatype=XSD.decimal),
+                            Literal(Decimal(value), datatype=XSD.decimal),
                         )
                     )
-                except (ValueError, TypeError):
+                except (ValueError, TypeError, DecimalException):
                     self.g.add(
                         (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
                     )
 
+        # Resources
+        for resource_dict in dataset_dict.get("resources", []):
 
-    def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
-        distribution = super().graph_from_resource(g, dataset_ref, resource_dict, resource_license_fallback, distribution)
+            distribution = CleanedURIRef(resource_uri(resource_dict))
 
-        #  Simple values
-        items = [
-            ('availability', DCATAP.availability, None, URIRefOrLiteral),
-            ('compress_format', DCAT.compressFormat, None, URIRefOrLiteral),
-            ('package_format', DCAT.packageFormat, None, URIRefOrLiteral)
-        ]
+            #  Simple values
+            items = [
+                ("availability", DCATAP.availability, None, URIRefOrLiteral),
+                (
+                    "compress_format",
+                    DCAT.compressFormat,
+                    None,
+                    URIRefOrLiteral,
+                    DCT.MediaType,
+                ),
+                (
+                    "package_format",
+                    DCAT.packageFormat,
+                    None,
+                    URIRefOrLiteral,
+                    DCT.MediaType,
+                ),
+            ]
 
-        self._add_triples_from_dict(resource_dict, distribution, items)
+            self._add_triples_from_dict(resource_dict, distribution, items)
 
-        #  Lists
-        items = [
-            ('applicable_legislation', DCATAP.applicableLegislation, None, URIRefOrLiteral),
-        ]
-        self._add_list_triples_from_dict(resource_dict, distribution, items)
+            #  Lists
+            items = [
+                (
+                    "applicable_legislation",
+                    DCATAP.applicableLegislation,
+                    None,
+                    URIRefOrLiteral,
+                    ELI.LegalResource,
+                ),
+            ]
+            self._add_list_triples_from_dict(resource_dict, distribution, items)
 
+ 
         for eli in resource_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
@@ -225,9 +307,19 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
         ])
         return
 
-    def graph_from_catalog(self, catalog_dict, catalog_ref):
+    def _graph_from_dataset_v2_only(self, dataset_dict, dataset_ref):
+        """
+        CKAN -> DCAT v2 specific properties (not applied to higher versions)
+        """
 
-        # call super method
-        super(EuropeanDCATAP2Profile, self).graph_from_catalog(
-            catalog_dict, catalog_ref
+        # Other identifiers (these are handled differently in the
+        # DCAT-AP v3 profile)
+        self._add_triple_from_dict(
+            dataset_dict,
+            dataset_ref,
+            ADMS.identifier,
+            "alternate_identifier",
+            list_value=True,
+            _type=URIRefOrLiteral,
+            _class=ADMS.Identifier,
         )
