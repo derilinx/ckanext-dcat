@@ -12,7 +12,7 @@ from .base import (
     DCATAP,
     DCT,
     XSD,
-    ELI
+    ELI,
     SCHEMA,
     RDFS,
     ADMS,
