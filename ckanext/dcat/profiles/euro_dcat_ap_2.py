@@ -578,7 +578,10 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         return distribution
 
 
-    def graph_from_catalog(self, catalog_dict, catalog_ref):
+    def _graph_from_dataset_v2_only(self, dataset_dict, dataset_ref):
+        """
+        CKAN -> DCAT v2 specific properties (not applied to higher versions)
+        """
 
         # Other identifiers (these are handled differently in the
         # DCAT-AP v3 profile)
