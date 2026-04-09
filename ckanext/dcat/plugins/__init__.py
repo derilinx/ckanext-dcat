@@ -219,9 +219,9 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
                         parsed = json.loads(dataset_dict[field['field_name']])
                         if isinstance(parsed, list):
                             dataset_dict[field['field_name']] = parsed
-                            log.warning(f"DCAT_DEBUG parsed OK field={field['field_name']} result={parsed}")
+                            log.debug("DCAT_DEBUG parsed OK field=%s result=%s", field['field_name'], parsed)
                     except (ValueError, TypeError):
-                        log.warning(f"Failed to parse field {field['field_name']} as JSON list for indexing", exc_info=True)
+                        log.warning("Failed to parse field %s as JSON list for indexing", field['field_name'], exc_info=True)
                 if field['field_name'] in dataset_dict and 'repeating_subfields' in field:
                     # Check value because of ckan/ckan#8953
                     value = dataset_dict[field['field_name']]
