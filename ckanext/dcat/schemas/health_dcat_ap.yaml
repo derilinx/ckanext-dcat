@@ -304,8 +304,43 @@ dataset_fields:
 
 - field_name: health_category
   label: Health category
-  preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  preset: multiple_select
+  choices:
+    - value: electronic_health_records
+      label: Electronic health records
+    - value: patient_registries
+      label: Patient registries and disease-specific databases
+    - value: determinants_of_health
+      label: Data on determinants of health
+    - value: genomic_proteomic_omics
+      label: Genomic, proteomic and other omics data
+    - value: clinical_trials_studies
+      label: Data from clinical trials and clinical studies
+    - value: health_disease_pathogen_registries
+      label: Data from health, disease and pathogen registries and databases
+    - value: medical_devices_data
+      label: Data from medical devices
+    - value: wellness_digital_health
+      label: Data from wellness and digital health applications
+    - value: health_administrative_data
+      label: Health-related administrative data
+    - value: human_genetic_data
+      label: Human genetic data
+    - value: medicinal_product_registration
+      label: Data from medicinal product registration
+    - value: health_technology_assessment
+      label: Data from health technology assessment
+    - value: in_vitro_diagnostics
+      label: Data from in vitro diagnostics
+    - value: social_environmental_determinants
+      label: Data on social and environmental determinants of health
+    - value: occupational_health
+      label: Occupational health data
+    - value: public_health_surveillance
+      label: Public health surveillance data
+    - value: biobanks
+      label: Data from biobanks
+  validators: ignore_missing scheming_multiple_choice
   help_text: >
      The health category to which this dataset belongs as described in the Commission Regulation on
      the European Health Data Space laying down a list of categories of electronic data for
