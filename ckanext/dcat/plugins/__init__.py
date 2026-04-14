@@ -206,12 +206,11 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
         spatial = None
         if schema:
             for field in schema['dataset_fields']:
-                # Deserialise multiple_text fields (stored as JSON strings) to Python lists
+                # Deserialise multiple-value fields (stored as JSON strings) to Python lists
                 # so Solr can index each value separately as a multi-value field
-                if field.get('preset') == 'multiple_text' and field['field_name'] in dataset_dict:
-                    log.warning(f"DCAT_DEBUG field={field['field_name']} val={dataset_dict[field['field_name']]} isstr={isinstance(dataset_dict[field['field_name']], str)}")
+                multi_presets = ('multiple_text', 'multiple_select', 'multiple_checkbox')
                 if (
-                    field.get('preset') == 'multiple_text'
+                    field.get('preset') in multi_presets
                     and field['field_name'] in dataset_dict
                     and isinstance(dataset_dict[field['field_name']], str)
                 ):

@@ -161,6 +161,29 @@ dataset_fields:
 
 - field_name: frequency
   label: Frequency
+  preset: select
+  choices:
+    - value: http://publications.europa.eu/resource/authority/frequency/ANNUAL
+      label: Annual
+    - value: http://publications.europa.eu/resource/authority/frequency/BIENNIAL
+      label: Biennial
+    - value: http://publications.europa.eu/resource/authority/frequency/CONT
+      label: Continuous
+    - value: http://publications.europa.eu/resource/authority/frequency/DAILY
+      label: Daily
+    - value: http://publications.europa.eu/resource/authority/frequency/IRREG
+      label: Irregular
+    - value: http://publications.europa.eu/resource/authority/frequency/MONTHLY
+      label: Monthly
+    - value: http://publications.europa.eu/resource/authority/frequency/NEVER
+      label: Never
+    - value: http://publications.europa.eu/resource/authority/frequency/QUARTERLY
+      label: Quarterly
+    - value: http://publications.europa.eu/resource/authority/frequency/WEEKLY
+      label: Weekly
+    - value: http://publications.europa.eu/resource/authority/frequency/UNKNOWN
+      label: Unknown
+  validators: ignore_missing unicode_safe
   help_text: The frequency at which dataset is published.
 
 - field_name: provenance
@@ -217,7 +240,15 @@ dataset_fields:
 
 - field_name: access_rights
   label: Access rights
-  validators: ignore_missing unicode_safe
+  preset: select
+  required: true
+  choices:
+    - value: http://publications.europa.eu/resource/authority/access-right/PUBLIC
+      label: Public
+    - value: http://publications.europa.eu/resource/authority/access-right/RESTRICTED
+      label: Restricted
+    - value: http://publications.europa.eu/resource/authority/access-right/NON_PUBLIC
+      label: Non-Public
   help_text: Information that indicates whether the dataset is Open Data, has access restrictions or is not public.
 
 - field_name: alternate_identifier
@@ -228,14 +259,51 @@ dataset_fields:
 
 - field_name: theme
   label: Theme
-  preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  preset: multiple_select
+  choices:
+    - value: http://publications.europa.eu/resource/authority/data-theme/HEAL
+      label: Health
+    - value: http://publications.europa.eu/resource/authority/data-theme/SOCI
+      label: Population and Society
+    - value: http://publications.europa.eu/resource/authority/data-theme/TECH
+      label: Science and Technology
+    - value: http://publications.europa.eu/resource/authority/data-theme/EDUC
+      label: Education, Culture and Sport
+    - value: http://publications.europa.eu/resource/authority/data-theme/ENVI
+      label: Environment
+    - value: http://publications.europa.eu/resource/authority/data-theme/GOVE
+      label: Government and Public Sector
+    - value: http://publications.europa.eu/resource/authority/data-theme/ECON
+      label: Economy and Finance
+  required: true
+  validators: scheming_multiple_choice
   help_text: A category of the dataset. A Dataset may be associated with multiple themes.
 
 - field_name: language
   label: Language
-  preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  preset: multiple_select
+  choices:
+    - value: http://publications.europa.eu/resource/authority/language/ENG
+      label: English
+    - value: http://publications.europa.eu/resource/authority/language/GLE
+      label: Irish
+    - value: http://publications.europa.eu/resource/authority/language/FRA
+      label: French
+    - value: http://publications.europa.eu/resource/authority/language/DEU
+      label: German
+    - value: http://publications.europa.eu/resource/authority/language/SPA
+      label: Spanish
+    - value: http://publications.europa.eu/resource/authority/language/ITA
+      label: Italian
+    - value: http://publications.europa.eu/resource/authority/language/POR
+      label: Portuguese
+    - value: http://publications.europa.eu/resource/authority/language/NLD
+      label: Dutch
+    - value: http://publications.europa.eu/resource/authority/language/POL
+      label: Polish
+    - value: http://publications.europa.eu/resource/authority/language/MUL
+      label: Multilingual
+  validators: ignore_missing scheming_multiple_choice
   help_text: Language or languages of the dataset.
   # TODO: language form snippet / validator / graph
 
@@ -271,7 +339,8 @@ dataset_fields:
 - field_name: applicable_legislation
   label: Applicable legislation
   preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  required: true
+  validators: scheming_multiple_text
   help_text: The legislation that mandates the creation or management of the dataset.
 
 - field_name: has_version
@@ -340,7 +409,8 @@ dataset_fields:
       label: Public health surveillance data
     - value: biobanks
       label: Data from biobanks
-  validators: ignore_missing scheming_multiple_choice
+  required: true
+  validators: scheming_multiple_choice
   help_text: >
      The health category to which this dataset belongs as described in the Commission Regulation on
      the European Health Data Space laying down a list of categories of electronic data for
@@ -348,8 +418,35 @@ dataset_fields:
 
 - field_name: health_theme
   label: Health theme
-  preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  preset: multiple_select
+  choices:
+    - value: http://health.europa.eu/theme/chronic-disease
+      label: Chronic Disease
+    - value: http://health.europa.eu/theme/epidemiology
+      label: Epidemiology
+    - value: http://health.europa.eu/theme/infectious-disease
+      label: Infectious Disease
+    - value: http://health.europa.eu/theme/mental-health
+      label: Mental Health
+    - value: http://health.europa.eu/theme/public-health
+      label: Public Health
+    - value: http://health.europa.eu/theme/rare-disease
+      label: Rare Disease
+    - value: http://health.europa.eu/theme/cancer
+      label: Cancer
+    - value: http://health.europa.eu/theme/cardiovascular
+      label: Cardiovascular
+    - value: http://health.europa.eu/theme/genomics
+      label: Genomics
+    - value: http://health.europa.eu/theme/environmental-health
+      label: Environmental Health
+    - value: http://health.europa.eu/theme/occupational-health
+      label: Occupational Health
+    - value: http://health.europa.eu/theme/maternal-health
+      label: Maternal Health
+    - value: http://health.europa.eu/theme/paediatrics
+      label: Paediatrics
+  validators: ignore_missing scheming_multiple_choice
   help_text: >
     A category of the Dataset or tag describing the Dataset.
 
@@ -441,6 +538,7 @@ dataset_fields:
 # Officially there can only be one HDAB for now, but keep it repeating subfield just in case
 - field_name: hdab
   label: Health data access body
+  required: true
   repeating_label: Health data access body
   repeating_once: true
   repeating_subfields:
