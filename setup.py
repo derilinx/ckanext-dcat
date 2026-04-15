@@ -19,7 +19,7 @@ setup(
     include_package_data=True,
     zip_safe=False,
     install_requires=[
-        'rdflib==6.1.1',
+        'rdflib>=6.1.1',
         'geomet>=0.2.0',
         'ckantoolkit>=0.0.7',
         'future>=0.18.2'
@@ -27,7 +27,7 @@ setup(
     extras_require={
         'dev': [
             # ttll shaql validation of dcat schemas,
-            'pyshacl==0.19.1',  # version pinned for rdflib
+            'pyshacl>=0.19.1',  # version pinned for rdflib
         ]
     },
 
