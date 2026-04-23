@@ -638,13 +638,10 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         # Set default license for distribution if needed and available
 
         if resource_license_fallback and not (distribution, DCT.license, None) in g:
-            g.add(
-                (
-                    distribution,
-                    DCT.license,
-                    URIRefOrLiteral(resource_license_fallback),
-                )
-            )
+            license_ref = URIRefOrLiteral(resource_license_fallback)
+            g.add((license_ref, RDF.type, DCT.LicenseDocument))
+            g.add((distribution, DCT.license, license_ref))
+
         # TODO: add an actual field to manage this
         if (distribution, DCT.license, None) in g:
             g.add(
