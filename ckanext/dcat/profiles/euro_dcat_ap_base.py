@@ -34,8 +34,6 @@ from .base import (
 
 config = toolkit.config
 
-DISTRIBUTION_LICENSE_FALLBACK_CONFIG = "ckanext.dcat.resource.inherit.license"
-
 
 class BaseEuropeanDCATAPProfile(RDFProfile):
     """
@@ -206,7 +204,7 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 src_data = self._extract_catalog_dict(catalog_src)
                 dataset_dict["extras"].extend(src_data)
 
-        
+
         homepage = self._object_value(dataset_ref, FOAF.homepage)
         if homepage:
             dataset_dict["extras"].append(
@@ -566,17 +564,6 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                     spatial_ref, LOCN.geometry, spatial_geom
                 )
 
-        # Use fallback license if set in config
-        resource_license_fallback = None
-        if toolkit.asbool(config.get(DISTRIBUTION_LICENSE_FALLBACK_CONFIG, False)):
-            if "license_id" in dataset_dict and isinstance(
-                URIRefOrLiteral(dataset_dict["license_id"]), URIRef
-            ):
-                resource_license_fallback = dataset_dict["license_id"]
-            elif "license_url" in dataset_dict and isinstance(
-                URIRefOrLiteral(dataset_dict["license_url"]), URIRef
-            ):
-                resource_license_fallback = dataset_dict["license_url"]
 
         # Statetements
         self._add_statement_to_graph(
@@ -596,160 +583,166 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         )
 
         # Resources
-        for resource_dict in dataset_dict.get("resources", []):
+        # DLX specific #
+        # handled at the processors level
 
+    def _graph_from_resource_base(self, dataset_ref, resource_dict, distribution=None, resource_license_fallback=None):
+
+        g = self.g
+
+        if distribution is None:
             distribution = CleanedURIRef(resource_uri(resource_dict))
 
-            g.add((dataset_ref, DCAT.distribution, distribution))
+        g.add((dataset_ref, DCAT.distribution, distribution))
 
-            g.add((distribution, RDF.type, DCAT.Distribution))
+        g.add((distribution, RDF.type, DCAT.Distribution))
 
-            #  Simple values
-            name_key = (
-                "name_translated" if "name_translated" in resource_dict else "name"
+        #  Simple values
+        name_key = (
+            "name_translated" if "name_translated" in resource_dict else "name"
+        )
+        description_key = (
+            "description_translated"
+            if "description_translated" in resource_dict
+            else "description"
+        )
+
+        items = [
+            (name_key, DCT.title, None, Literal),
+            (description_key, DCT.description, None, Literal),
+            ("status", ADMS.status, None, URIRefOrLiteral),
+            ("license", DCT.license, None, URIRefOrLiteral, DCT.LicenseDocument),
+            ("access_url", DCAT.accessURL, None, URIRef, RDFS.Resource),
+            ("download_url", DCAT.downloadURL, None, URIRef, RDFS.Resource),
+        ]
+
+        self._add_triples_from_dict(resource_dict, distribution, items)
+
+        #  Lists
+        items = [
+            ("documentation", FOAF.page, None, URIRefOrLiteral, FOAF.Document),
+            ("language", DCT.language, None, URIRefOrLiteral, DCT.LinguisticSystem),
+            ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral, DCT.Standard),
+        ]
+        self._add_list_triples_from_dict(resource_dict, distribution, items)
+
+        # Statetements
+        self._add_statement_to_graph(
+            resource_dict,
+            "rights",
+            distribution,
+            DCT.rights,
+            DCT.RightsStatement
+        )
+
+        # Set default license for distribution if needed and available
+
+        if resource_license_fallback and not (distribution, DCT.license, None) in g:
+            g.add(
+                (
+                    distribution,
+                    DCT.license,
+                    URIRefOrLiteral(resource_license_fallback),
+                )
             )
-            description_key = (
-                "description_translated"
-                if "description_translated" in resource_dict
-                else "description"
+        # TODO: add an actual field to manage this
+        if (distribution, DCT.license, None) in g:
+            g.add(
+                (
+                    list(g.objects(distribution, DCT.license))[0],
+                    DCT.type,
+                    URIRef("http://purl.org/adms/licencetype/UnknownIPR")
+                )
             )
 
-            items = [
-                (name_key, DCT.title, None, Literal),
-                (description_key, DCT.description, None, Literal),
-                ("status", ADMS.status, None, URIRefOrLiteral),
-                ("license", DCT.license, None, URIRefOrLiteral, DCT.LicenseDocument),
-                ("access_url", DCAT.accessURL, None, URIRef, RDFS.Resource),
-                ("download_url", DCAT.downloadURL, None, URIRef, RDFS.Resource),
-            ]
+        # Format
+        mimetype = resource_dict.get("mimetype")
+        fmt = resource_dict.get("format")
 
-            self._add_triples_from_dict(resource_dict, distribution, items)
+        # IANA media types (either URI or Literal) should be mapped as mediaType.
+        # In case format is available and mimetype is not set or identical to format,
+        # check which type is appropriate.
+        if fmt and (not mimetype or mimetype == fmt):
+            if (
+                "iana.org/assignments/media-types" in fmt
+                or not fmt.startswith("http")
+                and "/" in fmt
+            ):
+                # output format value as dcat:mediaType instead of dct:format
+                mimetype = fmt
+                fmt = None
+            else:
+                # Use dct:format
+                mimetype = None
 
-            #  Lists
-            items = [
-                ("documentation", FOAF.page, None, URIRefOrLiteral, FOAF.Document),
-                ("language", DCT.language, None, URIRefOrLiteral, DCT.LinguisticSystem),
-                ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral, DCT.Standard),
-            ]
-            self._add_list_triples_from_dict(resource_dict, distribution, items)
+        if mimetype:
+            mimetype = URIRefOrLiteral(mimetype)
+            g.add((distribution, DCAT.mediaType, mimetype))
+            if isinstance(mimetype, URIRef):
+                g.add((mimetype, RDF.type, DCT.MediaType))
 
-            # Statetements
-            self._add_statement_to_graph(
-                resource_dict,
-                "rights",
-                distribution,
-                DCT.rights,
-                DCT.RightsStatement
-            )
+        if fmt:
+            fmt = URIRefOrLiteral(fmt)
+            g.add((distribution, DCT["format"], fmt))
+            if isinstance(fmt, URIRef):
+                g.add((fmt, RDF.type, DCT.MediaTypeOrExtent))
 
-            # Set default license for distribution if needed and available
+        # URL fallback and old behavior
+        url = resource_dict.get("url")
+        download_url = resource_dict.get("download_url")
+        access_url = resource_dict.get("access_url")
+        # Use url as fallback for access_url if access_url is not set and download_url is not equal
+        if url and not access_url:
+            if (not download_url) or (download_url and url != download_url):
+                self._add_triple_from_dict(
+                    resource_dict, distribution, DCAT.accessURL, "url", _type=URIRef
+                )
 
-            if resource_license_fallback and not (distribution, DCT.license, None) in g:
+        # Dates
+        items = [
+            ("issued", DCT.issued, ["created"], Literal),
+            ("modified", DCT.modified, ["metadata_modified"], Literal),
+        ]
+
+        self._add_date_triples_from_dict(resource_dict, distribution, items)
+
+        # Numbers
+        if resource_dict.get("size"):
+            try:
                 g.add(
                     (
                         distribution,
-                        DCT.license,
-                        URIRefOrLiteral(resource_license_fallback),
+                        DCAT.byteSize,
+                        Literal(Decimal(resource_dict["size"]), datatype=XSD.decimal),
                     )
                 )
-            # TODO: add an actual field to manage this
-            if (distribution, DCT.license, None) in g:
-                g.add(
-                    (
-                        list(g.objects(distribution, DCT.license))[0],
-                        DCT.type,
-                        URIRef("http://purl.org/adms/licencetype/UnknownIPR")
-                    )
+            except (ValueError, TypeError, DecimalException):
+                g.add((distribution, DCAT.byteSize, Literal(resource_dict["size"])))
+        # Checksum
+        if resource_dict.get("hash"):
+            checksum = BNode()
+            g.add((checksum, RDF.type, SPDX.Checksum))
+            g.add(
+                (
+                    checksum,
+                    SPDX.checksumValue,
+                    Literal(resource_dict["hash"], datatype=XSD.hexBinary),
                 )
+            )
 
-            # Format
-            mimetype = resource_dict.get("mimetype")
-            fmt = resource_dict.get("format")
-
-            # IANA media types (either URI or Literal) should be mapped as mediaType.
-            # In case format is available and mimetype is not set or identical to format,
-            # check which type is appropriate.
-            if fmt and (not mimetype or mimetype == fmt):
-                if (
-                    "iana.org/assignments/media-types" in fmt
-                    or not fmt.startswith("http")
-                    and "/" in fmt
-                ):
-                    # output format value as dcat:mediaType instead of dct:format
-                    mimetype = fmt
-                    fmt = None
-                else:
-                    # Use dct:format
-                    mimetype = None
-
-            if mimetype:
-                mimetype = URIRefOrLiteral(mimetype)
-                g.add((distribution, DCAT.mediaType, mimetype))
-                if isinstance(mimetype, URIRef):
-                    g.add((mimetype, RDF.type, DCT.MediaType))
-
-            if fmt:
-                fmt = URIRefOrLiteral(fmt)
-                g.add((distribution, DCT["format"], fmt))
-                if isinstance(fmt, URIRef):
-                    g.add((fmt, RDF.type, DCT.MediaTypeOrExtent))
-
-            # URL fallback and old behavior
-            url = resource_dict.get("url")
-            download_url = resource_dict.get("download_url")
-            access_url = resource_dict.get("access_url")
-            # Use url as fallback for access_url if access_url is not set and download_url is not equal
-            if url and not access_url:
-                if (not download_url) or (download_url and url != download_url):
-                    self._add_triple_from_dict(
-                        resource_dict, distribution, DCAT.accessURL, "url", _type=URIRef
-                    )
-
-            # Dates
-            items = [
-                ("issued", DCT.issued, ["created"], Literal),
-                ("modified", DCT.modified, ["metadata_modified"], Literal),
-            ]
-
-            self._add_date_triples_from_dict(resource_dict, distribution, items)
-
-            # Numbers
-            if resource_dict.get("size"):
-                try:
-                    g.add(
-                        (
-                            distribution,
-                            DCAT.byteSize,
-                            Literal(Decimal(resource_dict["size"]), datatype=XSD.decimal),
-                        )
-                    )
-                except (ValueError, TypeError, DecimalException):
-                    g.add((distribution, DCAT.byteSize, Literal(resource_dict["size"])))
-            # Checksum
-            if resource_dict.get("hash"):
-                checksum = BNode()
-                g.add((checksum, RDF.type, SPDX.Checksum))
+            if resource_dict.get("hash_algorithm"):
+                checksum_algo = URIRefOrLiteral(resource_dict["hash_algorithm"])
                 g.add(
                     (
                         checksum,
-                        SPDX.checksumValue,
-                        Literal(resource_dict["hash"], datatype=XSD.hexBinary),
+                        SPDX.algorithm,
+                        checksum_algo,
                     )
                 )
+                if isinstance(checksum_algo, URIRef):
+                    g.add((checksum_algo, RDF.type, SPDX.ChecksumAlgorithm))
 
-                if resource_dict.get("hash_algorithm"):
-                    checksum_algo = URIRefOrLiteral(resource_dict["hash_algorithm"])
-                    g.add(
-                        (
-                            checksum,
-                            SPDX.algorithm,
-                            checksum_algo,
-                        )
-                    )
-                    if isinstance(checksum_algo, URIRef):
-                        g.add((checksum_algo, RDF.type, SPDX.ChecksumAlgorithm))
-
-                g.add((distribution, SPDX.checksum, checksum))
+            g.add((distribution, SPDX.checksum, checksum))
 
     def _graph_from_catalog_base(self, catalog_dict, catalog_ref):
 

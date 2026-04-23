@@ -55,6 +55,14 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         # DCAT AP v2 specific properties
         self._graph_from_dataset_v2_only(dataset_dict, dataset_ref)
 
+    def graph_from_resource(self, dataset_dict, dataset_ref, distribution=None, resource_license_fallback=None):
+
+        # Call base method for common properties
+        self._graph_from_resource_base(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+
+        # DCAT AP v2 specific properties
+        self._graph_from_resource_v2(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
         self._graph_from_catalog_base(catalog_dict, catalog_ref)
@@ -92,7 +100,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         qualified_attributions = self._parse_qualified_attributions(dataset_ref)
         if qualified_attributions:
             dataset_dict["qualified_attribution"] = qualified_attributions
-        
+
         # Standard values
         value = self._object_value(dataset_ref, DCAT.temporalResolution)
         if value:
@@ -223,7 +231,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         contact_points = self._contact_details(access_service, DCAT.contactPoint)
                         if contact_points:
                             access_service_dict["contact"] = contact_points
-                            
+
                         publishers = self._agents_details(access_service, DCT.publisher)
                         if publishers:
                             access_service_dict["publisher"] = publishers
@@ -393,18 +401,13 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
                     )
 
-    
-    def graph_from_resource(
-        self,
-        g,
-        dataset_ref,
-        resource_dict,
-        resource_license_fallback,
-        distribution=None,
-    ):
-        distribution = super().graph_from_resource(
-            g, dataset_ref, resource_dict, resource_license_fallback, distribution
-        )
+
+    def _graph_from_resource_v2(self, dataset_ref, resource_dict, distribution=None, resource_license_fallback=None):
+
+        g = self.g
+
+        if distribution is None:
+            distribution = CleanedURIRef(resource_uri(resource_dict))
 
         # Simple values
         items = [
@@ -594,7 +597,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             _type=URIRefOrLiteral,
             _class=ADMS.Identifier,
         )
-        
+
     def _parse_qualified_attributions(self, dataset_ref):
         attributions = []
         for qual_attr_ref in self.g.objects(dataset_ref, PROV.qualifiedAttribution):

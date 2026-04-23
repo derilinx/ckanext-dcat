@@ -57,6 +57,10 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
+
+    def graph_from_resource(self, dataset_dict, dataset_ref, distribution=None, resource_license_fallback=None):
+        pass
+
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
         self._graph_from_catalog_base(catalog_dict, catalog_ref)

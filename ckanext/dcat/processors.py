@@ -2,9 +2,9 @@ import sys
 import argparse
 import xml
 import json
-from pkg_resources import iter_entry_points
+from importlib.metadata import entry_points
 
-from ckantoolkit import config
+from ckantoolkit import config, asbool
 
 import rdflib
 import rdflib.parser
@@ -23,6 +23,7 @@ DCAT = Namespace("http://www.w3.org/ns/dcat#")
 RDF_PROFILES_ENTRY_POINT_GROUP = 'ckan.rdf.profiles'
 RDF_PROFILES_CONFIG_OPTION = 'ckanext.dcat.rdf.profiles'
 COMPAT_MODE_CONFIG_OPTION = 'ckanext.dcat.compatibility_mode'
+DISTRIBUTION_LICENSE_FALLBACK_CONFIG = "ckanext.dcat.resource.inherit.license"
 
 DEFAULT_RDF_PROFILES = ['euro_dcat_ap_3']
 
@@ -82,15 +83,14 @@ class RDFProcessor(object):
         loaded_profiles_names = []
 
         for profile_name in profile_names:
-            for profile in iter_entry_points(
-                    group=RDF_PROFILES_ENTRY_POINT_GROUP,
-                    name=profile_name):
-                profile_class = profile.load()
+            ep = entry_points(group=RDF_PROFILES_ENTRY_POINT_GROUP, name=profile_name)
+            if ep:
+                profile_entry = ep[profile_name]
+                profile_class = profile_entry.load()
                 # Set a reference to the profile name
-                profile_class.name = profile.name
+                profile_class.name = profile_entry.name
                 profiles.append(profile_class)
-                loaded_profiles_names.append(profile.name)
-                break
+                loaded_profiles_names.append(profile_entry.name)
 
         unknown_profiles = set(profile_names) - set(loaded_profiles_names)
         if unknown_profiles:
@@ -246,6 +246,22 @@ class RDFSerializer(RDFProcessor):
 
         return pagination_ref
 
+
+    def _resource_license_fallback(self, dataset_dict):
+        # Use fallback license if set in config
+        resource_license_fallback = None
+        if asbool(config.get(DISTRIBUTION_LICENSE_FALLBACK_CONFIG, False)):
+            if "license_id" in dataset_dict and isinstance(
+                URIRefOrLiteral(dataset_dict["license_id"]), URIRef
+            ):
+                resource_license_fallback = dataset_dict["license_id"]
+            elif "license_url" in dataset_dict and isinstance(
+                URIRefOrLiteral(dataset_dict["license_url"]), URIRef
+            ):
+                resource_license_fallback = dataset_dict["license_url"]
+        return resource_license_fallback
+
+
     def graph_from_dataset(self, dataset_dict):
         '''
         Given a CKAN dataset dict, creates a graph using the loaded profiles
@@ -261,6 +277,18 @@ class RDFSerializer(RDFProcessor):
         for profile_class in self._profiles:
             profile = profile_class(self.g, compatibility_mode=self.compatibility_mode)
             profile.graph_from_dataset(dataset_dict, dataset_ref)
+
+            if hasattr(profile, "graph_from_resource"):
+                # DLX specific start #
+                resource_license_fallback=self._resource_license_fallback(dataset_dict)
+
+                for resource_dict in dataset_dict.get("resources", []):
+                    profile.graph_from_resource(
+                        dataset_ref,
+                        resource_dict,
+                        resource_license_fallback=resource_license_fallback
+                    )
+                # DLX specific end #
 
         return dataset_ref
 
