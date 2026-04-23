@@ -653,18 +653,21 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             )
 
         # Format
-        mimetype = resource_dict.get("mimetype")
-        fmt = resource_dict.get("format")
+        mimetype = resource_dict.get('mimetype')
+        fmt = resource_dict.get('format')
+
+        # hardwire datastore csv type if the download url is to datastore.
+        if ((resource_dict.get('url_type') in ('datastore', 'tabledesigner') or fmt == 'data')
+           and 'datastore' in resource_dict.get('download_url')):
+            mimetype = 'text/csv'
+            fmt = None
 
         # IANA media types (either URI or Literal) should be mapped as mediaType.
         # In case format is available and mimetype is not set or identical to format,
         # check which type is appropriate.
         if fmt and (not mimetype or mimetype == fmt):
-            if (
-                "iana.org/assignments/media-types" in fmt
-                or not fmt.startswith("http")
-                and "/" in fmt
-            ):
+            if ('iana.org/assignments/media-types' in fmt
+                    or not fmt.startswith('http') and '/' in fmt):
                 # output format value as dcat:mediaType instead of dct:format
                 mimetype = fmt
                 fmt = None
@@ -672,17 +675,23 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 # Use dct:format
                 mimetype = None
 
+        if mimetype and not mimetype.startswith('http'):
+            mimetype = 'https://www.iana.org/assignments/media-types/' + mimetype
+
         if mimetype:
-            mimetype = URIRefOrLiteral(mimetype)
-            g.add((distribution, DCAT.mediaType, mimetype))
-            if isinstance(mimetype, URIRef):
-                g.add((mimetype, RDF.type, DCT.MediaType))
+            g.add((distribution, DCAT.mediaType,
+                   URIRefOrLiteral(mimetype)))
 
         if fmt:
-            fmt = URIRefOrLiteral(fmt)
-            g.add((distribution, DCT["format"], fmt))
-            if isinstance(fmt, URIRef):
-                g.add((fmt, RDF.type, DCT.MediaTypeOrExtent))
+            node = BNode()
+            g.add((distribution, DCT['format'], node))
+            g.add((node, RDF.type, DCT.MediaTypeOrExtent))
+            g.add((node, RDFS.label, URIRefOrLiteral(fmt)))
+            if mimetype:
+                g.add((node, RDF.value, URIRefOrLiteral(mimetype)))
+                g.add((node, RDF.type, DCT.IMT))
+            else:
+                g.add((node, RDF.value, URIRefOrLiteral(fmt)))
 
         # URL fallback and old behavior
         url = resource_dict.get("url")
