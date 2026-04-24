@@ -3,7 +3,7 @@ import logging
 from pathlib import Path
 
 from rdflib.plugins.sparql import prepareQuery
-from rdflib import Graph, Literal
+from rdflib import Graph, Literal, URIRef
 from rdflib.term import Variable
 
 log = logging.getLogger(__name__)
