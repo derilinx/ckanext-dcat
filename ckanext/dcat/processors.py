@@ -14,7 +14,7 @@ from rdflib.namespace import Namespace, RDF
 import ckan.plugins as p
 
 from ckanext.dcat.utils import catalog_uri, dataset_uri, group_uri, url_to_rdflib_format, DCAT_EXPOSE_SUBCATALOGS
-from ckanext.dcat.profiles import DCAT, DCT, FOAF
+from ckanext.dcat.profiles import DCAT, DCT, FOAF, URIRefOrLiteral
 from ckanext.dcat.exceptions import RDFProfileException, RDFParserException
 
 HYDRA = Namespace('http://www.w3.org/ns/hydra/core#')
