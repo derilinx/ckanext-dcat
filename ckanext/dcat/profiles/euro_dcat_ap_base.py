@@ -6,6 +6,7 @@ import ckantoolkit as toolkit
 
 from ckan.lib.munge import munge_tag
 
+from ckanext.dcat import vocabularies
 from ckanext.dcat.utils import (
     resource_uri,
     DCAT_EXPOSE_SUBCATALOGS,
@@ -116,7 +117,6 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
 
         #  Lists
         for key, predicate, in (
-            ("language", DCT.language),
             ("theme", DCAT.theme),
             ("alternate_identifier", ADMS.identifier),
             ("conforms_to", DCT.conformsTo),
@@ -130,6 +130,17 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             values = self._object_value_list(dataset_ref, predicate)
             if values:
                 dataset_dict["extras"].append({"key": key, "value": json.dumps(values)})
+
+        # DLX custom start
+
+        # TODO: Update dlxschema to allow multiple languages
+        dataset_dict['language'] = [
+            vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+            for lang in self.g.objects(dataset_ref, DCT.language)
+        ]
+
+        # DLX custom end
+
 
         # Contact details
         if self._schema_field("contact"):
@@ -263,13 +274,22 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
 
             #  Lists
             for key, predicate in (
-                ("language", DCT.language),
                 ("documentation", FOAF.page),
                 ("conforms_to", DCT.conformsTo),
             ):
                 values = self._object_value_list(distribution, predicate)
                 if values:
                     resource_dict[key] = json.dumps(values)
+
+            # DLX custom start
+
+            # TODO: Update dlxschema to allow multiple languages
+            resource_dict["language"] = [
+                vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+                for lang in self.g.objects(distribution, DCT.language)
+            ]
+
+            # DLX custom end
 
             # Format and media type
             normalize_ckan_format = toolkit.asbool(
@@ -377,7 +397,6 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
 
         #  Lists
         items = [
-            ("language", DCT.language, None, URIRefOrLiteral, DCT.LinguisticSystem),
             ("theme", DCAT.theme, None, URIRef),
             ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral, DCT.Standard),
             ("documentation", FOAF.page, None, URIRefOrLiteral, FOAF.Document),
@@ -388,6 +407,17 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             ("sample", ADMS.sample, None, URIRefOrLiteral, DCAT.Distribution),
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
+
+
+        # DLX custom start
+
+        langs = dataset_dict.get("language", [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((dataset_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+        # DLX custom end
 
         # Contact details
         if any(
@@ -621,10 +651,19 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         #  Lists
         items = [
             ("documentation", FOAF.page, None, URIRefOrLiteral, FOAF.Document),
-            ("language", DCT.language, None, URIRefOrLiteral, DCT.LinguisticSystem),
             ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral, DCT.Standard),
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
+
+        # DLX custom start
+
+        langs = resource_dict.get('language', [])
+        for language in (langs if isinstance(langs, list) else [langs]):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((distribution, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+        # DLX custom end
 
         # Statetements
         self._add_statement_to_graph(
@@ -769,12 +808,6 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 Literal,
             ),
             ("homepage", FOAF.homepage, config.get("ckan.site_url"), URIRef),
-            (
-                "language",
-                DCT.language,
-                config.get("ckan.locale_default", "en"),
-                URIRefOrLiteral,
-            ),
         ]
         for item in items:
             key, predicate, fallback, _type = item
@@ -784,6 +817,15 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 value = fallback
             if value:
                 g.add((catalog_ref, predicate, _type(value)))
+
+        # DLX custom start
+
+        for language in toolkit.aslist(config.get('ckan.locales_offered', [config.get("ckan.locale_default", "en")])):
+            uri = vocabularies.languages.lookup(ckan=language)
+            self.g.add((catalog_ref, DCT.language, uri))
+            self.g.add((uri, RDF.type, DCT.LinguisticSystem))
+
+        # DLX custom end
 
         # Dates
         modified = self._last_catalog_modification()
