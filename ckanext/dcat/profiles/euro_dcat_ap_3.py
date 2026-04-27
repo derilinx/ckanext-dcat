@@ -59,7 +59,12 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
 
 
     def graph_from_resource(self, dataset_dict, dataset_ref, distribution=None, resource_license_fallback=None):
-        pass
+
+        # Call base method for common properties
+        self._graph_from_resource_base(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+
+        # DCAT AP v2 properties also applied to higher versions
+        self._graph_from_resource_v2(dataset_dict, dataset_ref, distribution, resource_license_fallback)
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 

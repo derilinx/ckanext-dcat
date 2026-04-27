@@ -21,7 +21,7 @@ from ckanext.dcat.profiles import (
     SKOS, LOCN, GSP, OWL, SPDX, GEOJSON_IMT,
     RDFS,
 )
-from ckanext.dcat.profiles.euro_dcat_ap_base import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
+from ckanext.dcat.processors import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.tests.utils import BaseSerializeTest
 
