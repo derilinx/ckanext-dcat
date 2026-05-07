@@ -286,6 +286,7 @@ class RDFSerializer(RDFProcessor):
                     profile.graph_from_resource(
                         dataset_ref,
                         resource_dict,
+                        distribution=None,
                         resource_license_fallback=resource_license_fallback
                     )
                 # DLX specific end #
