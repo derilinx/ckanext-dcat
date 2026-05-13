@@ -1,3 +1,4 @@
+import datetime
 import json
 import uuid
 from decimal import Decimal
@@ -24,6 +25,9 @@ from ckanext.dcat.profiles import (
 from ckanext.dcat.processors import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.tests.utils import BaseSerializeTest
+# DLX custom start
+from ckanext.dcat import vocabularies
+# DLX custom end
 
 
 class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
@@ -128,12 +132,22 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
             assert self._triple(g, dataset_ref, DCAT.keyword, tag['name'])
 
         # Dates
-        assert self._triple(g, dataset_ref, DCT.issued, dataset['metadata_created'], XSD.dateTime)
-        assert self._triple(g, dataset_ref, DCT.modified, dataset['metadata_modified'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date_created = dataset["metadata_created"]
+        _date_created = datetime.datetime.fromisoformat(_date_created).isoformat(timespec="seconds")
+        _date_modified = dataset["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, dataset_ref, DCT.issued, _date_created, XSD.dateTime)
+        assert self._triple(g, dataset_ref, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
+
 
         # List
         for item in [
-            ('language', DCT.language, [Literal, URIRef]),
+            # DLX custom start: languages not parsed from extras
+            # ('language', DCT.language, [Literal, URIRef]),
+            # DLX custom end
             ('theme', DCAT.theme, URIRef),
             ('conforms_to', DCT.conformsTo, Literal),
             ('alternate_identifier', ADMS.identifier, [Literal, Literal, URIRef]),
@@ -509,7 +523,11 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert temporal
 
         assert self._triple(g, temporal, RDF.type, DCT.PeriodOfTime)
-        assert self._triple(g, temporal, SCHEMA.startDate, extras['temporal_start'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date = extras["temporal_start"]
+        _date = datetime.datetime.fromisoformat(_date).isoformat(timespec="seconds")
+        assert self._triple(g, temporal, SCHEMA.startDate, _date, XSD.dateTime)
+        # DLX custom end
         assert self._triple(g, temporal, SCHEMA.endDate, extras['temporal_end'], XSD.date)
 
     def test_spatial(self):
@@ -681,7 +699,6 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         # List
         for item in [
             ('documentation', FOAF.page, URIRef),
-            ('language', DCT.language, [Literal, Literal, URIRef]),
             ('conforms_to', DCT.conformsTo, Literal),
         ]:
             values = json.loads(resource[item[0]])
@@ -693,9 +710,23 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
                     _type = item[2][num]
                 assert self._triple(g, distribution, item[1], _type(value))
 
+        # DLX custom start: return language URIs
+        assert (
+            self._triples_list_values(g, distribution, DCT.language)
+            == [str(vocabularies.languages.lookup(d)) for d in json.loads(resource["language"])]
+        )
+        # DLX custom end
+
         # Dates
-        assert self._triple(g, distribution, DCT.issued, resource['issued'], XSD.dateTime)
-        assert self._triple(g, distribution, DCT.modified, resource['modified'], XSD.dateTime)
+
+        # DLX custom start: they don't like microseconds around here
+        _date_issued = resource["issued"]
+        _date_issued = datetime.datetime.fromisoformat(_date_issued).isoformat(timespec="seconds")
+        _date_modified = resource["modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, distribution, DCT.issued, _date_issued, XSD.dateTime)
+        assert self._triple(g, distribution, DCT.modified, _date_modified, XSD.dateTime)
 
         # Numbers
         assert self._triple(g, distribution, DCAT.byteSize, Decimal(resource['size']), XSD.decimal)

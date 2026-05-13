@@ -409,7 +409,7 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
 
-        # DLX custom start
+        # DLX custom start: languages as URIs
 
         langs = dataset_dict.get("language", [])
         for language in (langs if isinstance(langs, list) else [langs]):
@@ -655,10 +655,15 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         ]
         self._add_list_triples_from_dict(resource_dict, distribution, items)
 
-        # DLX custom start
+        # DLX custom start: languages as URIs
 
         langs = resource_dict.get('language', [])
-        for language in (langs if isinstance(langs, list) else [langs]):
+        if isinstance(langs, str):
+            try:
+                langs = json.loads(langs)
+            except ValueError:
+                langs = [langs]
+        for language in langs:
             uri = vocabularies.languages.lookup(ckan=language)
             self.g.add((distribution, DCT.language, uri))
             self.g.add((uri, RDF.type, DCT.LinguisticSystem))

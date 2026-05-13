@@ -15,6 +15,9 @@ from ckanext.dcat.profiles import (DCAT, DCT, ADMS, LOCN, SKOS, GSP, RDFS,
                                    GEOJSON_IMT, VCARD)
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS, DCAT_CLEAN_TAGS
 from ckanext.dcat.tests.utils import BaseParseTest
+# DLX custom start
+from ckanext.dcat import vocabularies
+# DLX custom end
 
 
 class TestEuroDCATAPProfileParsing(BaseParseTest):
@@ -127,7 +130,10 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
         assert _get_extra_value('homepage') == 'http://dataset.info.org/home'
 
         #  Lists
-        assert sorted(_get_extra_value_as_list('language')) == [u'ca', u'en', u'es']
+        # DLX custom start: languages added at the dataset root
+        assert sorted(dataset['language']) == ['ca', 'en', 'es']
+        # DLX custom end
+
         assert (sorted(_get_extra_value_as_list('theme')) ==
                 [u'Earth Sciences',
                  u'http://eurovoc.europa.eu/100142',
@@ -176,7 +182,10 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
             ('language', [u'ca', u'en', u'es']),
             ('conforms_to', [u'Standard 1', u'Standard 2']),
         ]:
-            assert sorted(json.loads(resource[item[0]])) == item[1]
+            if isinstance(resource[item[0]], str):
+                assert sorted(json.loads(resource[item[0]])) == item[1]
+            else:
+                assert sorted(resource[item[0]]) == item[1]
 
         # These two are likely to need clarification
         assert resource['license'] == u'http://creativecommons.org/licenses/by-nc/2.0/'
@@ -842,7 +851,10 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
         assert _get_extra_value('dcat_modified') == u'2012-05-10T21:04:00'
         assert _get_extra_value('dcat_publisher_name') == 'Publishing Organization for dataset 1'
         assert _get_extra_value('dcat_publisher_email') == 'contact@some.org'
-        assert _get_extra_value('language') == 'ca,en,es'
+
+        # DLX custom start: languages added at the dataset root
+        assert sorted(dataset['language']) == ['ca', 'en', 'es']
+        # DLX custom end
 
     @pytest.mark.ckan_config(DCAT_EXPOSE_SUBCATALOGS, 'true')
     def test_parse_subcatalog(self):
