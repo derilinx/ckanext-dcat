@@ -452,10 +452,12 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         for eli in resource_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
-        try:
-            access_service_list = json.loads(resource_dict.get("access_services", "[]"))
-        except ValueError:
-            access_service_list = []
+        access_service_list = resource_dict.get("access_services", [])
+        if isinstance(access_service_list, str):
+            try:
+                access_service_list = json.loads(access_service_list)
+            except ValueError:
+                access_service_list = []
 
         for access_service_dict in access_service_list:
             access_service_uri = access_service_dict.get("uri")
