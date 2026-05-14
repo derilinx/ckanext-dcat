@@ -226,6 +226,15 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
             dataset_ref, dataset_dict, "qualified_relation", DCAT.qualifiedRelation
         )
 
+    def _graph_from_resource_v2_scheming(
+            self,
+            dataset_dict,
+            dataset_ref,
+            resource_dict,
+            distribution_ref=None,
+            resource_license_fallback=None
+    ):
+
         resources = dataset_dict.get("resources", [])
         for resource in resources:
             if resource.get("access_services"):

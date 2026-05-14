@@ -612,13 +612,21 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             DCT.ProvenanceStatement
         )
 
-        # Resources
-        # DLX specific #
-        # handled at the processors level
-
-    def _graph_from_resource_base(self, dataset_ref, resource_dict, distribution=None, resource_license_fallback=None):
+    # Resources
+    # DLX specific #
+    # handled at the processors level
+    def _graph_from_resource_base(
+            self,
+            dataset_dict,
+            dataset_ref,
+            resource_dict,
+            distribution_ref=None,
+            resource_license_fallback=None
+    ):
 
         g = self.g
+
+        distribution = distribution_ref
 
         if distribution is None:
             distribution = CleanedURIRef(resource_uri(resource_dict))

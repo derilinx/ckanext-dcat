@@ -55,13 +55,24 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         # DCAT AP v2 specific properties
         self._graph_from_dataset_v2_only(dataset_dict, dataset_ref)
 
-    def graph_from_resource(self, dataset_dict, dataset_ref, distribution=None, resource_license_fallback=None):
+    def graph_from_resource(
+        self,
+        dataset_dict,
+        dataset_ref,
+        resource_dict,
+        distribution_ref=None,
+        resource_license_fallback=None,
+    ):
 
         # Call base method for common properties
-        self._graph_from_resource_base(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+        self._graph_from_resource_base(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
 
         # DCAT AP v2 properties also applied to higher versions
-        self._graph_from_resource_v2(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+        self._graph_from_resource_v2(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
@@ -401,10 +412,16 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
                     )
 
+    def _graph_from_resource_v2(
+        self,
+        dataset_dict,
+        dataset_ref,
+        resource_dict,
+        distribution_ref=None,
+        resource_license_fallback=None,
+    ):
 
-    def _graph_from_resource_v2(self, dataset_ref, resource_dict, distribution=None, resource_license_fallback=None):
-
-        g = self.g
+        distribution = distribution_ref
 
         if distribution is None:
             distribution = CleanedURIRef(resource_uri(resource_dict))
@@ -581,7 +598,6 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             resource_dict["access_services"] = json.dumps(access_service_list)
 
         return distribution
-
 
     def _graph_from_dataset_v2_only(self, dataset_dict, dataset_ref):
         """

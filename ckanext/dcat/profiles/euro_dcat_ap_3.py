@@ -57,14 +57,34 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
-
-    def graph_from_resource(self, dataset_dict, dataset_ref, distribution=None, resource_license_fallback=None):
+    def graph_from_resource(
+        self,
+        dataset_dict,
+        dataset_ref,
+        resource_dict,
+        distribution_ref=None,
+        resource_license_fallback=None,
+    ):
 
         # Call base method for common properties
-        self._graph_from_resource_base(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+        self._graph_from_resource_base(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
 
         # DCAT AP v2 properties also applied to higher versions
-        self._graph_from_resource_v2(dataset_dict, dataset_ref, distribution, resource_license_fallback)
+        self._graph_from_resource_v2(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v2 resource scheming fields
+        self._graph_from_resource_v2_scheming(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v3 properties also applied to higher versions
+        self._graph_from_resource_v3(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
 
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
