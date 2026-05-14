@@ -375,7 +375,9 @@ class RDFProfile(object):
 
         If no values found, returns an empty list
         """
-        return [self._get_skos_value(o) for o in self.g.objects(subject, predicate)]
+        # TODO: revisit returning skos labels
+        # return [self._get_skos_value(o) for o in self.g.objects(subject, predicate)]
+        return [str(o) for o in self.g.objects(subject, predicate)]
 
     def _object_value_list_multilingual(self, subject, predicate):
         """
