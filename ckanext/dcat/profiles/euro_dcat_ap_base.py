@@ -832,9 +832,23 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 g.add((catalog_ref, predicate, _type(value)))
 
         # DLX custom start
-
-        for language in toolkit.aslist(config.get('ckan.locales_offered', [config.get("ckan.locale_default", "en")])):
-            uri = vocabularies.languages.lookup(ckan=language)
+        languages = []
+        if catalog_dict and catalog_dict.get("language"):
+            languages = catalog_dict["language"]
+            if isinstance(languages, str):
+                try:
+                    languages = json.loads(languages)
+                except ValueError:
+                    languages = [languages]
+        if not languages:
+            languages = config.get('ckan.locales_offered')
+        if not languages:
+            languages = [config.get("ckan.locale_default", "en")]
+        for language in languages:
+            if language.startswith("http"):
+                uri = URIRef(language)
+            else:
+                uri = vocabularies.languages.lookup(ckan=language)
             self.g.add((catalog_ref, DCT.language, uri))
             self.g.add((uri, RDF.type, DCT.LinguisticSystem))
 
