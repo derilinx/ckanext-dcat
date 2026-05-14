@@ -132,15 +132,14 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                 dataset_dict["extras"].append({"key": key, "value": json.dumps(values)})
 
         # DLX custom start
-
         # TODO: Update dlxschema to allow multiple languages
         dataset_dict['language'] = [
-            vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+            str(lang)
+            if isinstance(lang, URIRef)
+            else str(vocabularies.languages.lookup(str(lang)))
             for lang in self.g.objects(dataset_ref, DCT.language)
         ]
-
         # DLX custom end
-
 
         # Contact details
         if self._schema_field("contact"):
@@ -284,11 +283,12 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             # DLX custom start
 
             # TODO: Update dlxschema to allow multiple languages
-            resource_dict["language"] = [
-                vocabularies.languages.lookup(uri=lang) if isinstance(lang, URIRef) else str(lang)
+            resource_dict['language'] = [
+                str(lang)
+                if isinstance(lang, URIRef)
+                else str(vocabularies.languages.lookup(str(lang)))
                 for lang in self.g.objects(distribution, DCT.language)
             ]
-
             # DLX custom end
 
             # Format and media type
@@ -408,12 +408,13 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
-
         # DLX custom start: languages as URIs
-
         langs = dataset_dict.get("language", [])
         for language in (langs if isinstance(langs, list) else [langs]):
-            uri = vocabularies.languages.lookup(ckan=language)
+            if language.startswith("http"):
+                uri = URIRef(language)
+            else:
+                uri = vocabularies.languages.lookup(ckan=language)
             self.g.add((dataset_ref, DCT.language, uri))
             self.g.add((uri, RDF.type, DCT.LinguisticSystem))
 
