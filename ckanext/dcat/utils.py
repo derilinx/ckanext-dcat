@@ -27,6 +27,7 @@ log = logging.getLogger(__name__)
 
 DCAT_EXPOSE_SUBCATALOGS = 'ckanext.dcat.expose_subcatalogs'
 
+# DLX custom start: add charset to rdf content type
 CONTENT_TYPES = {
     'rdf': 'application/rdf+xml; charset=utf-8',
     'xml': 'application/rdf+xml; charset=utf-8',
@@ -34,6 +35,7 @@ CONTENT_TYPES = {
     'ttl': 'text/turtle; charset=utf-8',
     'jsonld': 'application/ld+json; charset=utf-8',
 }
+# DLX custom end
 
 DCAT_CLEAN_TAGS = 'ckanext.dcat.clean_tags'
 
