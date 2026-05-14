@@ -1122,8 +1122,16 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         distribution = self._triple(g, dataset_ref, DCAT.distribution, None)[2]
 
         # Dates
-        assert self._triple(g, distribution, DCT.modified, resource['metadata_modified'], XSD.dateTime)
-        assert self._triple(g, distribution, DCT.issued, resource['created'], XSD.dateTime)
+
+        # DLX custom start: they don't like microseconds around here
+        _date_created = resource["created"]
+        _date_created = datetime.datetime.fromisoformat(_date_created).isoformat(timespec="seconds")
+        _date_modified = resource["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, distribution, DCT.issued, _date_created, XSD.dateTime)
+        assert self._triple(g, distribution, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
 
     def test_distribution_format_mediatype_different(self):
         dataset_dict, resource = self._get_base_dataset_with_resource()
@@ -1194,6 +1202,11 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         g = s.g
 
         dataset_ref = s.graph_from_dataset(dataset)
+
+        # DLX custom start: they don't like microseconds around here
+        if "." in value:
+            value = datetime.datetime.fromisoformat(value).isoformat(timespec="seconds")
+        # DLX custom end
 
         assert str(self._triple(g, dataset_ref, DCT.issued, None)[2]) == value
         assert self._triple(g, dataset_ref, DCT.issued, None)[2].datatype == data_type
@@ -1278,7 +1291,12 @@ class TestEuroDCATAPProfileSerializeCatalog(BaseSerializeTest):
 
         assert str(catalog) == utils.catalog_uri()
 
-        assert self._triple(g, catalog, DCT.modified, dataset['metadata_modified'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date_modified = dataset["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, catalog, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
 
     @pytest.mark.ckan_config(DCAT_EXPOSE_SUBCATALOGS, 'true')
     def test_subcatalog(self):
