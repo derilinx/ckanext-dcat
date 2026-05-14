@@ -52,8 +52,19 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         resource_ref = list(g.objects(dataset_ref, DCAT.distribution))[0]
         dct_format = list(g.objects(resource_ref, DCT['format']))
         dcat_mediatype = list(g.objects(resource_ref, DCAT.mediaType))
-        assert expected_format == dct_format
+
+        # DLX custom start: format handling and URIs for mediatypes
+        dct_format_value = list(g.objects(dct_format, RDF.value))
+        if expected_format and not expected_format[0].startswith('http'):
+            expected_format = [URIRef('https://www.iana.org/assignments/media-types/' + expected_format[0])]
+
+        assert expected_format == dct_format_value
+
+        if expected_mediatype and not expected_mediatype[0].startswith('http'):
+            expected_mediatype = [URIRef('https://www.iana.org/assignments/media-types/' + expected_mediatype[0])]
+
         assert expected_mediatype == dcat_mediatype
+        # DLX custom end
 
     def _get_base_dataset_with_resource(self):
         """
@@ -1121,11 +1132,15 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         resource['mimetype'] = 'application/json'
 
         # expect both nodes
+
+        # DLX custom start: format handling
         self._build_graph_and_check_format_mediatype(
             dataset_dict,
-            [Literal('myformat')],
+            [Literal('application/json')],
             [Literal('application/json')]
         )
+        # DLX custom end
+
 
     def test_hash_algorithm_not_uri(self):
 
