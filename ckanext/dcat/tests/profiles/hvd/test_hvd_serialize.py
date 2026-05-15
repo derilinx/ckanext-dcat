@@ -7,7 +7,6 @@ from ckanext.dcat.tests.utils import BaseSerializeTest
 
 class TestEuroDCATAPHVDProfileSerialize(BaseSerializeTest):
 
-    @pytest.mark.usefixtures("with_plugins", "clean_db")
     def test_serialize_hvd_datasets_in_catalog(self):
 
         datasets = [

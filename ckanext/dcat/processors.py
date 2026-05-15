@@ -314,6 +314,7 @@ class RDFSerializer(RDFProcessor):
 
         return catalog_ref
 
+    # DLX custom start: groups as data services
     def graph_from_groups(self):
         profiles = [cls(self.g, compatibility_mode=self.compatibility_mode) for cls in self._profiles]
 
@@ -325,7 +326,7 @@ class RDFSerializer(RDFProcessor):
 
             for profile in profiles:
                 profile.graph_from_group(group_dict, ref)
-
+    # DLX custom end
 
     def serialize_dataset(self, dataset_dict, _format='xml', context=None):
         '''
@@ -340,7 +341,10 @@ class RDFSerializer(RDFProcessor):
         '''
 
         self.graph_from_dataset(dataset_dict)
+
+        # DLX custom start: groups as data services
         self.graph_from_groups()
+        # DLX custom end
 
         if not _format:
             _format = 'xml'
@@ -407,7 +411,9 @@ class RDFSerializer(RDFProcessor):
                 if not cat_ref:
                     self.g.add((catalog_ref, DCAT.dataset, dataset_ref))
 
+        # DLX custom start: groups as data services
         self.graph_from_groups()
+        # DLX custom end
 
         if pagination_info:
             self._add_pagination_triples(pagination_info)

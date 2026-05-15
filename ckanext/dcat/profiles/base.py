@@ -1555,6 +1555,7 @@ class RDFProfile(object):
         """
         pass
 
+    # DLX custom start: groups as data services
     def groups(self):
         '''
         List the groups that should be serialized in the output.
@@ -1575,4 +1576,5 @@ class RDFProfile(object):
         returned by `group_show`. `group_ref` is an rdflib URIRef object
         that must be used to reference the group when working with the graph.
         '''
+    # DLX custom end
 
