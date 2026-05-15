@@ -752,7 +752,9 @@ class TestDatasetSeries:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        # DLX custom start: charset in content-type
+        assert response.headers["Content-Type"] == "text/turtle; charset=utf-8"
+        # DLX custom end
 
         content = response.body
 

@@ -17,7 +17,7 @@ from ckanext.dcat.processors import RDFParser
 )
 class TestEndpointsHVD:
 
-    def test_catalog_ttl(self, app):
+    def test_endpoint_hvd_ttl(self, app):
 
         datasets = [
             {
@@ -77,8 +77,8 @@ class TestEndpointsHVD:
         dcat_datasets = [d for d in p.datasets()]
 
         assert len(dcat_datasets) == 1
-        assert dcat_datasets[0]["title"] == "Test Dataset HVD"
+        assert dcat_datasets[0]["title"] == "Test dataset HVD"
 
         assert len(dcat_datasets[0]["resources"]) == 1
 
-        assert dcat_datasets[0].resources[0]["name"] == "hvd resource"
+        assert dcat_datasets[0]["resources"][0]["name"] == "hvd resource"
