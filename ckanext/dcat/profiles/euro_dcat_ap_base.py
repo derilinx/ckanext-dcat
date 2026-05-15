@@ -673,7 +673,10 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             except ValueError:
                 langs = [langs]
         for language in langs:
-            uri = vocabularies.languages.lookup(ckan=language)
+            if language.startswith("http"):
+                uri = URIRef(language)
+            else:
+                uri = vocabularies.languages.lookup(ckan=language)
             self.g.add((distribution, DCT.language, uri))
             self.g.add((uri, RDF.type, DCT.LinguisticSystem))
 
@@ -734,6 +737,7 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
         if mimetype:
             g.add((distribution, DCAT.mediaType,
                    URIRefOrLiteral(mimetype)))
+            g.add((URIRefOrLiteral(mimetype), RDF.type, DCT.MediaType))
 
         if fmt:
             node = BNode()

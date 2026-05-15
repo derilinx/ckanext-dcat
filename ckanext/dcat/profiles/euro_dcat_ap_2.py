@@ -288,7 +288,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
 
         # Lists
         for key, predicate, fallbacks, _type, datatype, _class in (
-            ("is_referenced_by", DCT.isReferencedBy, None, URIRefOrLiteral, None, None),
+            ("is_referenced_by", DCT.isReferencedBy, None, URIRefOrLiteral, None, RDFS.Resource),
             ("applicable_legislation", DCATAP.applicableLegislation, None, URIRefOrLiteral, None, ELI.LegalResource),
         ):
             self._add_triple_from_dict(
