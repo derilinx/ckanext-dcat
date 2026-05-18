@@ -28,6 +28,10 @@ def test_ckan_to_dcat():
     ckan_dict =_get_file_as_dict('ckan/full_ckan_dataset_legacy.json')
     expected_dcat_dict =_get_file_as_dict('ckan/dataset.json')
 
+    # DLX custom start: download url
+    expected_dcat_dict["distribution"][0]["downloadURL"] = expected_dcat_dict["distribution"][0]["accessURL"]
+    # DLX custom end
+
     dcat_dict = converters.ckan_to_dcat(ckan_dict)
 
     assert dcat_dict == expected_dcat_dict,_poor_mans_dict_diff(

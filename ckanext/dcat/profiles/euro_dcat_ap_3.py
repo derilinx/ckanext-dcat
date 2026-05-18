@@ -57,6 +57,35 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
+    def graph_from_resource(
+        self,
+        dataset_dict,
+        dataset_ref,
+        resource_dict,
+        distribution_ref=None,
+        resource_license_fallback=None,
+    ):
+
+        # Call base method for common properties
+        self._graph_from_resource_base(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v2 properties also applied to higher versions
+        self._graph_from_resource_v2(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v2 resource scheming fields
+        self._graph_from_resource_v2_scheming(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v3 properties also applied to higher versions
+        self._graph_from_resource_v3(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
         self._graph_from_catalog_base(catalog_dict, catalog_ref)
@@ -70,19 +99,6 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
             dataset_series = True
             self.g.remove((dataset_ref, RDF.type, None))
             self.g.add((dataset_ref, RDF.type, DCAT.DatasetSeries))
-
-        # byteSize decimal -> nonNegativeInteger
-        for subject, predicate, object in self.g.triples((None, DCAT.byteSize, None)):
-            if object and object.datatype == XSD.decimal:
-                self.g.remove((subject, predicate, object))
-
-                self.g.add(
-                    (
-                        subject,
-                        predicate,
-                        Literal(int(object), datatype=XSD.nonNegativeInteger),
-                    )
-                )
 
         # Other identifiers
         value = self._get_dict_value(dataset_dict, "alternate_identifier")
@@ -137,3 +153,20 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
                                     URIRef(dataset_uri(series_nav["next"])),
                                 )
                             )
+
+    def _graph_from_resource_v3(
+        self, dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+    ):
+
+        # byteSize decimal -> nonNegativeInteger
+        for subject, predicate, object in self.g.triples((None, DCAT.byteSize, None)):
+            if object and object.datatype == XSD.decimal:
+                self.g.remove((subject, predicate, object))
+
+                self.g.add(
+                    (
+                        subject,
+                        predicate,
+                        Literal(int(object), datatype=XSD.nonNegativeInteger),
+                    )
+                )

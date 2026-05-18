@@ -98,7 +98,9 @@ class TestEndpoints:
         headers = {"Authorization": user["token"]}
         response = app.get(url, headers=headers)
 
-        assert response.headers["Content-Type"] == "application/rdf+xml"
+        # DLX custom start: add charset to rdf content type
+        assert response.headers["Content-Type"] == "application/rdf+xml; charset=utf-8"
+        # DLX custom end
 
     def test_dataset_xml(self, app):
 
@@ -704,7 +706,9 @@ class TestDatasetSeries:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        # DLX custom start: add charset to rdf content type
+        assert response.headers["Content-Type"] == "text/turtle; charset=utf-8"
+        # DLX custom end
 
         content = response.body
 
@@ -748,7 +752,9 @@ class TestDatasetSeries:
 
         response = app.get(url)
 
-        assert response.headers["Content-Type"] == "text/turtle"
+        # DLX custom start: charset in content-type
+        assert response.headers["Content-Type"] == "text/turtle; charset=utf-8"
+        # DLX custom end
 
         content = response.body
 

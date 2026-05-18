@@ -375,7 +375,9 @@ class RDFProfile(object):
 
         If no values found, returns an empty list
         """
-        return [self._get_skos_value(o) for o in self.g.objects(subject, predicate)]
+        # TODO: revisit returning skos labels
+        # return [self._get_skos_value(o) for o in self.g.objects(subject, predicate)]
+        return [str(o) for o in self.g.objects(subject, predicate)]
 
     def _object_value_list_multilingual(self, subject, predicate):
         """
@@ -1329,11 +1331,13 @@ class RDFProfile(object):
                 default_datetime = datetime.datetime(1, 1, 1, 0, 0, 0)
                 _date = parse_date(value, default=default_datetime)
 
+                # DLX customs start
                 # EDS: EU MQA might not be able to parse microseconds
                 self.g.add(
                     (subject, predicate, _type(_date.isoformat(timespec='seconds'),
                                             datatype=XSD.dateTime))
                 )
+                # DLX custom end
             except ValueError:
                 self.g.add((subject, predicate, _type(value)))
 
@@ -1551,6 +1555,7 @@ class RDFProfile(object):
         """
         pass
 
+    # DLX custom start: groups as data services
     def groups(self):
         '''
         List the groups that should be serialized in the output.
@@ -1571,4 +1576,5 @@ class RDFProfile(object):
         returned by `group_show`. `group_ref` is an rdflib URIRef object
         that must be used to reference the group when working with the graph.
         '''
+    # DLX custom end
 

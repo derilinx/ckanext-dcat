@@ -55,6 +55,54 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         # DCAT AP v2 specific properties
         self._graph_from_dataset_v2_only(dataset_dict, dataset_ref)
 
+    def graph_from_resource(
+        self,
+        dataset_dict,
+        dataset_ref,
+        resource_dict,
+        distribution_ref=None,
+        resource_license_fallback=None,
+    ):
+
+        # Call base method for common properties
+        self._graph_from_resource_base(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+        # DCAT AP v2 properties also applied to higher versions
+        self._graph_from_resource_v2(
+            dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
+        )
+
+    # DLX custom start: groups as data services
+    def groups(self):
+        return { str(uri).split('/')[-1] for uri in self.g.subjects(RDF.type, DCAT.DataService) }
+
+    def graph_from_group(self, group_dict, group_ref):
+        if group_dict['type'] != 'data-service':
+            return
+
+        catalog = self.g.value(predicate=RDF.type, object=DCAT.Catalog)
+        if catalog:
+            self.g.add((catalog, DCAT.service, group_ref))
+
+        self._add_triples_from_dict(group_dict, group_ref, [
+            ('availability', DCATAP.availability, None, URIRefOrLiteral),
+            ('license', DCT.license, None, URIRefOrLiteral),
+            ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
+            ('title', DCT.title, None, Literal),
+            ('endpoint_description', DCAT.endpointDescription, None, Literal),
+            ('description', DCT.description, None, Literal),
+        ])
+
+        #  Lists
+        self._add_list_triples_from_dict(group_dict, group_ref, [
+            ('endpoint_url', DCAT.endpointURL, None, URIRefOrLiteral),
+            ('serves_dataset', DCAT.servesDataset, None, URIRefOrLiteral),
+        ])
+        return
+    # DLX custom end
+
     def graph_from_catalog(self, catalog_dict, catalog_ref):
 
         self._graph_from_catalog_base(catalog_dict, catalog_ref)
@@ -92,7 +140,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         qualified_attributions = self._parse_qualified_attributions(dataset_ref)
         if qualified_attributions:
             dataset_dict["qualified_attribution"] = qualified_attributions
-        
+
         # Standard values
         value = self._object_value(dataset_ref, DCAT.temporalResolution)
         if value:
@@ -223,7 +271,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         contact_points = self._contact_details(access_service, DCAT.contactPoint)
                         if contact_points:
                             access_service_dict["contact"] = contact_points
-                            
+
                         publishers = self._agents_details(access_service, DCT.publisher)
                         if publishers:
                             access_service_dict["publisher"] = publishers
@@ -269,7 +317,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
 
         # Lists
         for key, predicate, fallbacks, _type, datatype, _class in (
-            ("is_referenced_by", DCT.isReferencedBy, None, URIRefOrLiteral, None, None),
+            ("is_referenced_by", DCT.isReferencedBy, None, URIRefOrLiteral, None, RDFS.Resource),
             ("applicable_legislation", DCATAP.applicableLegislation, None, URIRefOrLiteral, None, ELI.LegalResource),
         ):
             self._add_triple_from_dict(
@@ -393,18 +441,19 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
                         (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
                     )
 
-    
-    def graph_from_resource(
+    def _graph_from_resource_v2(
         self,
-        g,
+        dataset_dict,
         dataset_ref,
         resource_dict,
-        resource_license_fallback,
-        distribution=None,
+        distribution_ref=None,
+        resource_license_fallback=None,
     ):
-        distribution = super().graph_from_resource(
-            g, dataset_ref, resource_dict, resource_license_fallback, distribution
-        )
+
+        distribution = distribution_ref
+
+        if distribution is None:
+            distribution = CleanedURIRef(resource_uri(resource_dict))
 
         # Simple values
         items = [
@@ -449,10 +498,12 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         for eli in resource_dict.get('applicable_legislation', []):
             self.g += legal_resources.info(eli)
 
-        try:
-            access_service_list = json.loads(resource_dict.get("access_services", "[]"))
-        except ValueError:
-            access_service_list = []
+        access_service_list = resource_dict.get("access_services", [])
+        if isinstance(access_service_list, str):
+            try:
+                access_service_list = json.loads(access_service_list)
+            except ValueError:
+                access_service_list = []
 
         for access_service_dict in access_service_list:
             access_service_uri = access_service_dict.get("uri")
@@ -577,7 +628,6 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
 
         return distribution
 
-
     def _graph_from_dataset_v2_only(self, dataset_dict, dataset_ref):
         """
         CKAN -> DCAT v2 specific properties (not applied to higher versions)
@@ -594,7 +644,7 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
             _type=URIRefOrLiteral,
             _class=ADMS.Identifier,
         )
-        
+
     def _parse_qualified_attributions(self, dataset_ref):
         attributions = []
         for qual_attr_ref in self.g.objects(dataset_ref, PROV.qualifiedAttribution):

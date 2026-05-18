@@ -127,7 +127,15 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
         assert _get_extra_value('homepage') == 'http://dataset.info.org/home'
 
         #  Lists
-        assert sorted(_get_extra_value_as_list('language')) == [u'ca', u'en', u'es']
+        # DLX custom start: languages added at the dataset root, use URIs
+        assert sorted(dataset['language']) == [
+            'http://publications.europa.eu/resource/authority/language/CAT',
+            'http://publications.europa.eu/resource/authority/language/ENG',
+            'http://publications.europa.eu/resource/authority/language/SPA',
+        ]
+
+        # DLX custom end
+
         assert (sorted(_get_extra_value_as_list('theme')) ==
                 [u'Earth Sciences',
                  u'http://eurovoc.europa.eu/100142',
@@ -173,10 +181,21 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
         # Lists
         for item in [
             ('documentation', [u'http://dataset.info.org/distribution1/doc1', u'http://dataset.info.org/distribution1/doc2']),
-            ('language', [u'ca', u'en', u'es']),
             ('conforms_to', [u'Standard 1', u'Standard 2']),
         ]:
-            assert sorted(json.loads(resource[item[0]])) == item[1]
+            if isinstance(resource[item[0]], str):
+                assert sorted(json.loads(resource[item[0]])) == item[1]
+            else:
+                assert sorted(resource[item[0]]) == item[1]
+
+        # DLX custom start: languages added at the dataset root, use URIs
+        assert sorted(resource['language']) == [
+            'http://publications.europa.eu/resource/authority/language/CAT',
+            'http://publications.europa.eu/resource/authority/language/ENG',
+            'http://publications.europa.eu/resource/authority/language/SPA',
+        ]
+
+        # DLX custom end
 
         # These two are likely to need clarification
         assert resource['license'] == u'http://creativecommons.org/licenses/by-nc/2.0/'
@@ -842,7 +861,15 @@ class TestEuroDCATAPProfileParsing(BaseParseTest):
         assert _get_extra_value('dcat_modified') == u'2012-05-10T21:04:00'
         assert _get_extra_value('dcat_publisher_name') == 'Publishing Organization for dataset 1'
         assert _get_extra_value('dcat_publisher_email') == 'contact@some.org'
-        assert _get_extra_value('language') == 'ca,en,es'
+
+        # DLX custom start: languages added at the dataset root
+        assert sorted(dataset['language']) == [
+            'http://publications.europa.eu/resource/authority/language/CAT',
+            'http://publications.europa.eu/resource/authority/language/ENG',
+            'http://publications.europa.eu/resource/authority/language/SPA',
+        ]
+
+        # DLX custom end
 
     @pytest.mark.ckan_config(DCAT_EXPOSE_SUBCATALOGS, 'true')
     def test_parse_subcatalog(self):

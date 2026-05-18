@@ -68,7 +68,15 @@ class TestSchemingParseSupport(BaseParseTest):
 
         # List fields
         assert sorted(dataset["conforms_to"]) == ["Standard 1", "Standard 2"]
-        assert sorted(dataset["language"]) == ["ca", "en", "es"]
+
+        # DLX custom start: languages as URIs
+        assert sorted(dataset["language"]) == [
+            "http://publications.europa.eu/resource/authority/language/CAT",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+            "http://publications.europa.eu/resource/authority/language/SPA",
+        ]
+        # DLX custom end
+
         assert sorted(dataset["theme"]) == [
             "Earth Sciences",
             "http://eurovoc.europa.eu/100142",
@@ -148,7 +156,14 @@ class TestSchemingParseSupport(BaseParseTest):
         assert "download_url" not in resource
 
         # Resources: list fields
-        assert sorted(resource["language"]) == ["ca", "en", "es"]
+        # DLX custom start: languages as URIs
+        assert sorted(resource["language"]) == [
+            "http://publications.europa.eu/resource/authority/language/CAT",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+            "http://publications.europa.eu/resource/authority/language/SPA",
+        ]
+        # DLX custom end
+
         assert sorted(resource["documentation"]) == [
             "http://dataset.info.org/distribution1/doc1",
             "http://dataset.info.org/distribution1/doc2",

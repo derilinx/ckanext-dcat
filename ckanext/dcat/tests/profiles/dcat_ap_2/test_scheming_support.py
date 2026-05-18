@@ -1,3 +1,4 @@
+import datetime
 from unittest import mock
 import json
 from decimal import Decimal
@@ -28,6 +29,10 @@ from ckanext.dcat.profiles import (
     RDFS,
 )
 from ckanext.dcat.tests.utils import BaseSerializeTest, BaseParseTest
+
+# DLX custom start
+from ckanext.dcat import vocabularies
+# DLX custom end
 
 
 @pytest.mark.usefixtures("with_plugins", "clean_db")
@@ -121,10 +126,14 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             == dataset["alternate_identifier"]
         )
         assert self._triples_list_values(g, dataset_ref, DCAT.theme) == dataset["theme"]
+
+        # DLX custom start: return language URIs
         assert (
             self._triples_list_values(g, dataset_ref, DCT.language)
-            == dataset["language"]
+            == [str(vocabularies.languages.lookup(d)) for d in dataset["language"]]
         )
+        # DLX custom end
+
         assert (
             self._triples_list_values(g, dataset_ref, FOAF.page)
             == dataset["documentation"]
@@ -386,10 +395,13 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
         )
 
         # Resources: list fields
+
+        # DLX custom start: return language URIs
         assert (
-            self._triples_list_values(g, distribution_ref, DCT.language)
-            == resource["language"]
+            self._triples_list_values(g, dataset_ref, DCT.language)
+            == [str(vocabularies.languages.lookup(d)) for d in resource["language"]]
         )
+        # DLX custom end
 
         # Resource: repeating subfields
         access_services = [
@@ -583,13 +595,18 @@ class TestSchemingSerializeSupport(BaseSerializeTest):
             dataset["temporal_coverage"][0]["start"]
             == dataset_dict["temporal_coverage"][0]["start"]
         )
+
+        # DLX custom start: they don't like microseconds around here
+        _date = dataset_dict["temporal_coverage"][0]["start"]
+        _date = datetime.datetime.fromisoformat(_date).isoformat(timespec="seconds")
         assert self._triple(
             g,
             temporal[0][2],
             DCAT.startDate,
-            dataset_dict["temporal_coverage"][0]["start"],
+            _date,
             data_type=XSD.dateTime,
         )
+        # DLX custom end
 
         assert (
             dataset["temporal_coverage"][1]["start"]
@@ -724,7 +741,13 @@ class TestSchemingParseSupport(BaseParseTest):
 
         # List fields
         assert sorted(dataset["conforms_to"]) == ["Standard 1", "Standard 2"]
-        assert sorted(dataset["language"]) == ["ca", "en", "es"]
+        # DLX custom start: languages as URIs
+        assert sorted(dataset["language"]) == [
+            "http://publications.europa.eu/resource/authority/language/CAT",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+            "http://publications.europa.eu/resource/authority/language/SPA",
+        ]
+        # DLX custom end
         assert sorted(dataset["theme"]) == [
             "Earth Sciences",
             "http://eurovoc.europa.eu/100142",
@@ -820,7 +843,14 @@ class TestSchemingParseSupport(BaseParseTest):
         assert "download_url" not in resource
 
         # Resources: list fields
-        assert sorted(resource["language"]) == ["ca", "en", "es"]
+        # DLX custom start: languages as URIs
+        assert sorted(resource["language"]) == [
+            "http://publications.europa.eu/resource/authority/language/CAT",
+            "http://publications.europa.eu/resource/authority/language/ENG",
+            "http://publications.europa.eu/resource/authority/language/SPA",
+        ]
+        # DLX custom end
+
         assert sorted(resource["documentation"]) == [
             "http://dataset.info.org/distribution1/doc1",
             "http://dataset.info.org/distribution1/doc2",

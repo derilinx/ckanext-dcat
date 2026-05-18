@@ -1,3 +1,4 @@
+import datetime
 import json
 import uuid
 from decimal import Decimal
@@ -21,9 +22,12 @@ from ckanext.dcat.profiles import (
     SKOS, LOCN, GSP, OWL, SPDX, GEOJSON_IMT,
     RDFS,
 )
-from ckanext.dcat.profiles.euro_dcat_ap_base import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
+from ckanext.dcat.processors import DISTRIBUTION_LICENSE_FALLBACK_CONFIG
 from ckanext.dcat.utils import DCAT_EXPOSE_SUBCATALOGS
 from ckanext.dcat.tests.utils import BaseSerializeTest
+# DLX custom start
+from ckanext.dcat import vocabularies
+# DLX custom end
 
 
 class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
@@ -48,8 +52,19 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         resource_ref = list(g.objects(dataset_ref, DCAT.distribution))[0]
         dct_format = list(g.objects(resource_ref, DCT['format']))
         dcat_mediatype = list(g.objects(resource_ref, DCAT.mediaType))
-        assert expected_format == dct_format
+
+        # DLX custom start: format handling and URIs for mediatypes
+        dct_format_value = list(g.objects(dct_format, RDF.value))
+        if expected_format and not expected_format[0].startswith('http'):
+            expected_format = [URIRef('https://www.iana.org/assignments/media-types/' + expected_format[0])]
+
+        assert expected_format == dct_format_value
+
+        if expected_mediatype and not expected_mediatype[0].startswith('http'):
+            expected_mediatype = [URIRef('https://www.iana.org/assignments/media-types/' + expected_mediatype[0])]
+
         assert expected_mediatype == dcat_mediatype
+        # DLX custom end
 
     def _get_base_dataset_with_resource(self):
         """
@@ -128,12 +143,22 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
             assert self._triple(g, dataset_ref, DCAT.keyword, tag['name'])
 
         # Dates
-        assert self._triple(g, dataset_ref, DCT.issued, dataset['metadata_created'], XSD.dateTime)
-        assert self._triple(g, dataset_ref, DCT.modified, dataset['metadata_modified'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date_created = dataset["metadata_created"]
+        _date_created = datetime.datetime.fromisoformat(_date_created).isoformat(timespec="seconds")
+        _date_modified = dataset["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, dataset_ref, DCT.issued, _date_created, XSD.dateTime)
+        assert self._triple(g, dataset_ref, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
+
 
         # List
         for item in [
-            ('language', DCT.language, [Literal, URIRef]),
+            # DLX custom start: languages not parsed from extras
+            # ('language', DCT.language, [Literal, URIRef]),
+            # DLX custom end
             ('theme', DCAT.theme, URIRef),
             ('conforms_to', DCT.conformsTo, Literal),
             ('alternate_identifier', ADMS.identifier, [Literal, Literal, URIRef]),
@@ -509,7 +534,11 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         assert temporal
 
         assert self._triple(g, temporal, RDF.type, DCT.PeriodOfTime)
-        assert self._triple(g, temporal, SCHEMA.startDate, extras['temporal_start'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date = extras["temporal_start"]
+        _date = datetime.datetime.fromisoformat(_date).isoformat(timespec="seconds")
+        assert self._triple(g, temporal, SCHEMA.startDate, _date, XSD.dateTime)
+        # DLX custom end
         assert self._triple(g, temporal, SCHEMA.endDate, extras['temporal_end'], XSD.date)
 
     def test_spatial(self):
@@ -681,7 +710,6 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         # List
         for item in [
             ('documentation', FOAF.page, URIRef),
-            ('language', DCT.language, [Literal, Literal, URIRef]),
             ('conforms_to', DCT.conformsTo, Literal),
         ]:
             values = json.loads(resource[item[0]])
@@ -693,9 +721,23 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
                     _type = item[2][num]
                 assert self._triple(g, distribution, item[1], _type(value))
 
+        # DLX custom start: return language URIs
+        assert (
+            self._triples_list_values(g, distribution, DCT.language)
+            == [str(vocabularies.languages.lookup(d)) for d in json.loads(resource["language"])]
+        )
+        # DLX custom end
+
         # Dates
-        assert self._triple(g, distribution, DCT.issued, resource['issued'], XSD.dateTime)
-        assert self._triple(g, distribution, DCT.modified, resource['modified'], XSD.dateTime)
+
+        # DLX custom start: they don't like microseconds around here
+        _date_issued = resource["issued"]
+        _date_issued = datetime.datetime.fromisoformat(_date_issued).isoformat(timespec="seconds")
+        _date_modified = resource["modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, distribution, DCT.issued, _date_issued, XSD.dateTime)
+        assert self._triple(g, distribution, DCT.modified, _date_modified, XSD.dateTime)
 
         # Numbers
         assert self._triple(g, distribution, DCAT.byteSize, Decimal(resource['size']), XSD.decimal)
@@ -1080,8 +1122,16 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         distribution = self._triple(g, dataset_ref, DCAT.distribution, None)[2]
 
         # Dates
-        assert self._triple(g, distribution, DCT.modified, resource['metadata_modified'], XSD.dateTime)
-        assert self._triple(g, distribution, DCT.issued, resource['created'], XSD.dateTime)
+
+        # DLX custom start: they don't like microseconds around here
+        _date_created = resource["created"]
+        _date_created = datetime.datetime.fromisoformat(_date_created).isoformat(timespec="seconds")
+        _date_modified = resource["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, distribution, DCT.issued, _date_created, XSD.dateTime)
+        assert self._triple(g, distribution, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
 
     def test_distribution_format_mediatype_different(self):
         dataset_dict, resource = self._get_base_dataset_with_resource()
@@ -1090,11 +1140,15 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
         resource['mimetype'] = 'application/json'
 
         # expect both nodes
+
+        # DLX custom start: format handling
         self._build_graph_and_check_format_mediatype(
             dataset_dict,
-            [Literal('myformat')],
+            [Literal('application/json')],
             [Literal('application/json')]
         )
+        # DLX custom end
+
 
     def test_hash_algorithm_not_uri(self):
 
@@ -1149,6 +1203,11 @@ class TestEuroDCATAPProfileSerializeDataset(BaseSerializeTest):
 
         dataset_ref = s.graph_from_dataset(dataset)
 
+        # DLX custom start: they don't like microseconds around here
+        if "." in value:
+            value = datetime.datetime.fromisoformat(value).isoformat(timespec="seconds")
+        # DLX custom end
+
         assert str(self._triple(g, dataset_ref, DCT.issued, None)[2]) == value
         assert self._triple(g, dataset_ref, DCT.issued, None)[2].datatype == data_type
 
@@ -1172,7 +1231,10 @@ class TestEuroDCATAPProfileSerializeCatalog(BaseSerializeTest):
         assert self._triple(g, catalog, RDF.type, DCAT.Catalog)
         assert self._triple(g, catalog, DCT.title, config.get('ckan.site_title'))
         assert self._triple(g, catalog, FOAF.homepage, URIRef(config.get('ckan.site_url')))
-        assert self._triple(g, catalog, DCT.language, 'en')
+
+        # DLX custom start: languages as URIs
+        assert self._triple(g, catalog, DCT.language, URIRef("http://publications.europa.eu/resource/authority/language/ENG"))
+        # DLX custom end
 
     def test_graph_from_catalog_dict(self):
 
@@ -1195,7 +1257,9 @@ class TestEuroDCATAPProfileSerializeCatalog(BaseSerializeTest):
         assert self._triple(g, catalog, DCT.title, catalog_dict['title'])
         assert self._triple(g, catalog, DCT.description, catalog_dict['description'])
         assert self._triple(g, catalog, FOAF.homepage, URIRef(catalog_dict['homepage']))
-        assert self._triple(g, catalog, DCT.language, catalog_dict['language'])
+
+        # DLX custom start: languages as URIs
+        assert self._triple(g, catalog, DCT.language, URIRef("http://publications.europa.eu/resource/authority/language/DEU"))
 
     def test_graph_from_catalog_dict_language_uri_ref(self):
 
@@ -1227,7 +1291,12 @@ class TestEuroDCATAPProfileSerializeCatalog(BaseSerializeTest):
 
         assert str(catalog) == utils.catalog_uri()
 
-        assert self._triple(g, catalog, DCT.modified, dataset['metadata_modified'], XSD.dateTime)
+        # DLX custom start: they don't like microseconds around here
+        _date_modified = dataset["metadata_modified"]
+        _date_modified = datetime.datetime.fromisoformat(_date_modified).isoformat(timespec="seconds")
+
+        assert self._triple(g, catalog, DCT.modified, _date_modified, XSD.dateTime)
+        # DLX custom end
 
     @pytest.mark.ckan_config(DCAT_EXPOSE_SUBCATALOGS, 'true')
     def test_subcatalog(self):

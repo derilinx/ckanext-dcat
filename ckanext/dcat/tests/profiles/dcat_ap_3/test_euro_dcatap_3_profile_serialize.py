@@ -1,7 +1,6 @@
 import json
 import pytest
 
-from rdflib.namespace import RDF
 from rdflib.term import URIRef
 from geomet import wkt
 
@@ -26,6 +25,10 @@ from ckanext.dcat.profiles import (
     SPDX,
     RDFS,
 )
+
+# DLX custom start
+from ckanext.dcat import vocabularies
+# DLX custom end
 
 DCAT_AP_PROFILES = ["euro_dcat_ap_3"]
 
@@ -115,10 +118,14 @@ class TestEuroDCATAP3ProfileSerializeDataset(BaseSerializeTest):
             == dataset["conforms_to"]
         )
         assert self._triples_list_values(g, dataset_ref, DCAT.theme) == dataset["theme"]
+
+        # DLX custom start: languages as URIs
         assert (
             self._triples_list_values(g, dataset_ref, DCT.language)
-            == dataset["language"]
+            == [str(vocabularies.languages.lookup(d)) for d in dataset["language"]]
         )
+        # DLX custom end
+
         assert (
             self._triples_list_values(g, dataset_ref, FOAF.page)
             == dataset["documentation"]
@@ -359,7 +366,7 @@ class TestEuroDCATAP3ProfileSerializeDataset(BaseSerializeTest):
         # Resources: list fields
         assert (
             self._triples_list_values(g, distribution_ref, DCT.language)
-            == resource["language"]
+            == [str(vocabularies.languages.lookup(d)) for d in dataset["resources"][0]["language"]]
         )
 
         # Resource: repeating subfields

@@ -101,11 +101,14 @@ class TestSchemingParseSupport(BaseParseTest):
         assert sorted(dataset["conforms_to"]) == [
             "http://www.wikidata.org/entity/Q19597236"
         ]
+
+        # DLX custom start: languages as URIs
         assert sorted(dataset["language"]) == [
             "http://publications.europa.eu/resource/authority/language/ENG",
             "http://publications.europa.eu/resource/authority/language/FRA",
             "http://publications.europa.eu/resource/authority/language/NLD",
         ]
+        # DLC custom end
         assert sorted(dataset["theme"]) == [
             "http://publications.europa.eu/resource/authority/data-theme/HEAL"
         ]

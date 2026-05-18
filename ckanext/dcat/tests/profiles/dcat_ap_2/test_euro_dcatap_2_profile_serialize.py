@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import datetime
 import json
 from decimal import Decimal
 import six
@@ -354,8 +355,15 @@ class TestEuroDCATAP2ProfileSerializeDataset(BaseSerializeTest):
         assert len(temporal) == 1
         temporal_ref = temporal[0][2]
         assert self._triple(g, temporal_ref, RDF.type, DCT.PeriodOfTime)
-        assert self._triple(g, temporal_ref, DCAT.startDate, extras['temporal_start'], XSD.dateTime)
-        assert self._triple(g, temporal_ref, DCAT.endDate, extras['temporal_end'], XSD.date)
+
+        # DLX custom start: they don't like microseconds around here
+        _date_start = extras["temporal_start"]
+        _date_start = datetime.datetime.fromisoformat(_date_start).isoformat(timespec="seconds")
+
+        assert self._triple(g, temporal_ref, DCAT.startDate, _date_start, XSD.dateTime)
+        # DLX custom end
+
+        assert self._triple(g, temporal_ref, DCAT.endDate, extras["temporal_end"], XSD.date)
 
     def test_high_value_datasets(self):
         """
