@@ -132,12 +132,14 @@ def catalog_uri():
                          'the `ckanext.dcat.base_uri` or `ckan.site_url` ' +
                          'option')
 
-    # Allow plugins to modify the catalog URI
-    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
-        result = plugin.catalog_uri(uri)
-        if result is not None:
-            uri = result
-            break
+# DLX custom start: removing as it hits performance
+#    # Allow plugins to modify the catalog URI
+#    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
+#        result = plugin.catalog_uri(uri)
+#        if result is not None:
+#            uri = result
+#            break
+# DLX custom end
 
     return uri
 
@@ -175,12 +177,15 @@ def dataset_uri(dataset_dict):
                                        str(uuid.uuid4()))
         log.warning('Using a random id for dataset URI')
 
-    # Allow plugins to modify the dataset URI
-    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
-        result = plugin.dataset_uri(dataset_dict, uri)
-        if result is not None:
-            uri = result
-            break
+
+# DLX custom start: removing as it hits performance
+#    # Allow plugins to modify the dataset URI
+#    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
+#        result = plugin.dataset_uri(dataset_dict, uri)
+#        if result is not None:
+#            uri = result
+#            break
+# DLX custom end
 
     return uri
 
@@ -212,12 +217,14 @@ def resource_uri(resource_dict):
                                                     dataset_id,
                                                     resource_dict['id'])
 
-    # Allow plugins to modify the resource URI
-    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
-        result = plugin.resource_uri(resource_dict, uri)
-        if result is not None:
-            uri = result
-            break
+# DLX custom start: removing as it hits performance
+#    # Allow plugins to modify the resource URI
+#    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
+#        result = plugin.resource_uri(resource_dict, uri)
+#        if result is not None:
+#            uri = result
+#            break
+# DLX custom end
 
     return uri
 
@@ -257,12 +264,14 @@ def publisher_uri_organization_fallback(dataset_dict):
         uri = '{0}/organization/{1}'.format(catalog_uri().rstrip('/'),
                                             dataset_dict['organization']['id'])
 
-    # Allow plugins to modify the publisher or organization URI
-    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
-        result = plugin.publisher_uri(dataset_dict, uri)
-        if result is not None:
-            uri = result
-            break
+# DLX custom start
+#    # Allow plugins to modify the publisher or organization URI
+#    for plugin in plugins.PluginImplementations(IDCATURIGenerator):
+#        result = plugin.publisher_uri(dataset_dict, uri)
+#        if result is not None:
+#            uri = result
+#            break
+# DLX custom end
 
     return uri
 
