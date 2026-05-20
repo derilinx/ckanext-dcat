@@ -15,6 +15,9 @@ namespaces = dict(
 
 
 class Vocabulary:
+
+    _cache = {}
+
     def __init__(self, vocab_filename, query):
         self.query = prepareQuery(query, initNs=namespaces)
 
@@ -25,18 +28,30 @@ class Vocabulary:
             self.graph.parse(f, format='xml')
 
     def lookup(self, ckan=None, uri=None):
+        out = None
+
         if isinstance(ckan, str):
             # Use base form for languages like en_GB
             ckan = ckan.split("_")[0]
             ckan = Literal(ckan)
 
-        try:
-            (binding, ) = self.graph.query(self.query, initBindings={'ckan': ckan} if ckan else {'uri': uri}).bindings
-            return binding[Variable('uri' if ckan else 'ckan')]
-        except ValueError:
-            log.debug("Could not lookup value for vocabulary %s: %s", self.vocab_filename, ckan or uri)
-            return Literal(ckan) if ckan else URIRef(uri)
+        key = "ckan" if ckan else "uri"
+        out_key = "uri" if ckan else "ckan"
+        value = ckan if ckan else uri
 
+        if value and self._cache.get(value):
+            return self._cache[value]
+
+        try:
+            (binding, ) = self.graph.query(self.query, initBindings={key: value}).bindings
+            out = binding[Variable(out_key)]
+        except ValueError:
+            log.debug("Could not lookup value for vocabulary %s: %s", self.vocab_filename, value)
+            out = Literal(value)
+
+        self._cache[value] = out
+
+        return out
 
 
 languages = Vocabulary('languages-skos.rdf', """
