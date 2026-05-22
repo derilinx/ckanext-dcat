@@ -6,7 +6,7 @@ from ckan.views.dataset import CreateView
 
 import ckan.plugins.toolkit as toolkit
 import ckanext.dcat.utils as utils
-from ckanext.dcat.helpers import endpoints_enabled, croissant as croissant_serialization
+from ckanext.dcat.helpers import endpoints_enabled
 
 import ckan.lib.base as base
 from ckan.common import _
@@ -97,7 +97,7 @@ def read_dataset_croissant(_id):
             404, toolkit._("Dataset not found or you have no permission to view it")
         )
 
-    response = make_response(croissant_serialization(dataset_dict))
+    response = make_response(toolkit.h.croissant(dataset_dict))
     response.headers["Content-type"] = "application/ld+json"
 
     return response

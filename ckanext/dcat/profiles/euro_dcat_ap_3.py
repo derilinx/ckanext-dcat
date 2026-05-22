@@ -6,6 +6,7 @@ from ckanext.dcat.profiles import (
     SKOS,
     ADMS,
     RDF,
+    OWL,
 )
 
 from .base import URIRefOrLiteral
@@ -31,6 +32,18 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
         dataset_dict = self._parse_dataset_v2_scheming(dataset_dict, dataset_ref)
 
         # DCAT AP v3: hasVersion
+        dataset_dict = self._parse_dataset_v3(dataset_dict, dataset_ref)
+
+        return dataset_dict
+
+    def _parse_dataset_v3(self, dataset_dict, dataset_ref):
+
+        # version
+        value = self._object_value(dataset_ref, DCAT.version)
+        if value:
+            dataset_dict["version"] = value
+
+        # hasVersion
         values = self._object_value_list(dataset_ref, DCAT.hasVersion)
         if values:
             dataset_dict["has_version"] = values
@@ -50,12 +63,6 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
 
         # DCAT AP v3 properties also applied to higher versions
         self._graph_from_dataset_v3(dataset_dict, dataset_ref)
-
-        # DCAT AP v3: List triples
-        items = [
-            ("has_version", DCAT.hasVersion, None, URIRefOrLiteral),
-        ]
-        self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
 
     def graph_from_resource(
         self,
@@ -99,6 +106,35 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
             dataset_series = True
             self.g.remove((dataset_ref, RDF.type, None))
             self.g.add((dataset_ref, RDF.type, DCAT.DatasetSeries))
+
+        # version own:versionInfo -> dcat:version
+        self.g.remove((dataset_ref, OWL.versionInfo, None))
+        self._add_triple_from_dict(
+            dataset_dict,
+            dataset_ref,
+            DCAT.version,
+            "version",
+            _type=Literal,
+        )
+
+        # hasVersion
+        items = [
+            ("has_version", DCAT.hasVersion, None, URIRefOrLiteral),
+        ]
+        self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        # byteSize decimal -> nonNegativeInteger
+        for subject, predicate, object in self.g.triples((None, DCAT.byteSize, None)):
+            if object and object.datatype == XSD.decimal:
+                self.g.remove((subject, predicate, object))
+
+                self.g.add(
+                    (
+                        subject,
+                        predicate,
+                        Literal(int(object), datatype=XSD.nonNegativeInteger),
+                    )
+                )
 
         # Other identifiers
         value = self._get_dict_value(dataset_dict, "alternate_identifier")
