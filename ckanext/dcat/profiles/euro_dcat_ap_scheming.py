@@ -32,7 +32,6 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
 
         self._graph_from_dataset_v2_scheming(dataset_dict, dataset_ref)
 
-<<<<<<< HEAD
     def graph_from_resource(
         self,
         dataset_dict,
@@ -49,7 +48,7 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
             distribution_ref,
             resource_license_fallback
         )
-=======
+
     def _temporal_interval_details(self, interval_ref):
         details = {}
 
@@ -90,7 +89,6 @@ class EuropeanDCATAPSchemingProfile(RDFProfile):
                 temporal_coverage.append(details)
 
         return temporal_coverage
->>>>>>> upstream/master
 
     def _parse_dataset_v2_scheming(self, dataset_dict, dataset_ref):
         """

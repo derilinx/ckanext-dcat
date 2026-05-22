@@ -83,11 +83,6 @@ class RDFProcessor(object):
         loaded_profiles_names = []
 
         for profile_name in profile_names:
-<<<<<<< HEAD
-            ep = entry_points(group=RDF_PROFILES_ENTRY_POINT_GROUP, name=profile_name)
-            if ep:
-                profile_entry = ep[profile_name]
-=======
             profile_entry = None
             try:
                 ep = entry_points(group=RDF_PROFILES_ENTRY_POINT_GROUP, name=profile_name)
@@ -101,7 +96,6 @@ class RDFProcessor(object):
                     profile_entry = profile_entry[0]
 
             if profile_entry:
->>>>>>> upstream/master
                 profile_class = profile_entry.load()
                 # Set a reference to the profile name
                 profile_class.name = profile_entry.name
