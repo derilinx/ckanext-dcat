@@ -847,6 +847,8 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
                     languages = [languages]
         if not languages:
             languages = config.get('ckan.locales_offered')
+            if isinstance(languages, str):
+                languages = languages.split(' ')
         if not languages:
             languages = [config.get("ckan.locale_default", "en")]
         for language in languages:
