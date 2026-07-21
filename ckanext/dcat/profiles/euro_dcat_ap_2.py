@@ -164,9 +164,10 @@ class EuropeanDCATAP2Profile(EuropeanDCATAPProfile):
                         )
                     )
                 except (ValueError, TypeError):
-                    self.g.add(
-                        (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
-                    )
+                    if value != "":
+                        self.g.add(
+                            (dataset_ref, DCAT.spatialResolutionInMeters, Literal(value))
+                        )
 
 
     def graph_from_resource(self, g, dataset_ref, resource_dict, resource_license_fallback, distribution=None):
