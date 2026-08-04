@@ -4,7 +4,7 @@ import xml
 import json
 from importlib.metadata import entry_points
 
-from ckantoolkit import config, asbool
+from ckantoolkit import config, asbool, ObjectNotFound
 
 import rdflib
 import rdflib.parser
@@ -331,11 +331,14 @@ class RDFSerializer(RDFProcessor):
         groups = { group for profile in profiles for group in profile.groups() }
 
         for group in groups:
-            group_dict = p.toolkit.get_action('group_show')({}, { 'id': group })
-            ref = URIRef(group_uri(group_dict))
+            try:
+                group_dict = p.toolkit.get_action('group_show')({}, { 'id': group })
+                ref = URIRef(group_uri(group_dict))
 
-            for profile in profiles:
-                profile.graph_from_group(group_dict, ref)
+                for profile in profiles:
+                    profile.graph_from_group(group_dict, ref)
+            except ObjectNotFound:
+                continue
     # DLX custom end
 
     def serialize_dataset(self, dataset_dict, _format='xml', context=None):
