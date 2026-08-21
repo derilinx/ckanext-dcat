@@ -14,6 +14,9 @@ from .base import (
     URIRefOrLiteral
 )
 
+from ckanext.dcat.utils import catalog_uri
+
+
 def breg_geo_common_data_service_fields(self, group_dict, group_ref):
     self._add_list_triples_from_dict(group_dict, group_ref, [
         ('identifiers', DCT.identifier, None, Literal, None),
@@ -32,16 +35,25 @@ def breg_geo_common_data_service_fields(self, group_dict, group_ref):
 
         self.g.add((ref, VCARD.hasEmail, URIRef(self._add_mailto(email))))
 
-    # publisher is only using repeating_subfields because there aren't non-repeating subfields in scheming
-    (publisher, ) = group_dict.get('publisher', [None])
-    if publisher:
-        ref = BNode()
-        self.g.add((group_ref, DCT.publisher, ref))
-        self.g.add((ref, RDF.type, FOAF.Agent))
+    try:
+        # publisher is only using repeating_subfields because there aren't non-repeating subfields in scheming
+        (publisher, ) = group_dict.get('publisher', [None])
+        if publisher:
+            ref = BNode()
+            self.g.add((group_ref, DCT.publisher, ref))
+            self.g.add((ref, RDF.type, FOAF.Agent))
 
-        self._add_triple_from_dict(publisher, ref, FOAF.name, 'names', list_value=True)
-        self._add_triple_from_dict(publisher, ref, DCT.type, 'type', _class=SKOS.Concept)
-        self._add_triple_from_dict(publisher, ref, DCT.identifier, 'identifier')
+            self._add_triple_from_dict(publisher, ref, FOAF.name, 'names', list_value=True)
+            self._add_triple_from_dict(publisher, ref, DCT.type, 'type', _class=SKOS.Concept)
+            self._add_triple_from_dict(publisher, ref, DCT.identifier, 'identifier')
+    except ValueError:
+        # for MITA as the org id is stored in 'publisher'
+        if 'https' not in group_dict['publisher']:
+            group_dict['publisher'] = f"{catalog_uri()}/organization/{group_dict['publisher']}"
+
+        self._add_list_triples_from_dict(group_dict, group_ref, [
+            ('publisher', DCT.publisher, None, URIRefOrLiteral),
+        ])
 
 
 class EuropeanDCATAPBRegProfile(RDFProfile):
@@ -103,5 +115,6 @@ class EuropeanDCATAPBRegProfile(RDFProfile):
             self.g.add((ref, RDF.type, CPSV.Rule))
             self.g.add((ref, DCT.identifier, Literal(str(ref))))
             self.g.add((ref, DCT.title, Literal(rule['title'])))
-            self.g.add((ref, DCT.description, Literal(rule['description'])))
+            if rule.get("description", ""). strip():
+                self.g.add((ref, DCT.description, Literal(rule['description'], '')))
 
