@@ -1517,11 +1517,12 @@ class RDFProfile(object):
         self.g.add((dataset_ref, DCT.spatial, spatial_ref))
         return spatial_ref
 
+    # DLX custom start: support DCAT Vocabularies
     def _add_from_codelist(self, _dict, subject, predicate, key,
                            codelist,
                            _type=URIRefOrLiteral,
                            list_value=False,
-                           fallbacks=False,
+                           fallbacks=None,
                            value_modifier=False):
         ''' Add an item from a codelist, stored in rdf in the codelists directory '''
 
@@ -1539,13 +1540,19 @@ class RDFProfile(object):
             return
 
         def add(item):
+
             ref = _type(item)
-            self.g.add((ref, RDF.type, SKOS.Concept))
-            self.g.add((ref, SKOS.inScheme, URIRef(codelist.scheme)))
-            self.g.add((subject, predicate, ref))
-            for lang, label in codelist.labels(item).items():
-                _label_ref = Literal(label, lang=lang)
-                self.g.add((ref, SKOS.prefLabel, _label_ref))
+            labels = codelist.labels(item)
+            if labels:
+                # Value is present in the vocab
+                self.g.add((ref, RDF.type, SKOS.Concept))
+                self.g.add((ref, SKOS.inScheme, URIRef(codelist.scheme)))
+                self.g.add((subject, predicate, ref))
+                for lang, label in codelist.labels(item).items():
+                    _label_ref = Literal(label, lang=lang)
+                    self.g.add((ref, SKOS.prefLabel, _label_ref))
+            else:
+                self.g.add((subject, predicate, ref))
 
         if list_value:
             items = self._read_list_value(value)
@@ -1553,7 +1560,7 @@ class RDFProfile(object):
                 add(item)
         else:
             add(value)
-
+    # DLX custom end
 
     # Public methods for profiles to implement
 
