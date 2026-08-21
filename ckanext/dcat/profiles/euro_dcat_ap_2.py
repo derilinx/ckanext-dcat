@@ -86,13 +86,19 @@ class EuropeanDCATAP2Profile(BaseEuropeanDCATAPProfile):
         if catalog:
             self.g.add((catalog, DCAT.service, group_ref))
 
+        description_key = (
+            "notes_translated"
+            if "notes_translated" in group_dict
+            else "description"
+        )
+
         self._add_triples_from_dict(group_dict, group_ref, [
             ('availability', DCATAP.availability, None, URIRefOrLiteral),
             ('license', DCT.license, None, URIRefOrLiteral),
             ('access_rights', DCT.accessRights, None, URIRefOrLiteral),
             ('title', DCT.title, None, Literal),
             ('endpoint_description', DCAT.endpointDescription, None, Literal),
-            ('description', DCT.description, None, Literal),
+            (description_key, DCT.description, None, Literal),
         ])
 
         #  Lists
