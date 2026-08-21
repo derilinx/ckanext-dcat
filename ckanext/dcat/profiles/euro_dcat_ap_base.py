@@ -6,7 +6,7 @@ import ckantoolkit as toolkit
 
 from ckan.lib.munge import munge_tag
 
-from ckanext.dcat import vocabularies
+from ckanext.dcat import vocabularies, codelists
 from ckanext.dcat.utils import (
     resource_uri,
     DCAT_EXPOSE_SUBCATALOGS,
@@ -397,7 +397,6 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
 
         #  Lists
         items = [
-            ("theme", DCAT.theme, None, URIRef),
             ("conforms_to", DCT.conformsTo, None, URIRefOrLiteral, DCT.Standard),
             ("documentation", FOAF.page, None, URIRefOrLiteral, FOAF.Document),
             ("related_resource", DCT.relation, None, URIRefOrLiteral, RDFS.Resource),
@@ -407,6 +406,17 @@ class BaseEuropeanDCATAPProfile(RDFProfile):
             ("sample", ADMS.sample, None, URIRefOrLiteral, DCAT.Distribution),
         ]
         self._add_list_triples_from_dict(dataset_dict, dataset_ref, items)
+
+        # DLX custom start: themes as URIs
+        self._add_from_codelist(
+            dataset_dict,
+            dataset_ref,
+            DCAT.theme,
+            "theme",
+            codelists.data_theme,
+            list_value=True,
+        )
+        # DLX custom ends
 
         # DLX custom start: languages as URIs
         langs = dataset_dict.get("language", [])
