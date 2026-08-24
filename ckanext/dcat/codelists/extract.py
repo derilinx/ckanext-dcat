@@ -53,23 +53,23 @@ log = logging.getLogger(__name__)
 
 EUVOC = Namespace("http://publications.europa.eu/ontology/euvoc#")
 
-LANGS = toolkit.aslist(toolkit.config.get('ckan.locales_offered')) or ['en']
-# filter out variants of languages, en_GB doesn't match en.
-LANGS = set(l.split('_')[0] for l in LANGS)
-
-
 
 class Codelist:
-    def __init__(self, choices, scheme):
+    def __init__(self, name, choices, scheme):
+        self.name = name
         self.choices = choices
         self.scheme = scheme
         self.choices_map = {elt['value']:elt['label'] for elt in choices}
-        log.debug(LANGS)
     def labels(self, val):
         return self.choices_map.get(val, {})
 
 @lru_cache(None)
-def extract(f:Path):
+def extract_codelist(name: str, f:Path, langs=None):
+
+    if not langs:
+        langs = toolkit.aslist(toolkit.config.get('ckan.locales_offered')) or ['en']
+        # filter out variants of languages, en_GB doesn't match en.
+        langs = set(l.split('_')[0] for l in langs)
 
     g = rdflib.ConjunctiveGraph()
     try:
@@ -85,7 +85,7 @@ def extract(f:Path):
     choices = {}
 
     for subject in g.subjects(RDF.type, SKOS.Concept):
-        labels = {l.language: str(l) for l in g.objects(subject, SKOS.prefLabel) if l.language in LANGS }
+        labels = {l.language: str(l) for l in g.objects(subject, SKOS.prefLabel) if l.language in langs }
         order = g.value(subject, EUVOC.order, default=str(subject))
 
         choice = {"label": labels,
@@ -99,18 +99,13 @@ def extract(f:Path):
     for subject in g.subjects(RDF.type, SKOS.ConceptScheme):
         scheme = str(subject)
 
-    return Codelist(ordered_choices, scheme)
+    log.debug("Extracting codelist '%s' with label languages %s", name, langs)
+    return Codelist(name, ordered_choices, scheme)
 
 
 def write_json():
     for path in Path(__file__).parent.glob('*.rdf'):
-        data = extract(path)
+        data = extract_codelist(path)
         dest = path.parent / (path.stem + '.json')
         with open (dest, 'w') as f:
             json.dump(data.choices, f, indent=2)
-
-
-#print(json.dumps(ordered_choices, indent=2))
-
-
-
