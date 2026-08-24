@@ -19,6 +19,7 @@ from ckanext.dcat.logic import (dcat_dataset_show,
                                 dcat_datasets_list,
                                 dcat_auth,
                                 )
+from ckanext.dcat import codelists
 from ckanext.dcat import helpers
 from ckanext.dcat import utils
 from ckanext.dcat.validators import dcat_validators
@@ -99,6 +100,9 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, '../templates/dcat')
+
+        # Parse the RDF codelists
+        codelists.init_codelists()
 
         # Check catalog URI on startup to emit a warning if necessary
         utils.catalog_uri()
@@ -201,7 +205,7 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
         return resource_dict
 
     def before_dataset_index(self, dataset_dict):
-        nested_repeats = [] 
+        nested_repeats = []
         schema = _get_dataset_schema(dataset_dict["type"])
         spatial = None
         if schema:
