@@ -52,6 +52,10 @@ optional-dependencies = {dev = { file = ["dev-requirements.txt"] }}
 dcat_xml_harvester = "ckanext.dcat.harvesters:DCATXMLHarvester"
 dcat_json_harvester = "ckanext.dcat.harvesters:DCATJSONHarvester"
 dcat_rdf_harvester = "ckanext.dcat.harvesters:DCATRDFHarvester"
+
+# DLX custom: ESRI DCAT harvester
+dcat_esri_dcat211_harvester = "ckanext.dcat.harvesters:EsriInspireDcat211Harvester"
+
 dcat_json_interface = "ckanext.dcat.plugins:DCATJSONInterface"
 dcat = "ckanext.dcat.plugins:DCATPlugin"
 
