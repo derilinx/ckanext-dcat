@@ -12,7 +12,7 @@ Converts EU RDF descriptions of codelists to ckanext-scheming choices.
 	<prefLabel xmlns="http://www.w3.org/2004/02/skos/core#" xml:lang="mt">Data meteoroloġika</prefLabel>
 	<prefLabel xmlns="http://www.w3.org/2004/02/skos/core#" xml:lang="nl">Meteorologische data</prefLabel>
 	<prefLabel xmlns="http://www.w3.org/2004/02/skos/core#" xml:lang="sv">Meteorologiska data</prefLabel>
-        ... 
+        ...
 	<order xmlns="http://publications.europa.eu/ontology/euvoc#" rdf:datatype="http://www.w3.org/2001/XMLSchema#integer">3</order>
 	<definition xmlns="http://www.w3.org/2004/02/skos/core#" xml:lang="en">data sets as described in Commission Implementing Regulation (EU) 2023/138 of 21 December 2022 laying down a list of specific high-value datasets and the arrangements for their publication and re-use, Annex, Section 3</definition>
 	<inScheme xmlns="http://www.w3.org/2004/02/skos/core#" rdf:resource="http://data.europa.eu/bna/asd487ae75"/>
@@ -52,8 +52,11 @@ log = logging.getLogger(__name__)
 
 
 EUVOC = Namespace("http://publications.europa.eu/ontology/euvoc#")
+
+LANGS = toolkit.aslist(toolkit.config.get('ckan.locales_offered')) or ['en']
 # filter out variants of languages, en_GB doesn't match en.
-LANGS = set(l.split('_')[0] for l in toolkit.aslist(toolkit.config.get('ckan.locales_offered', ['en'])))
+LANGS = set(l.split('_')[0] for l in LANGS)
+
 
 
 class Codelist:
@@ -95,7 +98,7 @@ def extract(f:Path):
     scheme = None
     for subject in g.subjects(RDF.type, SKOS.ConceptScheme):
         scheme = str(subject)
-    
+
     return Codelist(ordered_choices, scheme)
 
 
@@ -105,9 +108,9 @@ def write_json():
         dest = path.parent / (path.stem + '.json')
         with open (dest, 'w') as f:
             json.dump(data.choices, f, indent=2)
-        
+
 
 #print(json.dumps(ordered_choices, indent=2))
-    
-    
-    
+
+
+
