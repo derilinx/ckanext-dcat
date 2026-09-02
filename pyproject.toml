@@ -59,6 +59,8 @@ dcat_esri_dcat211_harvester = "ckanext.dcat.harvesters:EsriInspireDcat211Harvest
 dcat_json_interface = "ckanext.dcat.plugins:DCATJSONInterface"
 dcat = "ckanext.dcat.plugins:DCATPlugin"
 
+dcat_data_services = "ckanext.dcat.plugins:DCATDataServicesPlugin"
+
 structured_data = "ckanext.dcat.plugins:StructuredDataPlugin"
 croissant = "ckanext.dcat.plugins:CroissantPlugin"
 # Test plugins

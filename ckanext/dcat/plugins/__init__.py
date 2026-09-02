@@ -18,6 +18,7 @@ from ckanext.dcat.logic import (dcat_dataset_show,
                                 dcat_catalog_search,
                                 dcat_datasets_list,
                                 dcat_auth,
+                                package_show,
                                 )
 from ckanext.dcat import codelists
 from ckanext.dcat import helpers
@@ -267,6 +268,41 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
                     dataset_dict['extras_spatial'] = value
                     break
 
+        return dataset_dict
+
+
+class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
+
+    p.implements(p.IConfigurer, inherit=True)
+    p.implements(p.ITranslation, inherit=True)
+    p.implements(p.IPackageController, inherit=True)
+    p.implements(p.IActions)
+
+    # ITranslation
+
+    def i18n_directory(self):
+        return I18N_DIR
+
+    # IConfigurer
+
+    def update_config(self, config):
+        p.toolkit.add_template_directory(config, '../templates/data-service')
+
+    # IActions
+
+    def get_actions(self):
+        return {
+            'package_show': package_show,
+        }
+
+    # IPackageController
+
+    def before_dataset_index(self, dataset_dict):
+        if dataset_dict.get("serves_dataset"):
+            try:
+                dataset_dict["vocab_serves_dataset"] = json.loads(dataset_dict["serves_dataset"])
+            except ValueError:
+                pass
         return dataset_dict
 
 
