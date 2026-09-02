@@ -1,0 +1,23 @@
+{% ckan_extends  %}
+
+{% block package_resources %}
+
+  {% if dataset_type == "data_service" and pkg_dict.served_datasets %}
+  <section id="dataset-data-services" class="resources">
+
+    <h2>{{ _('Served datasets') }}</h2>
+    {% snippet 'snippets/package_list.html', packages=pkg_dict.served_datasets %}
+  </section>
+  {% elif pkg_dict.data_services %}
+  <section id="dataset-data-services" class="resources">
+
+    <h2>{{ _('Data Services') }}</h2>
+    {% snippet 'snippets/package_list.html', packages=pkg_dict.data_services %}
+  </section>
+
+  {% endif %}
+
+  {{ super() }}
+
+{% endblock %}
+
