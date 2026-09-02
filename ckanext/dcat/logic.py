@@ -3,6 +3,7 @@ import math
 from ckantoolkit import config
 from dateutil.parser import parse as dateutil_parse
 
+import ckan.types as types
 from ckan.plugins import toolkit
 
 import ckanext.dcat.converters as converters
@@ -212,3 +213,87 @@ def dcat_auth(context, data_dict):
     All users can access DCAT endpoints by default
     '''
     return {'success': True}
+
+
+@toolkit.side_effect_free
+@toolkit.chained_action
+def package_show(
+    up_func: types.Action, context: types.Context, data_dict: types.DataDict
+) -> types.DataDict:
+
+    dataset_dict = up_func(context, data_dict)
+
+    for_indexing = (
+        toolkit.asbool(data_dict.get("for_indexing"))
+        or context.get("use_cache") is False
+    )
+
+    if for_indexing or context.get("for_update", False):
+        return dataset_dict
+
+    if dataset_dict.get("type") == "data_service":
+        _add_served_datasets_details(dataset_dict)
+
+    elif data_services := _check_data_services(dataset_dict["id"]):
+        _add_data_services_details(dataset_dict, data_services)
+
+    return dataset_dict
+
+
+def _add_served_datasets_details(data_service_dict):
+
+    data_service_dict["served_datasets"] = []
+    for served_dataset_id in data_service_dict.get("serves_dataset", []):
+        try:
+            dataset_dict = toolkit.get_action("package_show")(
+                {"ignore_auth": True}, {"id": served_dataset_id}
+            )
+            # TODO: choose what to include
+            data_service_dict["served_datasets"].append(
+                {
+                    "id": dataset_dict["id"],
+                    "name": dataset_dict["name"],
+                    "title": dataset_dict["title"],
+                    "type": dataset_dict["type"],
+                }
+            )
+        except toolkit.ObjectNotFound:
+            pass
+
+    return data_service_dict
+
+
+def _add_data_services_details(
+    dataset_dict: types.DataDict, data_services: list[types.DataDict]
+) -> types.DataDict:
+
+    dataset_dict["data_services"] = []
+    for data_service in data_services:
+        # TODO: choose what to include
+        dataset_dict["data_services"].append(
+            {
+                "id": data_service["id"],
+                "name": data_service["name"],
+                "title": data_service["title"],
+                "type": data_service["type"],
+            }
+        )
+    return dataset_dict
+
+
+def _check_data_services(dataset_id):
+    """
+    Check if there are any `data_service` datasets that have the provided
+    `dataset_id` in the `serves_dataset` field
+    """
+    result = toolkit.get_action("package_search")(
+        {},
+        {
+            "fq_list": [
+                f"vocab_serves_dataset:{dataset_id}",
+            ],
+            "include_private": True,
+        },
+    )
+
+    return result["results"]
