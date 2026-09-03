@@ -51,6 +51,12 @@ if endpoints_enabled():
         endpoint="read_dataset_series",
     )
     dcat.add_url_rule(
+        "/data_service/<_id>.<_format>",
+        view_func=read_dataset,
+        endpoint="read_data_service",
+    )
+
+    dcat.add_url_rule(
         "/dataset/<_id>.<_format>", view_func=read_dataset, endpoint="read_dataset"
     )
 

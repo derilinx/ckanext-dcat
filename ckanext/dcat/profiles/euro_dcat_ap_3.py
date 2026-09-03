@@ -1,10 +1,12 @@
 from rdflib import Literal, BNode, URIRef
 
 from ckanext.dcat.profiles import (
+    DCT,
     DCAT,
     XSD,
     SKOS,
     ADMS,
+    RDFS,
     RDF,
     OWL,
 )
@@ -100,12 +102,18 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
     def _graph_from_dataset_v3(self, dataset_dict, dataset_ref):
 
         dataset_series = False
+        data_service = False
 
         # TODO: support custom type names (ckan/ckanext-dataset-series#6)
         if dataset_dict.get("type") == "dataset_series":
             dataset_series = True
             self.g.remove((dataset_ref, RDF.type, None))
             self.g.add((dataset_ref, RDF.type, DCAT.DatasetSeries))
+
+        elif dataset_dict.get("type") == "data_service":
+            data_service = True
+            self.g.remove((dataset_ref, RDF.type, None))
+            self.g.add((dataset_ref, RDF.type, DCAT.DataService))
 
         # version own:versionInfo -> dcat:version
         self.g.remove((dataset_ref, OWL.versionInfo, None))
@@ -189,6 +197,46 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
                                     URIRef(dataset_uri(series_nav["next"])),
                                 )
                             )
+
+        # Data Service
+        if data_service:
+            for dataset_id in dataset_dict["serves_dataset"]:
+                self.g.add(
+                    (
+                        dataset_ref,
+                        DCAT.servesDataset,
+                        URIRef(dataset_uri({"id": dataset_id})),
+                    )
+                )
+
+            for key, predicate, fallbacks, _type, datatype, _class in (
+                ("title", DCT.title, None, Literal, None, None),
+                ("endpoint_url", DCAT.endpointURL, None, URIRef, None, RDFS.Resource),
+                (
+                    "endpoint_description",
+                    DCAT.endpointDescription,
+                    None,
+                    URIRefOrLiteral,
+                    None,
+                    RDFS.Resource,
+                ),
+            ):
+                self._add_triple_from_dict(
+                    dataset_dict,
+                    dataset_ref,
+                    predicate,
+                    key,
+                    fallbacks=fallbacks,
+                    _type=_type,
+                    _datatype=datatype,
+                    _class=_class,
+                )
+
+            #  Lists
+            from ckanext.dcat import vocabularies
+            for format_ in dataset_dict.get("format", []):
+                self.g.add((dataset_ref, DCT['format'], URIRefOrLiteral(vocabularies.file_types.lookup(ckan=format_))))
+
 
     def _graph_from_resource_v3(
         self, dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback

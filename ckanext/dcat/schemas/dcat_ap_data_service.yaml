@@ -40,7 +40,8 @@ dataset_fields:
 
 - field_name: endpoint_description
   label: Endpoint description
-  form_snippet: markdown.html
+  form_placeholder: http://example.com/apis/data-service/capabilities
+  display_snippet: link.html
   help_text: A description of the services available via the end-points, including their operations, parameters etc.
 
   # TODO: custom validator / snippet for multiple formats
