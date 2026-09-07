@@ -291,6 +291,7 @@ def _check_data_services(dataset_id):
         {
             "fq_list": [
                 f"vocab_serves_dataset:{dataset_id}",
+                "dataset_type:data_service",
             ],
             "include_private": True,
         },
