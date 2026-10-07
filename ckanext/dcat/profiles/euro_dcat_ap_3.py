@@ -11,8 +11,8 @@ from ckanext.dcat.profiles import (
     OWL,
 )
 
-from .base import URIRefOrLiteral
-from ckanext.dcat.utils import dataset_uri
+from .base import URIRefOrLiteral, CleanedURIRef
+from ckanext.dcat.utils import dataset_uri, resource_uri
 from .euro_dcat_ap_2 import EuropeanDCATAP2Profile
 from .euro_dcat_ap_scheming import EuropeanDCATAPSchemingProfile
 
@@ -209,8 +209,10 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
                     )
                 )
 
+            # Endpoint URL, Description and Format are seriliazed from resources
+            # in _graph_from_resource_v3()
+
             for key, predicate, fallbacks, _type, datatype, _class in (
-                ("title", DCT.title, None, Literal, None, None),
                 ("endpoint_url", DCAT.endpointURL, None, URIRef, None, RDFS.Resource),
                 (
                     "endpoint_description",
@@ -237,10 +239,14 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
             for format_ in dataset_dict.get("format", []):
                 self.g.add((dataset_ref, DCT['format'], URIRefOrLiteral(vocabularies.file_types.lookup(ckan=format_))))
 
-
     def _graph_from_resource_v3(
         self, dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
     ):
+
+        if distribution_ref is None:
+            distribution_ref = CleanedURIRef(resource_uri(resource_dict))
+
+        data_service = dataset_dict.get("type") == "data_service"
 
         # byteSize decimal -> nonNegativeInteger
         for subject, predicate, object in self.g.triples((None, DCAT.byteSize, None)):
@@ -254,3 +260,12 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
                         Literal(int(object), datatype=XSD.nonNegativeInteger),
                     )
                 )
+
+        # Data Services: add endpoint info to the dataset (dcat:DataService),
+        # not the distribution
+        if data_service:
+
+            self._remove_property_and_children(dataset_ref, DCAT.distribution, distribution_ref)
+
+
+

@@ -428,8 +428,8 @@ class RDFProfile(object):
         return out
 
     def _get_skos_value(self, subject):
-        """ 
-        Return the prefLabel for a skos:Concept, 
+        """
+        Return the prefLabel for a skos:Concept,
         UNDONE - language, identifier for those that aren't using a preflabel, integration with codelists?
         """
 
@@ -437,14 +437,14 @@ class RDFProfile(object):
         # fallback for if this isn't actually a skos concept
         if _type != SKOS.Concept:
             return str(subject)
-        
+
         value = self.g.value(subject=subject, predicate=SKOS.prefLabel)
         if value:
             return str(value)
-        
+
         return str(subject)
-    
-            
+
+
     def _get_vcard_property_value(
         self, subject, predicate, predicate_string_property=None
     ):
@@ -1516,6 +1516,27 @@ class RDFProfile(object):
         self.g.add((spatial_ref, RDF.type, DCT.Location))
         self.g.add((dataset_ref, DCT.spatial, spatial_ref))
         return spatial_ref
+
+    def _remove_property_and_children(self, subject, predicate, object_=None, _visited=None):
+        """
+        Removes all triples for the given subject and predicate, and optionally object.
+        Works recursively with triples where the objects are subjects.
+        """
+        if _visited is None:
+            _visited = set()
+
+        objects = [object_] if object_ else list(self.g.objects(subject, predicate))
+
+        for object_ in objects:
+
+            if object_ not in _visited:
+                _visited.add(object_)
+                for child_predicate in set(self.g.predicates(object_, None)):
+                    self._remove_property_and_children(
+                        object_, child_predicate, _visited=_visited
+                    )
+
+            self.g.remove((subject, predicate, object_))
 
     # DLX custom start: support DCAT Vocabularies
     def _add_from_codelist(self, _dict, subject, predicate, key,
