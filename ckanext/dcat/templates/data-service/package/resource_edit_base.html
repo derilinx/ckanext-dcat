@@ -1,0 +1,22 @@
+{% ckan_extends %}
+
+{% set view_label = _('View endpoint') if dataset_type == 'data_service' else _('View resource') %}
+{% set edit_label = _('Edit endpoint') if dataset_type == 'data_service' else _('Edit resource') %}
+
+{% block content_action %}
+    {% if res %}
+	{% link_for view_label, named_route=pkg.type ~ '_resource.read', id=pkg.name, resource_id=res.id, class_='btn btn-default', icon='eye' %}
+  {% endif %}
+{% endblock %}
+
+{% block content_primary_nav %}
+  {{ h.build_nav_icon(pkg.type ~ '_resource.edit', edit_label, id=pkg.name, resource_id=res.id, icon='pencil') }}
+  {% block inner_primary_nav %}{% endblock %}
+  {{ h.build_nav_icon(pkg.type ~ '_resource.views', _('Views'), id=pkg.name, resource_id=res.id, icon='chart-bar') }}
+{% endblock %}
+
+{% block secondary_content %}
+  {% snippet 'package/snippets/resource_info.html', res=res %}
+  {% snippet 'package/snippets/resources.html', pkg=pkg, active=res.id, dataset_type=dataset_type %}
+{% endblock %}
+

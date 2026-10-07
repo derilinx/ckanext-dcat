@@ -1,0 +1,8 @@
+{% ckan_extends %}
+
+{% set second_stage_label = _('Next: Add Endpoint') if dataset_type == 'data_service' else _('Next: Add data') %}
+
+{% block save_button %}
+  <button class="btn btn-primary" type="submit" name="save">{% block save_button_text %}{{ second_stage_label }}{% endblock %}</button>
+{% endblock %}
+
