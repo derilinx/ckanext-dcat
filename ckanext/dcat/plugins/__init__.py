@@ -277,6 +277,7 @@ class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
     p.implements(p.ITranslation, inherit=True)
     p.implements(p.IPackageController, inherit=True)
     p.implements(p.IActions)
+    p.implements(p.IValidators)
 
     # ITranslation
 
@@ -304,6 +305,18 @@ class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
             except ValueError:
                 pass
         return dataset_dict
+
+    # IValidators
+
+    def get_validators(self):
+
+        def endpoint_default_name(value):
+            if not value or value is p.toolkit.missing:
+                return p.toolkit._("Endpoint")
+
+        return {
+            "default_endpoint_name": endpoint_default_name
+        }
 
 
 class DCATJSONInterface(p.SingletonPlugin):

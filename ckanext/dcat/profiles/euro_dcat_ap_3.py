@@ -12,7 +12,10 @@ from ckanext.dcat.profiles import (
 )
 
 from .base import URIRefOrLiteral, CleanedURIRef
+
+from ckanext.dcat import vocabularies
 from ckanext.dcat.utils import dataset_uri, resource_uri
+
 from .euro_dcat_ap_2 import EuropeanDCATAP2Profile
 from .euro_dcat_ap_scheming import EuropeanDCATAPSchemingProfile
 
@@ -212,33 +215,6 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
             # Endpoint URL, Description and Format are seriliazed from resources
             # in _graph_from_resource_v3()
 
-            for key, predicate, fallbacks, _type, datatype, _class in (
-                ("endpoint_url", DCAT.endpointURL, None, URIRef, None, RDFS.Resource),
-                (
-                    "endpoint_description",
-                    DCAT.endpointDescription,
-                    None,
-                    URIRefOrLiteral,
-                    None,
-                    RDFS.Resource,
-                ),
-            ):
-                self._add_triple_from_dict(
-                    dataset_dict,
-                    dataset_ref,
-                    predicate,
-                    key,
-                    fallbacks=fallbacks,
-                    _type=_type,
-                    _datatype=datatype,
-                    _class=_class,
-                )
-
-            #  Lists
-            from ckanext.dcat import vocabularies
-            for format_ in dataset_dict.get("format", []):
-                self.g.add((dataset_ref, DCT['format'], URIRefOrLiteral(vocabularies.file_types.lookup(ckan=format_))))
-
     def _graph_from_resource_v3(
         self, dataset_dict, dataset_ref, resource_dict, distribution_ref, resource_license_fallback
     ):
@@ -265,7 +241,40 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
         # not the distribution
         if data_service:
 
-            self._remove_property_and_children(dataset_ref, DCAT.distribution, distribution_ref)
+            # Remove distribution
+            self._remove_property_and_children(
+                dataset_ref, DCAT.distribution, distribution_ref
+            )
 
+            for key, predicate, fallbacks, _type, datatype, _class in (
+                ("url", DCAT.endpointURL, None, URIRef, None, RDFS.Resource),
+                (
+                    "endpoint_description",
+                    DCAT.endpointDescription,
+                    None,
+                    URIRefOrLiteral,
+                    None,
+                    RDFS.Resource,
+                ),
+            ):
+                self._add_triple_from_dict(
+                    resource_dict,
+                    dataset_ref,
+                    predicate,
+                    key,
+                    fallbacks=fallbacks,
+                    _type=_type,
+                    _datatype=datatype,
+                    _class=_class,
+                )
 
-
+        if resource_dict.get("format"):
+            self.g.add(
+                (
+                    dataset_ref,
+                    DCT["format"],
+                    URIRefOrLiteral(
+                        vocabularies.file_types.lookup(ckan=resource_dict["format"])
+                    ),
+                )
+            )
