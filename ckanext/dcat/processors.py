@@ -285,7 +285,12 @@ class RDFSerializer(RDFProcessor):
         dataset_ref = URIRef(dataset_uri(dataset_dict))
 
         for profile_class in self._profiles:
-            profile = profile_class(self.g, compatibility_mode=self.compatibility_mode)
+            dataset_type = dataset_dict.get("type", "dataset")
+            profile = profile_class(
+                self.g,
+                compatibility_mode=self.compatibility_mode,
+                dataset_type=dataset_type,
+            )
             profile.graph_from_dataset(dataset_dict, dataset_ref)
 
             if hasattr(profile, "graph_from_resource"):
