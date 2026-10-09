@@ -23,7 +23,7 @@ from ckanext.dcat.logic import (dcat_dataset_show,
 from ckanext.dcat import codelists
 from ckanext.dcat import helpers
 from ckanext.dcat import utils
-from ckanext.dcat.validators import dcat_validators
+from ckanext.dcat import validators
 
 import logging
 
@@ -148,7 +148,7 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
 
     # IValidators
     def get_validators(self):
-        return dcat_validators
+        return validators.dcat_validators
 
     # IPackageController
 
@@ -310,12 +310,9 @@ class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def get_validators(self):
 
-        def endpoint_default_name(value):
-            if not value or value is p.toolkit.missing:
-                return p.toolkit._("Endpoint")
-
         return {
-            "default_endpoint_name": endpoint_default_name
+            "data_service_serves_dataset": validators.data_service_serves_dataset,
+            "data_service_default_endpoint_name": validators.data_service_endpoint_default_name
         }
 
 

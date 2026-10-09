@@ -2,12 +2,15 @@ import datetime
 import json
 import re
 
+from ckan import model
 from dateutil.parser import parse as parse_date
 from ckantoolkit import (
     missing,
     StopOnError,
     Invalid,
     _,
+    check_access,
+    NotAuthorized,
 )
 
 try:
@@ -137,6 +140,40 @@ def scheming_multiple_number(field, schema):
             raise StopOnError
 
     return _scheming_multiple_number
+
+
+def data_service_serves_dataset(value, context):
+
+    if not value:
+        return
+
+    if isinstance(value, str):
+        try:
+            value = json.loads(value)
+        except ValueError:
+            raise Invalid("Wrong format, expected list of ids")
+    if not isinstance(value, list):
+        raise Invalid("Wrong format, expected list of ids")
+
+    for dataset_id in value:
+
+        # Dataset exists and is of type series
+        pkg = model.Package.get(dataset_id)
+        if not pkg:
+            raise Invalid("Dataset not found")
+
+        # Check user can update the served dataset
+        try:
+            check_access("package_update", {"user": context["user"]}, {"id": dataset_id})
+        except NotAuthorized:
+            raise Invalid("User not authorized to add these datasets to this data service")
+
+    return json.dumps(value)
+
+
+def data_service_endpoint_default_name(value):
+    if not value or value is missing:
+        return _("Endpoint")
 
 
 dcat_validators = {

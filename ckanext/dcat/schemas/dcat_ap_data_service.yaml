@@ -36,7 +36,7 @@ dataset_fields:
 - field_name: serves_dataset
   label: Serves dataset(s)
   preset: multiple_text
-  validators: ignore_missing scheming_multiple_text
+  validators: ignore_missing scheming_multiple_text data_service_serves_dataset 
   help_text: Datasets that this data service can distribute.
 
   # Common properties with dcat:Dataset
@@ -162,7 +162,7 @@ resource_fields:
 
 - field_name: name
   label: Name
-  validators: default_endpoint_name
+  validators: data_service_default_endpoint_name
   form_snippet:
 
 - field_name: endpoint_description
