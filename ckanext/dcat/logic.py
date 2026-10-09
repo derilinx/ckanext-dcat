@@ -232,21 +232,22 @@ def package_show(
         return dataset_dict
 
     if dataset_dict.get("type") == "data_service":
-        _add_served_datasets_details(dataset_dict)
+        _add_served_datasets_details(dataset_dict, context)
 
-    elif data_services := _check_data_services(dataset_dict["id"]):
+    else:
+        data_services = _check_data_services(dataset_dict["id"], context)
         _add_data_services_details(dataset_dict, data_services)
 
     return dataset_dict
 
 
-def _add_served_datasets_details(data_service_dict):
+def _add_served_datasets_details(data_service_dict, context):
 
     data_service_dict["served_datasets"] = []
     for served_dataset_id in data_service_dict.get("serves_dataset", []):
         try:
             dataset_dict = toolkit.get_action("package_show")(
-                {"ignore_auth": True}, {"id": served_dataset_id}
+                {"user": context.get("user")}, {"id": served_dataset_id}
             )
             # TODO: choose what to include
             data_service_dict["served_datasets"].append(
@@ -257,7 +258,7 @@ def _add_served_datasets_details(data_service_dict):
                     "type": dataset_dict["type"],
                 }
             )
-        except toolkit.ObjectNotFound:
+        except (toolkit.ObjectNotFound, toolkit.NotAuthorized):
             pass
 
     return data_service_dict
@@ -281,13 +282,13 @@ def _add_data_services_details(
     return dataset_dict
 
 
-def _check_data_services(dataset_id):
+def _check_data_services(dataset_id, context):
     """
     Check if there are any `data_service` datasets that have the provided
     `dataset_id` in the `serves_dataset` field
     """
     result = toolkit.get_action("package_search")(
-        {},
+        {"user": context.get("user")},
         {
             "fq_list": [
                 f"vocab_serves_dataset:{dataset_id}",
