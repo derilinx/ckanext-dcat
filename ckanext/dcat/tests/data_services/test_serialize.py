@@ -32,6 +32,11 @@ class TestEuroDCATAP3ProfileSerializeDataService(BaseSerializeTest):
             self._get_file_contents("ckan/ckan_dcat_ap_data_service.json")
         )
 
+        # Replaced linked datasets with actual existing ones
+        dataset1 = factories.Dataset()
+        dataset2 = factories.Dataset()
+        data_service_dict["serves_dataset"] = [dataset1["id"], dataset2["id"]]
+
         data_service = call_action("package_create", **data_service_dict)
 
         # Make sure schema was used
@@ -51,8 +56,8 @@ class TestEuroDCATAP3ProfileSerializeDataService(BaseSerializeTest):
 
 
         assert self._triples_list_values(g, data_service_ref, DCAT.servesDataset) == sorted([
-            utils.dataset_uri({"id": data_service_dict["serves_dataset"][0]}),
-            utils.dataset_uri({"id": data_service_dict["serves_dataset"][1]}),
+            utils.dataset_uri({"id": dataset1["id"]}),
+            utils.dataset_uri({"id": dataset2["id"]}),
         ])
 
         resource = data_service["resources"][0]
