@@ -55,7 +55,7 @@ class TestEuroDCATAP3ProfileSerializeDataService(BaseSerializeTest):
         assert self._triple(g, data_service_ref, DCT.description, data_service["notes"])
 
 
-        assert self._triples_list_values(g, data_service_ref, DCAT.servesDataset) == sorted([
+        assert sorted(self._triples_list_values(g, data_service_ref, DCAT.servesDataset)) == sorted([
             utils.dataset_uri({"id": dataset1["id"]}),
             utils.dataset_uri({"id": dataset2["id"]}),
         ])
