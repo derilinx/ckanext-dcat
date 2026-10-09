@@ -162,7 +162,7 @@ resource_fields:
 
 - field_name: name
   label: Name
-  validators: data_service_default_endpoint_name
+  validators: data_service_endpoint_default_name
   form_snippet:
 
 - field_name: endpoint_description

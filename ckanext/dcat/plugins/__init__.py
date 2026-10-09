@@ -314,7 +314,7 @@ class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
 
         return {
             "data_service_serves_dataset": validators.data_service_serves_dataset,
-            "data_service_default_endpoint_name": validators.data_service_endpoint_default_name
+            "data_service_endpoint_default_name": validators.data_service_endpoint_default_name
         }
 
 

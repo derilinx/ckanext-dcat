@@ -183,6 +183,7 @@ def data_service_serves_dataset(value, context):
 def data_service_endpoint_default_name(value):
     if not value or value is missing:
         return _("Endpoint")
+    return value
 
 
 dcat_validators = {
