@@ -211,3 +211,48 @@ class TestDataServices:
             ],
             key=lambda d: d["id"],
         )
+
+    def test_data_service_delete_dataset(self):
+
+        dataset1 = factories.Dataset()
+        dataset2 = factories.Dataset()
+
+        data_service = factories.Dataset(
+            type="data_service", serves_dataset=[dataset1["id"], dataset2["id"]]
+        )
+
+        data_service_dict = helpers.call_action("package_show", id=data_service["id"])
+
+        assert sorted(
+            data_service_dict["served_datasets"], key=lambda d: d["id"]
+        ) == sorted(
+            [
+                {
+                    "id": dataset1["id"],
+                    "name": dataset1["name"],
+                    "title": dataset1["title"],
+                    "type": dataset1["type"],
+                },
+                {
+                    "id": dataset2["id"],
+                    "name": dataset2["name"],
+                    "title": dataset2["title"],
+                    "type": dataset2["type"],
+                },
+            ],
+            key=lambda d: d["id"],
+        )
+
+        helpers.call_action("package_delete", id=dataset1["id"])
+
+        data_service_dict = helpers.call_action("package_show", id=data_service["id"])
+
+        assert data_service_dict["serves_dataset"] == [dataset2["id"]]
+        assert data_service_dict["served_datasets"] == [
+            {
+                "id": dataset2["id"],
+                "name": dataset2["name"],
+                "title": dataset2["title"],
+                "type": dataset2["type"],
+            },
+        ]

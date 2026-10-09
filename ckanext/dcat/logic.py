@@ -220,6 +220,11 @@ def dcat_auth(context, data_dict):
 def package_show(
     up_func: types.Action, context: types.Context, data_dict: types.DataDict
 ) -> types.DataDict:
+    """
+    Add Data Service fields at show time:
+        * On data_service datasets -> `served_datasets`
+        * On normal datasets -> `data_services`
+    """
 
     dataset_dict = up_func(context, data_dict)
 
@@ -239,6 +244,31 @@ def package_show(
         _add_data_services_details(dataset_dict, data_services)
 
     return dataset_dict
+
+
+@toolkit.side_effect_free
+@toolkit.chained_action
+def package_delete(
+    up_func: types.Action, context: types.Context, data_dict: types.DataDict
+) -> types.ActionResult.PackageDelete:
+    """
+    Remove dataset ids from Data Services `serves_dataset` fields
+    """
+    dataset_id = toolkit.get_or_bust(data_dict, "id")
+
+    up_func(context, data_dict)
+
+    data_services = _check_data_services(dataset_id, context)
+    for data_service in data_services:
+        if dataset_id in data_service["serves_dataset"]:
+            data_service["serves_dataset"].remove(dataset_id)
+            toolkit.get_action("package_patch")(
+                {"ignore_auth": True},
+                {
+                    "id": data_service["id"],
+                    "serves_dataset": data_service["serves_dataset"],
+                },
+            )
 
 
 def _add_served_datasets_details(data_service_dict, context):

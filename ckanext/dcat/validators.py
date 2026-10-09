@@ -164,9 +164,18 @@ def data_service_serves_dataset(value, context):
 
         # Check user can update the served dataset
         try:
-            check_access("package_update", {"user": context["user"]}, {"id": dataset_id})
+            check_access(
+                "package_update",
+                {
+                    "user": context["user"],
+                    "ignore_auth": context.get("ignore_auth", False),
+                },
+                {"id": dataset_id},
+            )
         except NotAuthorized:
-            raise Invalid("User not authorized to add these datasets to this data service")
+            raise Invalid(
+                "User not authorized to add these datasets to this data service"
+            )
 
     return json.dumps(value)
 

@@ -19,6 +19,7 @@ from ckanext.dcat.logic import (dcat_dataset_show,
                                 dcat_datasets_list,
                                 dcat_auth,
                                 package_show,
+                                package_delete,
                                 )
 from ckanext.dcat import codelists
 from ckanext.dcat import helpers
@@ -294,6 +295,7 @@ class DCATDataServicesPlugin(p.SingletonPlugin, DefaultTranslation):
     def get_actions(self):
         return {
             'package_show': package_show,
+            'package_delete': package_delete,
         }
 
     # IPackageController
