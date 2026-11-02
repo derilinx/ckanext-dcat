@@ -29,13 +29,12 @@ dataset_fields:
   form_placeholder: eg. economy, mental health, government
   help_text: Keywords or tags describing the data service. Use commas to separate multiple values.
 
-
   # dcat:DataService specific properties
 
-  # TODO: custom validator / snippet for referencing datasets
 - field_name: serves_dataset
   label: Serves dataset(s)
-  preset: multiple_text
+  preset: dcat_dataset_select
+  form_placeholder: Search datasets...
   validators: ignore_missing scheming_multiple_text data_service_serves_dataset 
   help_text: Datasets that this data service can distribute.
 
