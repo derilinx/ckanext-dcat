@@ -89,3 +89,91 @@ def croissant(dataset_dict, profiles=None, jsonld_context=None):
     return _get_serialization(
         dataset_dict, profiles, "jsonld", context=context, frame=frame
     )
+
+
+def solr_or_query(values):
+    """
+    Returns a Solr query string matching any of the provided values, eg
+    `"value1" OR "value2"`, with the values quoted and escaped.
+    """
+    return " OR ".join(
+        '"{}"'.format(value.replace("\\", "\\\\").replace('"', '\\"'))
+        for value in values
+    )
+
+
+def get_datasets_by_ids(ids):
+    """
+    Returns the dataset dicts for the provided list of dataset ids.
+
+    Datasets that don't exist or that the current user can not access are
+    returned as {"id": <id>} so they are not dropped when saving the form.
+    """
+    if not ids:
+        return []
+
+    if isinstance(ids, str):
+        try:
+            ids = json.loads(ids)
+        except ValueError:
+            ids = [ids]
+
+    if not isinstance(ids, list):
+        return []
+
+    ids = [_id for _id in ids if _id and isinstance(_id, str)]
+    if not ids:
+        return []
+
+    user = toolkit.current_user
+    result = toolkit.get_action("package_search")(
+        {"user": user.name if user.is_authenticated else ""},
+        {
+            "fq_list": ["id:({0})".format(solr_or_query(ids))],
+            "include_private": True,
+            "rows": len(ids),
+        },
+    )
+
+    found = {}
+    for dataset_dict in result["results"]:
+        found[dataset_dict["id"]] = dataset_dict
+
+    return [found.get(_id, {"id": _id}) for _id in ids]
+
+
+def format_select2_options(dataset_dicts):
+
+    out = []
+    for dataset_dict in dataset_dicts:
+
+        if not dataset_dict.get("name"):
+            out.append({
+                "id": dataset_dict["id"],
+                "text": toolkit._(f"Restricted dataset"),
+            })
+            continue
+
+        organization = dataset_dict.get("organization") or {}
+        out.append(
+            {
+                "id": dataset_dict["id"],
+                "text": toolkit.h.dataset_display_name(dataset_dict),
+                "url": toolkit.url_for(
+                    f"{dataset_dict["type"]}.read", id=dataset_dict["name"]
+                ),
+                "organization": organization.get("title") or organization.get("name"),
+            }
+        )
+
+    return out
+
+
+def dataset_select_options(dataset_ids):
+    """
+    Returns the select2 options for the provided list of dataset ids.
+    """
+
+    dataset_dicts = get_datasets_by_ids(dataset_ids)
+
+    return format_select2_options(dataset_dicts)

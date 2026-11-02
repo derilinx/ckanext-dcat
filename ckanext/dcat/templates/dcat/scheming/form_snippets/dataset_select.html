@@ -1,0 +1,43 @@
+{% import 'macros/form.html' as form %}
+
+{% asset 'ckanext-dcat/dataset-select-js' %}
+
+{#
+  Form snippet for the `dcat_dataset_select` preset.
+
+  The select2 widget is set up on an input without a name, so it's not
+  submitted. Selected datasets are submitted as hidden inputs named after the
+  field, which the `dcat-dataset-select` module keeps up to date.
+#}
+
+{%- set field_id = 'field-' ~ field.field_name -%}
+{%- set options = h.dcat_dataset_select_options(data.get(field.field_name)) -%}
+
+{% call form.input_block(
+  field_id,
+  h.scheming_language_text(field.label) or field.field_name,
+  errors[field.field_name],
+  field.classes if 'classes' in field else ['control-medium'],
+  is_required=h.scheming_field_required(field)) %}
+  <div data-module="dcat-dataset-select"
+    data-module-source="{{ field.get('source', h.url_for('dcat_forms.dataset_select_search')) }}"
+    data-module-field-name="{{ field.field_name }}"
+    data-module-dataset-type="{{ field.get('dataset_types', ['dataset']) | join(',') }}"
+    data-module-initial="{{ options | tojson | forceescape }}">
+
+    <input id="{{ field_id }}"
+      type="hidden"
+      class="dcat-dataset-select-input"
+      placeholder="{{ h.scheming_language_text(field.form_placeholder) or _('Search datasets...') }}"
+      {{ form.attributes(field.form_attrs if 'form_attrs' in field else {}) }} />
+
+    <div class="dcat-dataset-select-values">
+      {%- for option in options %}
+      <input type="hidden" name="{{ field.field_name }}" value="{{ option.id }}" />
+      {%- endfor %}
+    </div>
+  </div>
+
+  {%- snippet 'scheming/form_snippets/help_text.html', field=field -%}
+{% endcall %}
+

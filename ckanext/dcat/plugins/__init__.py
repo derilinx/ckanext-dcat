@@ -91,7 +91,10 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
     # IBlueprint
 
     def get_blueprint(self):
-        return [blueprints.dcat]
+        return [
+            blueprints.dcat,
+            blueprints.dcat_forms,
+        ]
 
     # ITranslation
 
@@ -102,6 +105,7 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def update_config(self, config):
         p.toolkit.add_template_directory(config, '../templates/dcat')
+        p.toolkit.add_resource('../assets', 'ckanext-dcat')
 
         # Parse the RDF codelists
         codelists.init_codelists()
@@ -125,8 +129,11 @@ class DCATPlugin(p.SingletonPlugin, DefaultTranslation):
 
     def get_helpers(self):
         return {
-            'dcat_get_endpoint': helpers.get_endpoint,
-            'dcat_endpoints_enabled': helpers.endpoints_enabled,
+            "dcat_get_endpoint": helpers.get_endpoint,
+            "dcat_endpoints_enabled": helpers.endpoints_enabled,
+            "dcat_get_datasets_by_ids": helpers.get_datasets_by_ids,
+            "dcat_dataset_select_options": helpers.dataset_select_options,
+
         }
 
     # IActions

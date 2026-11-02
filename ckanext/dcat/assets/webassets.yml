@@ -1,0 +1,8 @@
+dataset-select-js:
+  filter: rjsmin
+  output: ckanext-dcat/%(version)s-dataset-select.js
+  contents:
+    - js/dataset-select.js
+  extra:
+    preload:
+      - base/main

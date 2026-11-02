@@ -17,3 +17,15 @@ presets:
     form_snippet: large_text.html
     form_attrs:
       data-module: slug-preview-target
+
+# Select existing datasets, storing a list of dataset ids (as in the `multiple_text` preset).
+# Supported field keys:
+#   dataset_types: list of dataset types that can be selected, defaults to "dataset"
+#   form_placeholder: placeholder for the search input
+#   source: endpoint to query when searching for datasets
+- preset_name: dcat_dataset_select
+  values:
+    form_snippet: dataset_select.html
+    display_snippet: dataset_select.html
+    validators: ignore_missing scheming_multiple_text
+    output_validators: scheming_load_json
