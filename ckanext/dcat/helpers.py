@@ -150,7 +150,7 @@ def format_select2_options(dataset_dicts):
         if not dataset_dict.get("name"):
             out.append({
                 "id": dataset_dict["id"],
-                "text": toolkit._(f"Restricted dataset"),
+                "text": toolkit._("Restricted dataset"),
             })
             continue
 
@@ -160,7 +160,7 @@ def format_select2_options(dataset_dicts):
                 "id": dataset_dict["id"],
                 "text": toolkit.h.dataset_display_name(dataset_dict),
                 "url": toolkit.url_for(
-                    f"{dataset_dict["type"]}.read", id=dataset_dict["name"]
+                    "{}.read".format(dataset_dict["type"]), id=dataset_dict["name"]
                 ),
                 "organization": organization.get("title") or organization.get("name"),
             }
