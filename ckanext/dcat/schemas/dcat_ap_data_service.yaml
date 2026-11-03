@@ -16,7 +16,7 @@ dataset_fields:
 - field_name: name
   label: URL
   preset: dataset_slug
-  form_placeholder: eg. my-data service
+  form_placeholder: eg. my-data-service
 
 - field_name: notes
   label: Description
