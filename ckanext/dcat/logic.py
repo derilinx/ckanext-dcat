@@ -286,7 +286,7 @@ def _add_served_datasets_details(data_service_dict, context):
                     "name": dataset_dict["name"],
                     "title": dataset_dict["title"],
                     "type": dataset_dict["type"],
-                    "owner_org": dataset_dict["owner_org"],
+                    "owner_org": dataset_dict.get("owner_org"),
                 }
             )
         except (toolkit.ObjectNotFound, toolkit.NotAuthorized):
@@ -308,7 +308,7 @@ def _add_data_services_details(
                 "name": data_service["name"],
                 "title": data_service["title"],
                 "type": data_service["type"],
-                "owner_org": data_service["owner_org"],
+                "owner_org": data_service.get("owner_org"),
             }
         )
     return dataset_dict
