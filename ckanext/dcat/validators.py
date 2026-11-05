@@ -186,7 +186,31 @@ def data_service_endpoint_default_name(value):
     return value
 
 
+def remove_field(field_name: str):
+    """
+    This is a workaround for CKAN < 2.12, to avoid crashes when updating a dataset
+    that contains "virtual" fields like `served_dataets` or `series_navigation`.
+
+    This is a __before validator, it should be defined in the schema as:
+
+        before_validators: remove_field("served_datasets")
+
+    """
+
+    def callable(key, data, errors, context):
+        data.pop((field_name, ), None)
+
+        junk = data.get(("__junk",))
+        if junk:
+            for key in list(junk):
+                if key[0] == field_name:
+                    junk.pop(key)
+
+    return callable
+
+
 dcat_validators = {
     "scheming_multiple_number": scheming_multiple_number,
     "dcat_date": dcat_date,
+    "remove_field": remove_field,
 }

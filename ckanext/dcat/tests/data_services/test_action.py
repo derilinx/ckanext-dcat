@@ -256,3 +256,23 @@ class TestDataServices:
                 "type": dataset2["type"],
             },
         ]
+
+    def test_data_service_round_trip(self):
+
+        dataset = factories.Dataset()
+
+        data_service = factories.Dataset(
+            type="data_service", serves_dataset=[dataset["id"]]
+        )
+
+        data_service_dict = helpers.call_action("package_show", id=data_service["id"])
+
+        assert data_service_dict["served_datasets"]
+
+        data_service_dict["title"] = "Updated"
+
+        updated_data_service_dict = helpers.call_action(
+            "package_update", **data_service_dict
+        )
+
+        assert updated_data_service_dict["title"] == "Updated"

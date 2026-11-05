@@ -3,6 +3,8 @@ dataset_type: data_service
 about: Full DCAT AP Data Service schema
 about_url: http://github.com/ckan/ckanext-dcat
 
+before_validators: remove_field("served_datasets")
+
 dataset_fields:
 
   # Common properties with dcat:Dataset
