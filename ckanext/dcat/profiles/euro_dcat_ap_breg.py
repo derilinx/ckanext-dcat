@@ -70,8 +70,8 @@ class EuropeanDCATAPBRegProfile(RDFProfile):
     ]
 
     def parse_dataset(self, dataset_dict, dataset_ref):
-        for (pred, key, cls, type) in self.DATASET_FIELDS:
-            dataset_dict[key] = self._object_value_list(dataset_ref, pred)
+        for (key, predicate, fallbacks, _type, _class) in self.DATASET_FIELDS:
+            dataset_dict[key] = self._object_value_list(dataset_ref, predicate=predicate)
 
         dataset_dict['follows_rules'] = [
             {
