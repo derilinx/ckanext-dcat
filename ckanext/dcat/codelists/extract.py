@@ -55,13 +55,51 @@ EUVOC = Namespace("http://publications.europa.eu/ontology/euvoc#")
 
 
 class Codelist:
+    """
+    A list of choices extracted from a SKOS concept scheme.
+
+    `choices` is a flat list with all elements regardless of their position in
+    the hierarchy. Each element has `label` and `value` keys, plus a `parent`
+    key (the URI of its skos:broader concept) for non top-level elements.
+
+    `choices_nested` contains the same elements organized as a tree, with
+    child elements listed under a `children` key. For codelists without a
+    hierarchy it is equivalent to `choices`.
+    """
+
     def __init__(self, name, choices, scheme):
         self.name = name
         self.choices = choices
         self.scheme = scheme
-        self.choices_map = {elt['value']:elt['label'] for elt in choices}
+        self.choices_map = {elt['value']: elt['label'] for elt in choices}
+        self.choices_nested = self._build_nested(choices)
+
+    @staticmethod
+    def _build_nested(choices):
+        nodes = {
+            elt['value']: {'label': elt['label'], 'value': elt['value']}
+            for elt in choices
+        }
+        nested = []
+        for elt in choices:
+            node = nodes[elt['value']]
+            parent = nodes.get(elt.get('parent'))
+            if parent is not None:
+                parent.setdefault('children', []).append(node)
+            else:
+                nested.append(node)
+        return nested
+
     def labels(self, val):
         return self.choices_map.get(val, {})
+
+    def write_json(self, dest=None):
+        if dest is None:
+            dest = Path(__file__).parent / (self.name.replace("_", "-") + '.json')
+        with open(dest, 'w') as f:
+            json.dump(self.choices_nested, f, indent=2)
+        return dest
+
 
 @lru_cache(None)
 def extract_codelist(name: str, f:Path, langs=None):
@@ -82,18 +120,28 @@ def extract_codelist(name: str, f:Path, langs=None):
             rdflib.plugin.PluginException, TypeError) as e:
         raise Exception(e)
 
-    choices = {}
+    concepts = set(g.subjects(RDF.type, SKOS.Concept))
+    choices = []
 
-    for subject in g.subjects(RDF.type, SKOS.Concept):
+    for subject in concepts:
         labels = {l.language: str(l) for l in g.objects(subject, SKOS.prefLabel) if l.language in langs }
         order = g.value(subject, EUVOC.order, default=str(subject))
 
         choice = {"label": labels,
                   "value": str(subject)}
 
-        choices[order] = choice
+        parent = g.value(subject, SKOS.broader)
+        if parent is not None:
+            if parent in concepts:
+                choice["parent"] = str(parent)
+            else:
+                log.warning(
+                    "Codelist '%s': broader concept %s of %s not found, "
+                    "treating it as a top-level element", name, parent, subject)
 
-    ordered_choices = [v for k,v in sorted(choices.items())]
+        choices.append((order, choice))
+
+    ordered_choices = [choice for order, choice in sorted(choices, key=lambda c: c[0])]
 
     scheme = None
     for subject in g.subjects(RDF.type, SKOS.ConceptScheme):
@@ -105,7 +153,5 @@ def extract_codelist(name: str, f:Path, langs=None):
 
 def write_json():
     for path in Path(__file__).parent.glob('*.rdf'):
-        data = extract_codelist(path)
-        dest = path.parent / (path.stem + '.json')
-        with open (dest, 'w') as f:
-            json.dump(data.choices, f, indent=2)
+        codelist = extract_codelist(path.stem, path)
+        codelist.write_json(path.parent / (path.stem + '.json'))
