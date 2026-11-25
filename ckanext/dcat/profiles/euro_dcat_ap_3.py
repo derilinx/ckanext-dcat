@@ -203,7 +203,7 @@ class EuropeanDCATAP3Profile(EuropeanDCATAP2Profile, EuropeanDCATAPSchemingProfi
 
         # Data Service
         if data_service:
-            for dataset_id in dataset_dict["serves_dataset"]:
+            for dataset_id in dataset_dict.get("serves_dataset", []):
                 self.g.add(
                     (
                         dataset_ref,
