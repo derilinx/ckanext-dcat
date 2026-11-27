@@ -1,6 +1,21 @@
 # Changelog
 
-## [Unreleased](https://github.com/ckan/ckanext-dcat/compare/v2.4.3...HEAD)
+## [Unreleased](https://github.com/ckan/ckanext-dcat/compare/v2.4.5...HEAD)
+
+* Fix `AttributeError` when serializing access services with `contact` or `publisher` as a list ([#392](https://github.com/ckan/ckanext-dcat/pull/392))
+
+## [v2.4.5](https://github.com/ckan/ckanext-dcat/compare/v2.4.4...v2.4.5) - 2026-11-03
+
+* [GHSA-j239-6m7f-wvhg (CVE pending)](https://github.com/ckan/ckanext-dcat/security/advisories/GHSA-j239-6m7f-wvhg): ReDoS (CPU denial-of-service) in Accept-header parsing
+* [GHSA-4w94-8644-qf35 (CVE pending)](https://github.com/ckan/ckanext-dcat/security/advisories/GHSA-4w94-8644-qf35): Uncontrolled recursion in `_agents_details()`
+
+
+## [v2.4.4](https://github.com/ckan/ckanext-dcat/compare/v2.4.3...v2.4.4) - 2026-05-22
+
+* Support for CKAN 2.12 ([#379](https://github.com/ckan/ckanext-dcat/pull/379))
+* Fix bug in geometry serialization, locn:Geometry -> locn:geometry ([#381](https://github.com/ckan/ckanext-dcat/pull/381))
+* Fallback to GET request on harvesters when HEAD requests fails with more error codes ([#381](https://github.com/ckan/ckanext-dcat/pull/381))
+
 
 ## [v2.4.3](https://github.com/ckan/ckanext-dcat/compare/v2.4.2...v2.4.3) - 2026-05-22
 
